@@ -6,18 +6,8 @@ from sys import argv
 
 import csv
 
-def seasonLength(val):
-	if(val >= 37):
-		output = (val - 9.0)/4.0
-		## if the team made it to the playoffs, we need to step back one
-		## more on the index to avoid the 'PLAYOFFS heading'
-	else:
-		output = (val-8.0)/4.0
-		## rare case where a team doesnt advance to playoffs, usually bad SOC
-		## only seen this once so far
-	return output
-	
-	
+from gameProcessing import *
+
 
 def scrapeTeamData(teamId, debugInfo):
 	page = requests.get('http://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i&sport=1' % (teamId))
@@ -45,7 +35,9 @@ def scrapeTeamData(teamId, debugInfo):
 	
 	## the sixth layer isnt needed, so we wont bother
 
-	teamName = content1[0]
+	teamString = content1[0]
+	teamName = getTeamName(teamString)
+	print "Team String, ", teamString
 	print "Team Name: %s" % teamName
 	
 	players = []
@@ -74,8 +66,36 @@ def scrapeTeamData(teamId, debugInfo):
 			access =((game*4)+8)
 		else:
 			access = ((game*4)+9)
-		schedule.append([content3[access], content3[access+1], content3[access+2], content3[access + 3], content4[game]])
-		## left to right, the game record reads ['date and time', 'Location', 'won/lost [score]', 'SOC Rating', 'opponent name']
+		
+		
+		
+		rawScoreData = content3[access + 2]
+		outcome = gameResult(rawScoreData)
+		
+		if(outcome != 'unplayed'):
+			goalsFor = processGoalsFor(rawScoreData, outcome)
+			goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+			
+			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, int(content3[access+3])  , content4[game]])
+			## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
+		else:
+			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[game]])			
+			## that should fix things somewhat
+		
+		## !!!! Important Note !!!!
+		## This will NOT work with seasons in progress, because the scores for 
+		## games not yet played will appear as  - - - or something like that
+		## the functions that process the goals will need to adjust for this
+		
+		## there needs to be a precheck to verify that the game was played
+		## before committing the data, TODO
+		
+		## I would do it now (March 2016) but I cant remember what the unplayed
+		## games look like at the moment, and I wont have to worry about it
+		## for a while anyways
+		
+					
+					
 	print "Schedule: "
 	for game in schedule:
 		print game
@@ -95,7 +115,7 @@ def scrapeTeamData(teamId, debugInfo):
 	print '\n'
 
 if(__name__=="__main__"):
-	teamIdList = [12348, 12319, 12313]
+	teamIdList = [12313, 12348, 11914]
 	
 	for Id in teamIdList:
 		scrapeTeamData(Id, False)
