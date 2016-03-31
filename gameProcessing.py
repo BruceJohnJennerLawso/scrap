@@ -85,4 +85,21 @@ def processGoalsAgainst(rawDataString, gameResult):
 			score1 = int(rawDataString[5:len(rawDataString)-4])
 			score2 = int(rawDataString[9:len(rawDataString)])
 			return biggerOne(score1, score2)
+		## this just barely handles double digit scores properly, but I could
+		## swear theres a weird 10-7 or 11-10 game somewhere in the system thats
+		## going to crash this
+		
+		## it handles the case of a first double digit score fine, which is the
+		## only case I was able to find in the system (9749), but if the second
+		## score or both are double digit we're fucked
 	
+	
+def processSOC(rawDataString):
+	if(rawDataString == 'avg.'):
+		return rawDataString
+		## nothing we can do about this at this step of the process
+		
+		## this is gonna be a clusterfuck to handle this at the end
+	else:
+		return int(rawDataString)
+		## force it out as an integer so it can be summed a bit more easily
