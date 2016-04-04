@@ -6,7 +6,22 @@
 from lxml import html
 import requests
 
+import csv
+
 from gameProcessing import *
+
+
+def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule):
+	outputPath = ("./data/%s/%i.csv" % (seasonString, teamId))
+	print "current output path: %s" % outputPath
+	with open(outputPath, 'wb') as foo:
+		bar = csv.writer(foo)
+		bar.writerows([[teamName, seasonString, teamString], [numberOfGames]])
+		bar.writerows(schedule)
+		##foo.close()
+	
+		## ahahahaha my life
+
 
 
 def scrapeTeamData(teamId, debugInfo, seasonString):
@@ -65,10 +80,22 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	schedule = []
 	
 	for game in range(numberOfGames):
-		if(game <= 5):
-			access =((game*4)+8)
+		
+		if(teamId == 8481):
+			## I know, I hate me too
+			if(game == 2):
+				continue
+			if(game <= 6):
+				access =((game*4)+8)
+			else:
+				access = ((game*4)+9)			
+		
 		else:
-			access = ((game*4)+9)
+			## every case besides the bandaid solutions
+			if(game <= 5):
+				access =((game*4)+8)
+			else:
+				access = ((game*4)+9)
 		
 		
 		
@@ -79,14 +106,11 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 			goalsFor = processGoalsFor(rawScoreData, outcome)
 			goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
 			
-			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[game]])
+			##if(debugInfo == False):
+			##	assert isinstance(content4[game], str)
+			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[game].encode('utf-8')])
 			## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 		else:
-			if(False):
-				continue
-				## this fixes the problem brilliantly, maybe activate this if we
-				## know the whole schedule should be played by now to avoid the
-				## issue that 8481 has with the rescheduled game
 			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[game]])			
 			## that should fix things somewhat
 		
@@ -121,3 +145,14 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	
 		##print tree.xpath('//div[@id="primarycontent"]/*/*[%i]/text()' % (1))
 	print '\n'
+	
+	
+	## now to figure out a good layout for the data in CSV...
+	
+	## TO BE CONTINUED DUN DUN DUN
+	
+	## this might be a good spot to jump into a second function with the data
+	saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule)
+	
+	## cant decide whether I want to break the date strings down a bit before
+	## I start on this
