@@ -24,6 +24,8 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 
 
 
+## abandon all hope of comprehension, ye who enter here
+
 def scrapeTeamData(teamId, debugInfo, seasonString):
 	## gotta pass in the season, since the system doesnt display it anywhere
 	## for some reason
