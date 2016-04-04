@@ -18,8 +18,8 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 		bar = csv.writer(foo)
 		bar.writerows([[teamName, seasonString, teamString], [numberOfGames]])
 		bar.writerows(schedule)
-		##foo.close()
-	
+		bar.writerows([''])
+		bar.writerows([players])
 		## ahahahaha my life
 
 
@@ -55,26 +55,41 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 
 	teamString = content1[0]
 	teamName = getTeamName(teamString)
+	
+	indiesTeam = False
+	if('Indies' in teamName):
+		indiesTeam = True
+		## Apparently indies teams dont have captains
+		## which royally fucks this up
+	
 	print "Team String, ", teamString
 	print "Team Name: %s, %s" % (teamName, seasonString)
 	
 	players = []
 	for i in range(6, len(content2)):
-		players.append(content2[i])
-	captainName = content3[1]
-	## retrieve the captains name which got stuck a layer deeper than the rest	
-	print "Captain: ", captainName
-	players.append(captainName)
+		players.append(content2[i].encode('utf-8'))
+	if(indiesTeam == False):
+		captainName = content3[1].encode('utf-8')
+		## retrieve the captains name which got stuck a layer deeper than the rest	
+		print "Captain: ", captainName
+		players.append(captainName)
 	## might just make the last name the captain by convention
 	
 	
 	print "Roster: "
 	for playah in players:
 		print playah	
+	print players	
 
 	print "end of roster\n"	
 	
-	numberOfGames = int(seasonLength(len(content3)))
+	
+	if(indiesTeam == True):
+		indiesOffset = 2
+	else:
+		indiesOffset = 0
+		
+	numberOfGames = int(seasonLength(len(content3)+indiesOffset))
 	print "Season Length: %i games" % numberOfGames
 	
 	schedule = []
@@ -93,10 +108,9 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 		else:
 			## every case besides the bandaid solutions
 			if(game <= 5):
-				access =((game*4)+8)
+				access =((game*4)+8)-indiesOffset
 			else:
-				access = ((game*4)+9)
-		
+				access = ((game*4)+9)-indiesOffset
 		
 		
 		rawScoreData = content3[access + 2]
@@ -111,7 +125,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[game].encode('utf-8')])
 			## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 		else:
-			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[game]])			
+			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[game].encode('utf-8')])			
 			## that should fix things somewhat
 		
 		## !!!! Important Note !!!!
