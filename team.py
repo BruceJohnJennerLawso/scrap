@@ -23,6 +23,9 @@ class Team(object):
 		
 	def loadTierII(self, teamsList):
 		print "Bad call to Team.loadTierII"
+		
+	def loadTierIII(self, teamsList):
+		print "Bad call to Team.loadTierIII"		
 	
 	def getTeamName(self):
 		return self.teamName	

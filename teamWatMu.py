@@ -135,3 +135,11 @@ class watMuTeam(Team):
 			##print self.averagePlayQualityIndex
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
 		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
+
+
+	def loadTierIII(self, teamsList):	
+		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+
+		self.averageWinQualityIndex = 0
+		self.averagePlayQualityIndex = 0
+
