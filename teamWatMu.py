@@ -157,6 +157,12 @@ class watMuTeam(Team):
 		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
 		## cant find any mistakes in how this is calculated, but the values dont
 		## match what the spreadsheet had		
+		
+		## because these values are calculated differently
+		## PQI in the spreadsheet was just a product of the averages for AWQI
+		## and AGCI
+		
+		## thats why these values are different from what the spreadsheet had
 				
 
 
