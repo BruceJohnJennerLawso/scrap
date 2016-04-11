@@ -19,6 +19,8 @@ if(__name__ == "__main__"):
 		for team in teams:
 			team.loadTierII(teams)
 		for team in teams:
-			print "%s (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, AWQI %.3f, APQI %.3f" % (team.teamName, team.totalSeasonGames, team.getRecordString(), team.getSeasonPointsTotal(), team.getPointsPercentage(), team.getAGCI(), team.getAWQI(), team.getAPQI())
+			team.loadTierIII(teams)			
+		for team in teams:
+			print "%s (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f" % (team.teamName, team.totalSeasonGames, team.getRecordString(), team.getSeasonPointsTotal(), team.getPointsPercentage(), team.getAGCI(), team.getMaAWQI(), team.getMaAPQI())
 			print "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.seasonPlusMinus, team.getSeasonAverageSOC())
 			print "\n"

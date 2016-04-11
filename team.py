@@ -7,16 +7,18 @@ from game import *
 import csv
 
 class Team(object):
+	## constructor
 	def __init__(self, seasonId, teamId):
 		self.seasonId = seasonId
 		self.teamId = teamId
 		
-		self.seasonGames = []
+		self.Games = []
 		## list of objects of type game
 		
 		self.loadPath = "./data/%s/%s.csv" % (seasonId, teamId)
 		
-		
+	## prototypes for the functions that load each tier of data ################
+	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things will happen ############
 		
 	def loadTierI(self):
 		print "Bad call to Team.loadTierI"
@@ -26,6 +28,9 @@ class Team(object):
 		
 	def loadTierIII(self, teamsList):
 		print "Bad call to Team.loadTierIII"		
+	
+	
+	## Tier I ##################################################################
 	
 	def getTeamName(self):
 		return self.teamName	
@@ -60,8 +65,33 @@ class Team(object):
 	def getAGCI(self):
 		return self.averageGameClosenessIndex
 		
+	## note that we try to squeeze down to shorter names here in order to make
+	## working on the front end a bit easier than typing out
+	## getAverageGameClosenessIndex() would be
+	
+	## Tier II #################################################################
+		
 	def getAWQI(self):
 		return self.averageWinQualityIndex
 		
 	def getAPQI(self):
 		return self.averagePlayQualityIndex
+
+	## Tier III ################################################################
+
+	def getMaAWQI(self):
+		return self.meanAdjustedAverageWinQualityIndex	
+		
+	def getMaAPQI(self):
+		return self.meanAdjustedAveragePlayQualityIndex
+
+	## our two indexes now adjusted for season mean in an attempt to make easier
+	## to compare across different seasons. MaAWQI appears to be the best 
+	## predictor of playoff success so far
+	
+	## also makes for an easy way to benchmark likely contenders, contenders
+	## are *usually* at least 1-2 times the league mean in AWQI, often 2x or
+	## above. Only 1 team has ever won the championship with a MaAWQI below 1
+	## (Winter 2014 Pucked Up) with a MaAWQI of 0.922
+	
+	## Maybe pronounced "Mah-Quee" 

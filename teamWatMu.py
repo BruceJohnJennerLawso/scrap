@@ -15,7 +15,6 @@ class watMuGame(Game):
 class watMuTeam(Team):
 	def __init__(self, seasonId, teamId):
 		super(watMuTeam, self).__init__(seasonId, teamId)
-		self.Games = []
 		self.loadTierI()
 		
 		
@@ -140,6 +139,25 @@ class watMuTeam(Team):
 	def loadTierIII(self, teamsList):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 
-		self.averageWinQualityIndex = 0
-		self.averagePlayQualityIndex = 0
+		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
+		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
+		
+		awqiMean = 0
+		apqiMean = 0
+		
+		for team in teamsList:
+			awqiMean += team.getAWQI()
+			apqiMean += team.getAPQI()
+			
+		awqiMean /= float(len(teamsList))
+		apqiMean /= float(len(teamsList))
+		
+		self.meanAdjustedAverageWinQualityIndex /= awqiMean
+		## this matches the spreadsheet perfectly
+		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
+		## cant find any mistakes in how this is calculated, but the values dont
+		## match what the spreadsheet had		
+				
+
+
 
