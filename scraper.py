@@ -12,7 +12,7 @@ from gameProcessing import *
 
 
 def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule):
-	outputPath = ("./data/%s/%i.csv" % (seasonString, teamId))
+	outputPath = ("./data/watMu/beginner/%s/%i.csv" % (seasonString, teamId))
 	print "current output path: %s" % outputPath
 	with open(outputPath, 'wb') as foo:
 		bar = csv.writer(foo)
@@ -55,7 +55,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	
 	## the sixth layer isnt needed, so we wont bother
 
-	teamString = content1[0]
+	teamString = content1[0].encode('utf-8')
 	teamName = getTeamName(teamString)
 	
 	indiesTeam = False
@@ -106,6 +106,16 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 				access =((game*4)+8)
 			else:
 				access = ((game*4)+9)			
+		
+		elif(teamId == 8722):
+			if(game == 3):
+				continue
+			if(game <= 6):
+				access =((game*4)+8)
+			else:
+				access = ((game*4)+9)
+		## 8481 and 8722 had a postponed game in the schedule which was played
+		## later but needs to be skipped over by the parser
 		
 		else:
 			## every case besides the bandaid solutions

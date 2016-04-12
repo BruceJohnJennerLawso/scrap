@@ -12,11 +12,14 @@ import matplotlib.mlab as mlab
 if(__name__ == "__main__"):
 	seasons = []
 
-	with open('./data/seasons.csv', 'rb') as foo:
+	leagueId = 'watMu'
+	levelId = 'beginner'
+
+	with open('./data/watMu/beginner/seasons.csv', 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
 			seasonId = row[0]
-			idPath = "./data/%s/teamId.csv" % seasonId
+			idPath = "./data/watMu/beginner/%s/teamId.csv" % seasonId
 			
 			teamIdList = []
 			with open(idPath, 'rb') as bar:
@@ -24,7 +27,7 @@ if(__name__ == "__main__"):
 				for teamId in reading:
 					teamIdList.append(teamId[0])
 					## no idea why the ids are stored one deep
-			seasons.append(watMuSeason(seasonId, teamIdList))
+			seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList))
 	
 	mawquees = []
 	for season in seasons:
@@ -41,7 +44,8 @@ if(__name__ == "__main__"):
 	plt.xlabel('MaAWQI')
 	plt.ylabel('frequency')
 	plt.title('Histogram of Mean Adjusted AWQI values')
-	plt.axis([0.0, 4.0, 0.0, 6.0])
+	float(int(max(mawquees)))	
+	plt.axis([0.0, float(int(max(mawquees))), 0.0, 20.0])
 	plt.grid(True)
 	plt.show()
 

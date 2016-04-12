@@ -7,10 +7,10 @@ from scraper import *
 
 
 def scrapeListedTeams(debugInfo):
-	with open('./data/seasons.csv', 'rb') as foo:
+	with open('./data/watMu/beginner/seasons.csv', 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
-			idPath = "./data/%s/teamId.csv" % row[0]
+			idPath = "./data/watMu/beginner/%s/teamId.csv" % row[0]
 			with open(idPath, 'rb') as bar:
 				reading = csv.reader(bar)
 				for teamId in reading:

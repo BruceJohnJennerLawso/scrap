@@ -13,8 +13,8 @@ class watMuGame(Game):
 
 
 class watMuTeam(Team):
-	def __init__(self, seasonId, teamId):
-		super(watMuTeam, self).__init__(seasonId, teamId)
+	def __init__(self, leagueId, levelId, seasonId, teamId):
+		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
 		self.loadTierI()
 		
 		

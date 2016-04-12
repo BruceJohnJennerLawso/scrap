@@ -8,14 +8,18 @@ import csv
 
 class Team(object):
 	## constructor
-	def __init__(self, seasonId, teamId):
+	def __init__(self, leagueId, levelId, seasonId, teamId):
 		self.seasonId = seasonId
 		self.teamId = teamId
+		self.leagueId = leagueId
+		self.levelId = levelId
+		## the string describing the level of play 
+		## (ie beginner/casual in waterloo intramurals)
 		
 		self.Games = []
 		## list of objects of type game
 		
-		self.loadPath = "./data/%s/%s.csv" % (seasonId, teamId)
+		self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 		
 	## prototypes for the functions that load each tier of data ################
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things will happen ############

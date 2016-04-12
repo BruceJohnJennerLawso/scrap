@@ -7,11 +7,11 @@ from season import *
 
 
 class watMuSeason(Season):
-	def __init__(self, seasonId, teamIdList):
-		super(watMuSeason, self).__init__(seasonId, teamIdList)
+	def __init__(self, leagueId, levelId, seasonId, teamIdList):
+		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
 		
 		for teamId in teamIdList:
-			self.Teams.append(watMuTeam(seasonId, teamId))
+			self.Teams.append(watMuTeam(leagueId, levelId, seasonId, teamId))
 		
 		for team in self.Teams:
 			team.loadTierI()
