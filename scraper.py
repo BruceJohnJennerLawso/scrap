@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ## scraper.py ##################################################################
 ## utilities to scrape a teams data out of the intramurals system ##############
 ## may need to someday scrape the playoff brackets as well, ####################
@@ -9,6 +10,7 @@ import requests
 import csv
 
 from gameProcessing import *
+
 
 
 def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule):
@@ -26,7 +28,7 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 
 ## abandon all hope of comprehension, ye who enter here
 
-def scrapeTeamData(teamId, debugInfo, seasonString):
+def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason):
 	## gotta pass in the season, since the system doesnt display it anywhere
 	## for some reason
 	
@@ -100,86 +102,132 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	
 	socGamed = [8936, 8488]
 	
+	
+	
 	for con in content3:
 		if(con == "REGULAR SEASON"):
 			seasonIndex = content3.index(con)
 			## we find the index that the regular season starts at
 			
-	socGameIndex = -1
+	socGamesIndex = -1
 	socGamesFound = False
 	## default value if we dont find any SOC games in the schedule
 	if("S.O.C. GAMES" in content3):
 		print "SOC Games found"
 		socGamesFound = True 
-		socGameIndex = content3.index("S.O.C. GAMES")
+		socGamesIndex = content3.index("S.O.C. GAMES")
 		## assign its index so we know where to find soc games
+	playoffGameIndex = -1
+	playoffGamesFound = False
+	if("PLAYOFFS" in content3):
+		print "SOC Games found"
+		playoffGamesFound = True 
+		playoffGameIndex = content3.index("PLAYOFFS")
+		## assign its index so we know where to find soc games	
+	totalIndex = len(content3)-1
+	## number of the last index
+	totalSeasonGames = 0	
+	totalSOCGames = 0
+	totalPlayoffGames = 0
 	
-	for game in range(numberOfGames): 
-		
-		gameVal = game
-		if(teamId in postponedGames):
-			## I know, I hate me too
-			if(((game == 2)and(teamId == 8481))or((game == 3)and(teamId == 8722))):
+	if(socGamesFound):
+		totalSOCGames += ((totalIndex-socGamesIndex)/4)
+		totalIndex = socGamesIndex
+	if(playoffGamesFound):
+		totalPlayoffGames += ((totalIndex-playoffGameIndex)/4)
+		totalIndex = playoffGameIndex
+	totalSeasonGames += ((totalIndex-seasonIndex)/4)
+	
+	if(inProgressSeason):
+		print "Scraping an in progress season, may be buggy"
+	else:
+		print "Season Games %i, index %i" % (totalSeasonGames, seasonIndex)
+		print "Playoff Games %i, index %i" % (totalPlayoffGames, playoffGameIndex)
+		print "SOC Games %i, index %i" % (totalSOCGames, socGamesIndex)				
+		seasonGamesVal = totalSeasonGames
+		for game in range(seasonGamesVal): 
+			print range(seasonGamesVal)
+			access = (seasonIndex+1) + (4*game)
+			print "access ", access, "/", (len(content3)-1)			
+			gameVal = game
+			rawScoreData = content3[access+2]
+			##print rawScoreData
+			outcome = gameResult(rawScoreData)
+			if(('won' not in rawScoreData)and('lost' not in rawScoreData)and('tie' not in rawScoreData)):
+				print "Found a postponed game"
+				## we found a game that was replayed (or if we are in an in
+				## progress season, the game hasnt been played yet)
+				totalSeasonGames -= 1
+				## drop this down by one, since we counted a game that was not
+				## actually played
 				continue
-			if(game <= 6):
-				access =((game*4)+8)-indiesOffset
+				## jump past this game, cause we dont want it in the schedule
 			else:
-				access = ((game*4)+9)-indiesOffset			
-		## 8481 and 8722 had a postponed game in the schedule which was played
-		## later but needs to be skipped over by the parser cause the data is
-		## just dashes
-		elif(teamId in socGamed):
-			if(teamId in [8936]):
-				playOfs = 1
-			elif(teamId in [8488]):
-				playOfs = 2
-			if(game < 5):	
-				access =((game*4)+8)-indiesOffset
-			elif(game == 5):
-				gameVal = 7
-				access =((game*4)+(10-(4*(2-playOfs))))-indiesOffset							
-			elif(game > 5):
-				gameVal = game-playOfs-1
-				access =((game*4)+9)-indiesOffset
-			## this makes slightly more sense than before
-		else:
-			## every case besides the bandaid solutions
-			if(game <= 5):
-				access =((game*4)+8)-indiesOffset
-				## offset when accessing regular season games
-			else:
-				access = ((game*4)+9)-indiesOffset
-		
-		print "game ", game, "gameVal", gameVal, access, "/", len(content3)
-		rawScoreData = content3[access + 2]
-		outcome = gameResult(rawScoreData)
-		
-		
-		if(outcome != 'unplayed'):
-			goalsFor = processGoalsFor(rawScoreData, outcome)
-			goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
-			
-			##if(debugInfo == False):
-			##	assert isinstance(content4[game], str)
+				goalsFor = processGoalsFor(rawScoreData, outcome)
+				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+				
+				##if(debugInfo == False):
+				##	assert isinstance(content4[game], str)
 
-			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
-			## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
-		else:
-			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[gameVal].encode('utf-8')])			
-			## that should fix things somewhat
-		## !!!! Important Note !!!!
-		## This will NOT work with seasons in progress, because the scores for 
-		## games not yet played will appear as  - - - or something like that
-		## the functions that process the goals will need to adjust for this
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
+				print "Added Season game # %i" % gameVal
+
+		if(socGamesFound):
+			## append the SOC games on after the season, but before the playoffs
+			## this could screw up if the SOC game came mid season, but we
+			## could just sort the games list by date string at the end
+			for game in range(totalSOCGames): 
+				access = (socGamesIndex+1) + (4*(game))
+				print "access ", access, "/", (len(content3)-1)
+				gameVal = game+totalSeasonGames+totalPlayoffGames
+				print "gameVal ", gameVal
+				## this isnt quite right, but I dont think we'll have a season
+				## with both rescheduled games and SOC games
+				rawScoreData = content3[access+2]
+				outcome = gameResult(rawScoreData)
+				goalsFor = processGoalsFor(rawScoreData, outcome)
+				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+			
+				##if(debugInfo == False):
+				##	assert isinstance(content4[game], str)
+
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
+				print "Added SOC game # %i" % gameVal
+
+		if(playoffGamesFound):
+			for game in range(totalPlayoffGames): 
+				access = (playoffGameIndex+1) + (4*(game))
+				gameVal = game+seasonGamesVal
+				print "access ", access, "/", (len(content3)-1), "game ", gameVal
+				print "gameVal ", gameVal
+				rawScoreData = content3[access+2]
+				outcome = gameResult(rawScoreData)				
+				goalsFor = processGoalsFor(rawScoreData, outcome)
+				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+				##if(debugInfo == False):
+				##	assert isinstance(content4[game], str)
+
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
+				print "Added Playoff game # %i" % gameVal
+
+
+			## !!!! Important Note !!!!
+			## This will NOT work with seasons in progress, because the scores for 
+			## games not yet played will appear as  - - - or something like that
+			## the functions that process the goals will need to adjust for this
 		
-		## there needs to be a precheck to verify that the game was played
-		## before committing the data, TODO
+			## there needs to be a precheck to verify that the game was played
+			## before committing the data, TODO
 		
-		## I would do it now (March 2016) but I cant remember what the unplayed
-		## games look like at the moment, and I wont have to worry about it
-		## for a while anyways
+			## I would do it now (March 2016) but I cant remember what the unplayed
+			## games look like at the moment, and I wont have to worry about it
+			## for a while anyways
 		
-					
+				
+	numberOfGames = (totalSeasonGames + totalSOCGames + totalPlayoffGames)
 					
 	print "Schedule: "
 	for game in schedule:
@@ -187,15 +235,21 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	
 	if(debugInfo == True):
 	
-		print "\ncontent1", content1, "\n", len(content1)
-		print "\n\ncontent2", content2, "\n", len(content2)
-		print "\ncontent3", content3, "\n", len(content3)	
+		print "\ncontent1\n"
+		for i in range(0, len(content1)):
+			print i, " ", content1[i]		
+		print "\n\ncontent2\n"
+		for i in range(0, len(content2)):
+			print i, " ", content2[i]
+		print "\ncontent3\n"	
 		for i in range(0, len(content3)):
 			print i, " ", content3[i]
-		print "\ncontent4", content4, "\n", len(content4)
+		print "\ncontent4\n"
 		for i in range(0, len(content4)):
 			print i, " ", content4[i]
-		print "\ncontent5", content5, "\n", len(content5)			
+		print "\ncontent5\n"
+		for i in range(0, len(content5)):
+			print i, " ", content5[i]					
 	
 		##foo = 2
 		##print "content3[%i] " %	(foo), content3[foo]

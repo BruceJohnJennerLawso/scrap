@@ -14,16 +14,16 @@ def scrapeListedTeams(debugInfo):
 			with open(idPath, 'rb') as bar:
 				reading = csv.reader(bar)
 				for teamId in reading:
-					scrapeTeamData(int(teamId[0]), debugInfo, row[0])
-					if(int(teamId[0]) == 8936):
-						return 0
+					scrapeTeamData(int(teamId[0]), debugInfo, row[0], False)
+					##if(int(teamId[0]) == 8481):
+					##	return 0
 						## force a crash here so I can inspect this particular team
 
 
 if(__name__=="__main__"):
 	
 	
-	scrapeListedTeams(True)
+	scrapeListedTeams(False)
 	
 	
 	##teamIdList = [12313, 12348]

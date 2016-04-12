@@ -80,6 +80,7 @@ class watMuTeam(Team):
 				averageSOCGames += 1	
 				print "Failed add due to ValueError"
 				print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
+		print "Total season games %i" % self.totalSeasonGames
 		self.averageGameClosenessIndex = self.averageGameClosenessIndex/float(self.totalSeasonGames)
 		
 		SOC = float(self.averageSOC)/float(self.totalSeasonGames-averageSOCGames) 
