@@ -1,0 +1,5 @@
+#!/bin/bash
+
+python scrap.py
+
+exit 0
