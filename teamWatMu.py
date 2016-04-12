@@ -35,6 +35,9 @@ class watMuTeam(Team):
 		self.totalPlayoffGames = 0
 		if(self.seasonLength >= 6):
 			self.totalSeasonGames +=6
+		else:
+			self.totalSeasonGames = self.seasonLength
+			self.totalPlayoffGames = 0
 		if((self.seasonLength-self.totalSeasonGames) > 0):
 			self.totalPlayoffGames += (self.seasonLength-self.totalSeasonGames)
 		
@@ -82,7 +85,8 @@ class watMuTeam(Team):
 				print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
 		print "Total season games %i" % self.totalSeasonGames
 		self.averageGameClosenessIndex = self.averageGameClosenessIndex/float(self.totalSeasonGames)
-		
+		## this is fixable, just need to save game totals for each type in teh
+		## csv and remember to load them
 		SOC = float(self.averageSOC)/float(self.totalSeasonGames-averageSOCGames) 
 
 
@@ -110,18 +114,25 @@ class watMuTeam(Team):
 		
 		
 	def loadTierII(self, teamsList):	
-		print "Load call watMuTeam Tier II, team %s" % self.getTeamName()
+		print "Load call watMuTeam Tier II, team %s, Id %s" % (self.getTeamName(), self.teamId)
 		self.averageWinQualityIndex = 0
 		self.averagePlayQualityIndex = 0
 		
 		for game in self.Games[0:6]:
 			## we dont need to reload the data, cause it was already loaded by
 			## the loadTierI(...) call
+			opponentFound = False			
 			for team in teamsList:
 				if(team.getTeamName() == game.getOpponentName()):
 					opponent = team
+					opponentFound = True
 					## shouldnt ever be two teams with the same name... I hope
 					
+			if(opponentFound == False):
+				print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
+				for team in teamsList:
+					print team.getTeamName(),
+				print '\n'
 					## maybe this would be better done as a truly unique string,
 					## ie as teamname appended to season
 			if(game.Lost() != True):	
