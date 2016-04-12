@@ -65,7 +65,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 		## which royally fucks this up
 	
 	print "Team String, ", teamString
-	print "Team Name: %s, %s" % (teamName, seasonString)
+	print "Team Name: %s, %s, Id: %s" % (teamName, seasonString, teamId)
 	
 	players = []
 	for i in range(6, len(content2)):
@@ -96,37 +96,64 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 	
 	schedule = []
 	
-	for game in range(numberOfGames):
+	postponedGames = [8481, 8722]
+	
+	socGamed = [8936, 8488]
+	
+	for con in content3:
+		if(con == "REGULAR SEASON"):
+			seasonIndex = content3.index(con)
+			## we find the index that the regular season starts at
+			
+	socGameIndex = -1
+	socGamesFound = False
+	## default value if we dont find any SOC games in the schedule
+	if("S.O.C. GAMES" in content3):
+		print "SOC Games found"
+		socGamesFound = True 
+		socGameIndex = content3.index("S.O.C. GAMES")
+		## assign its index so we know where to find soc games
+	
+	for game in range(numberOfGames): 
 		
-		if(teamId == 8481):
+		gameVal = game
+		if(teamId in postponedGames):
 			## I know, I hate me too
-			if(game == 2):
+			if(((game == 2)and(teamId == 8481))or((game == 3)and(teamId == 8722))):
 				continue
 			if(game <= 6):
-				access =((game*4)+8)
+				access =((game*4)+8)-indiesOffset
 			else:
-				access = ((game*4)+9)			
-		
-		elif(teamId == 8722):
-			if(game == 3):
-				continue
-			if(game <= 6):
-				access =((game*4)+8)
-			else:
-				access = ((game*4)+9)
+				access = ((game*4)+9)-indiesOffset			
 		## 8481 and 8722 had a postponed game in the schedule which was played
-		## later but needs to be skipped over by the parser
-		
+		## later but needs to be skipped over by the parser cause the data is
+		## just dashes
+		elif(teamId in socGamed):
+			if(teamId in [8936]):
+				playOfs = 1
+			elif(teamId in [8488]):
+				playOfs = 2
+			if(game < 5):	
+				access =((game*4)+8)-indiesOffset
+			elif(game == 5):
+				gameVal = 7
+				access =((game*4)+(10-(4*(2-playOfs))))-indiesOffset							
+			elif(game > 5):
+				gameVal = game-playOfs-1
+				access =((game*4)+9)-indiesOffset
+			## this makes slightly more sense than before
 		else:
 			## every case besides the bandaid solutions
 			if(game <= 5):
 				access =((game*4)+8)-indiesOffset
+				## offset when accessing regular season games
 			else:
 				access = ((game*4)+9)-indiesOffset
 		
-		
+		print "game ", game, "gameVal", gameVal, access, "/", len(content3)
 		rawScoreData = content3[access + 2]
 		outcome = gameResult(rawScoreData)
+		
 		
 		if(outcome != 'unplayed'):
 			goalsFor = processGoalsFor(rawScoreData, outcome)
@@ -134,12 +161,12 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 			
 			##if(debugInfo == False):
 			##	assert isinstance(content4[game], str)
-			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[game].encode('utf-8')])
+
+			schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
 			## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 		else:
-			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[game].encode('utf-8')])			
+			schedule.append([content3[access], content3[access+1], outcome, content3[access+2] , content3[access+3]  , content4[gameVal].encode('utf-8')])			
 			## that should fix things somewhat
-		
 		## !!!! Important Note !!!!
 		## This will NOT work with seasons in progress, because the scores for 
 		## games not yet played will appear as  - - - or something like that
@@ -163,7 +190,11 @@ def scrapeTeamData(teamId, debugInfo, seasonString):
 		print "\ncontent1", content1, "\n", len(content1)
 		print "\n\ncontent2", content2, "\n", len(content2)
 		print "\ncontent3", content3, "\n", len(content3)	
+		for i in range(0, len(content3)):
+			print i, " ", content3[i]
 		print "\ncontent4", content4, "\n", len(content4)
+		for i in range(0, len(content4)):
+			print i, " ", content4[i]
 		print "\ncontent5", content5, "\n", len(content5)			
 	
 		##foo = 2

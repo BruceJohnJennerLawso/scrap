@@ -26,7 +26,7 @@ class watMuTeam(Team):
 				rows.append(row)
 		
 		self.teamName = rows[0][0]
-		print "%s: %s" % (self.teamName, rows[0][1])
+		print "%s: %s, Id: %s" % (self.teamName, rows[0][1], self.teamId)
 		##print rows[1][0]
 		self.seasonLength = int(rows[1][0])
 		
