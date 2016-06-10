@@ -180,7 +180,14 @@ class watMuTeam(Team):
 		## and AGCI
 		
 		## thats why these values are different from what the spreadsheet had
-				
+	
+	def getDescriptionString(self):
+		return "%s (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (self.teamName, self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC())		
+	
+	def __repr__(self):
+		return "<%s>" % (self.getDescriptionString())
+
+
 
 
 

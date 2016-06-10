@@ -91,8 +91,7 @@ if(__name__ == "__main__"):
 		## season
 		for team in season.Teams:
 			## loop through all of the teams that played in that season
-			print "%s (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f" % (team.teamName, team.totalSeasonGames, team.getRecordString(), team.getSeasonPointsTotal(), team.getPointsPercentage(), team.getAGCI(), team.getMaAWQI(), team.getMaAPQI())
-			print "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.seasonPlusMinus, team.getSeasonAverageSOC())			
+			print team.getDescriptionString(), "\n"
 			mawquees.append(team.getMaAWQI())
 			offence.append(team.getSeasonGoalsForAverage())
 			defence.append(team.getSeasonGoalsAgainstAverage())
