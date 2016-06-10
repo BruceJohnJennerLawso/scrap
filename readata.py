@@ -63,7 +63,7 @@ def getAllSeasons(leagueId, levelId):
 					## stuff the ids into a list
 					
 					## no idea why the ids are stored one deep
-			seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList))
+			seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
 			## this should create a season from this data, and by extension
 			## constructs all of the teams that played in those seasons by
 			## extension
@@ -86,7 +86,9 @@ if(__name__ == "__main__"):
 	## lists of values I want to plot in a histogram
 	
 	for season in seasons:
+		print "################################################################################"
 		print season.seasonId
+		print "################################################################################\n"		
 		## loop through all of the seasons available and print the id of the
 		## season
 		for team in season.Teams:

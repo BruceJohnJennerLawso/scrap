@@ -7,7 +7,7 @@ from season import *
 
 
 class watMuSeason(Season):
-	def __init__(self, leagueId, levelId, seasonId, teamIdList):
+	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
 		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
 		
 		for teamId in teamIdList:
@@ -18,4 +18,8 @@ class watMuSeason(Season):
 		for team in self.Teams:
 			team.loadTierII(self.Teams)
 		for team in self.Teams:
-			team.loadTierIII(self.Teams)						
+			team.loadTierIII(self.Teams)
+		if(sortTeams == True):
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonGoalsForAverage(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonAverageSOC(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getPointsPercentage(), reverse=True)						
