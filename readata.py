@@ -109,3 +109,10 @@ if(__name__ == "__main__"):
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, 'Defence_Total_histogram.png')	
 	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'AGCI_Total_histogram.png', 0.0, 1.0)	
 	## plot all of the measures that we wanted as histograms
+
+	print "################################################################################"
+	print "Season Leaders"
+	print "################################################################################\n"	
+	
+	for season in seasons:
+		print season.getTeamByPosition(1).getDescriptionString(), "\n"

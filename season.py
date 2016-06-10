@@ -11,3 +11,9 @@ class Season(Team):
 		self.seasonId = seasonId
 		self.leagueId = leagueId
 		self.levelId = levelId
+		
+	def getTeamByPosition(self, position):
+		for team in self.Teams:
+			if((position -1) == self.Teams.index(team)):
+				return team
+		print "Unable to find team, position %i out of range" % position	

@@ -80,6 +80,9 @@ class Team(object):
 		
 	def getAPQI(self):
 		return self.averagePlayQualityIndex
+		
+	def getSeasonRank(self):
+		return self.seasonRank
 
 	## Tier III ################################################################
 

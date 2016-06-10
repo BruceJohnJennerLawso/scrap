@@ -118,10 +118,12 @@ class watMuTeam(Team):
 		
 		
 		
-	def loadTierII(self, teamsList):	
+	def loadTierII(self, teamsList, teamRank):	
 		print "Load call watMuTeam Tier II, team %s, Id %s" % (self.getTeamName(), self.teamId)
 		self.averageWinQualityIndex = 0
 		self.averagePlayQualityIndex = 0
+		
+		self.seasonRank = teamRank+1
 		
 		for game in self.Games[0:self.totalSeasonGames]:
 			## we dont need to reload the data, cause it was already loaded by
@@ -182,7 +184,7 @@ class watMuTeam(Team):
 		## thats why these values are different from what the spreadsheet had
 	
 	def getDescriptionString(self):
-		return "%s (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (self.teamName, self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC())		
+		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC())		
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
