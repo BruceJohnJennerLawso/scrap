@@ -17,6 +17,11 @@ class watMuTeam(Team):
 		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
 		self.loadTierI()
 		
+	def getPlayoffGames(self):
+		if(self.totalPlayoffGames > 0):
+			return self.Games[self.totalSeasonGames:self.seasonLength]
+		else:
+			print "Unable to return playoff games, %s did not qualify for playoffs"
 		
 	def loadTierI(self):
 		with open(self.loadPath, 'rb') as foo:
@@ -60,7 +65,7 @@ class watMuTeam(Team):
 		self.averageGameClosenessIndex = 0
 		
 		averageSOCGames = 0
-		for game in self.Games[0:6]:
+		for game in self.Games[0:self.totalSeasonGames]:
 
 			##print game.Layers[0]
 			self.seasonTotalGoalsFor += game.getGoalsFor()
@@ -93,7 +98,7 @@ class watMuTeam(Team):
 		if(averageSOCGames > 0):
 			## loop through the games again, if the value fails we overwrite it
 			## with the average of the games that were defined
-			for game in self.Games[0:6]:
+			for game in self.Games[0:self.totalSeasonGames]:
 				print game.Layers[0]
 				try:
 					game.getSOC()
@@ -104,7 +109,7 @@ class watMuTeam(Team):
 
 		
 		self.averageSOC = 0
-		for game in self.Games[0:6]:
+		for game in self.Games[0:self.totalSeasonGames]:
 			## now that every game has a properly defined SOC, loop through
 			## and sum again before dividing to get the average
 			self.averageSOC += game.getSOC()
@@ -118,7 +123,7 @@ class watMuTeam(Team):
 		self.averageWinQualityIndex = 0
 		self.averagePlayQualityIndex = 0
 		
-		for game in self.Games[0:6]:
+		for game in self.Games[0:self.totalSeasonGames]:
 			## we dont need to reload the data, cause it was already loaded by
 			## the loadTierI(...) call
 			opponentFound = False			

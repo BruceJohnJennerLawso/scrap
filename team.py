@@ -22,7 +22,7 @@ class Team(object):
 		self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 		
 	## prototypes for the functions that load each tier of data ################
-	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things will happen ############
+	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############
 		
 	def loadTierI(self):
 		print "Bad call to Team.loadTierI"
@@ -98,4 +98,4 @@ class Team(object):
 	## above. Only 1 team has ever won the championship with a MaAWQI below 1
 	## (Winter 2014 Pucked Up) with a MaAWQI of 0.922
 	
-	## Maybe pronounced "Mah-Quee" 
+	## Its pronounced "Mah-Quee" in case you were wondering 
