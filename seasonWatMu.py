@@ -13,6 +13,11 @@ class playoffBracket:
 		self.bracketNumbers.append(position)
 
 
+def getSeedsInBracket(currentSeed, season, currentBracket):
+	currentTeam = season.getTeamByPosition(currentSeed)
+	seedsFaced = []
+	## now to move through the teams faced in playoffs 
+
 class watMuSeason(Season):
 	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
 		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
@@ -45,6 +50,7 @@ class watMuSeason(Season):
 		
 		## maybe a recursive function here that takes the teams list and the
 		## bracket list as arguments and returns lists of seeding positions
+		
 			
 		
 		for team in self.Teams:

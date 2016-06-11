@@ -16,9 +16,15 @@ class watMuTeam(Team):
 	def __init__(self, leagueId, levelId, seasonId, teamId):
 		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
 		self.loadTierI()
+	
+	def qualifiedForPlayoffs(self):
+		if(self.totalPlayoffGames > 0):
+			return True
+		else:
+			return False
 		
 	def getPlayoffGames(self):
-		if(self.totalPlayoffGames > 0):
+		if(self.qualifiedForPlayoffs() == True):
 			return self.Games[self.totalSeasonGames:self.seasonLength]
 		else:
 			print "Unable to return playoff games, %s did not qualify for playoffs"
