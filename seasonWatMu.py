@@ -13,9 +13,8 @@ class playoffBracket:
 		self.bracketNumbers.append(position)
 
 
-def getSeedsInBracket(currentTeam, season):
+def getSeedsInBracket(currentTeam, season, alreadyInBracket=[]):
 	
-	bracketTeamList = []
 	
 
 class watMuSeason(Season):
@@ -50,7 +49,9 @@ class watMuSeason(Season):
 		
 		## maybe a recursive function here that takes the teams list and the
 		## bracket list as arguments and returns lists of seeding positions
-		topPlayoffBracket = getSeedsInBracket(topTeam, self)
+		topPlayoffBracket = []
+		
+		topPlayoffBracket = getSeedsInBracket(topTeam, self, topPlayoffBracket)
 		print topPlayoffBracket
 			
 		

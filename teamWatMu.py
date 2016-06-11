@@ -208,6 +208,19 @@ class watMuTeam(Team):
 			return self.Games[self.totalSeasonGames:self.seasonLength]
 		else:
 			print "Unable to return playoff games, %s did not qualify for playoffs"
+			
+	def getPlayoffOpponentTeamNames(self):
+		output = []
+		for playoffGame in self.getPlayoffGames():
+			output.append(playoffGame.getOpponentName())
+		return output
+		
+	def getPlayoffOpponentTeamSeeds(self, season):
+		output = []
+		for playoffGame in self.getPlayoffGames():
+			opponentTeam = season.getTeamByTeamName(playoffGame.getOpponentName())
+			output.append(opponentTeam.getSeasonRank())
+		return output	
 
 
 
