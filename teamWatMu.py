@@ -17,17 +17,8 @@ class watMuTeam(Team):
 		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
 		self.loadTierI()
 	
-	def qualifiedForPlayoffs(self):
-		if(self.totalPlayoffGames > 0):
-			return True
-		else:
-			return False
 		
-	def getPlayoffGames(self):
-		if(self.qualifiedForPlayoffs() == True):
-			return self.Games[self.totalSeasonGames:self.seasonLength]
-		else:
-			print "Unable to return playoff games, %s did not qualify for playoffs"
+	## Tier I load call ########################################################	
 		
 	def loadTierI(self):
 		with open(self.loadPath, 'rb') as foo:
@@ -71,7 +62,7 @@ class watMuTeam(Team):
 		self.averageGameClosenessIndex = 0
 		
 		averageSOCGames = 0
-		for game in self.Games[0:self.totalSeasonGames]:
+		for game in self.getSeasonGames():
 
 			##print game.Layers[0]
 			self.seasonTotalGoalsFor += game.getGoalsFor()
@@ -115,14 +106,14 @@ class watMuTeam(Team):
 
 		
 		self.averageSOC = 0
-		for game in self.Games[0:self.totalSeasonGames]:
+		for game in self.getSeasonGames():
 			## now that every game has a properly defined SOC, loop through
 			## and sum again before dividing to get the average
 			self.averageSOC += game.getSOC()
 		self.averageSOC /= float(self.totalSeasonGames)
 		
 		
-		
+	## Tier II load call #######################################################	
 		
 	def loadTierII(self, teamsList, teamRank):	
 		print "Load call watMuTeam Tier II, team %s, Id %s" % (self.getTeamName(), self.teamId)
@@ -130,8 +121,9 @@ class watMuTeam(Team):
 		self.averagePlayQualityIndex = 0
 		
 		self.seasonRank = teamRank+1
+		## team rank is the index of this team after sorting
 		
-		for game in self.Games[0:self.totalSeasonGames]:
+		for game in self.getSeasonGames():
 			## we dont need to reload the data, cause it was already loaded by
 			## the loadTierI(...) call
 			opponentFound = False			
@@ -155,11 +147,11 @@ class watMuTeam(Team):
 				elif(game.Tied()):
 					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
 					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
-			##print self.averageWinQualityIndex, game.getGoalDifferential()
-			##print self.averagePlayQualityIndex
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
 		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
 
+
+	## Tier III load call ######################################################
 
 	def loadTierIII(self, teamsList):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
@@ -188,6 +180,8 @@ class watMuTeam(Team):
 		## and AGCI
 		
 		## thats why these values are different from what the spreadsheet had
+		## cause they get calculated for every game and then summed, instead of
+		## being calculated at the end
 	
 	def getDescriptionString(self):
 		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC())		
@@ -195,7 +189,25 @@ class watMuTeam(Team):
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
 
+	def qualifiedForPlayoffs(self):
+		## note that this specifically refers to whether the team played any
+		## playoff games, not whether they made the top "real" playoff bracket
+		
+		## the only team thats going to miss on this one is a team that got
+		## DQed from the playoffs
+		if(self.totalPlayoffGames > 0):
+			return True
+		else:
+			return False
 
+	def getSeasonGames(self):
+		return self.Games[0:self.totalSeasonGames]
+		
+	def getPlayoffGames(self):
+		if(self.qualifiedForPlayoffs() == True):
+			return self.Games[self.totalSeasonGames:self.seasonLength]
+		else:
+			print "Unable to return playoff games, %s did not qualify for playoffs"
 
 
 
