@@ -13,33 +13,10 @@ class playoffBracket:
 		self.bracketNumbers.append(position)
 
 
-def getSeedsInBracket(currentSeed, season, currentBracket):
-	currentTeam = season.getTeamByPosition(currentSeed)
-	seedsFaced = []
-	## now to move through the teams faced in playoffs
-	if(currentTeam.qualifiedForPlayoffs() == True):
-		if(len(currentTeam.getPlayoffGames()) > 0):
-			for playoffGame in currentTeam.getPlayoffGames():
-				print currentTeam.getTeamName(), " Playing ", playoffGame.getOpponentName()
-				opponent = season.getTeamByTeamName(playoffGame.getOpponentName())
-				opponentSeed = opponent.getSeasonRank()
-				if(opponentSeed not in seedsFaced):
-					seedsFaced.append(opponentSeed)
-				print seedsFaced
-				if(len(getSeedsInBracket(opponentSeed, season, currentBracket)) > 0):
-					for seeds in getSeedsInBracket(opponentSeed, season, currentBracket):
-						seedsFaced.append(seeds)
-			return seedsFaced
-		else:
-			return []
-		
-		
-	else:
-		## this is a bad case
-		print "in getSeedsInBracket(%i, %s, currentBracket)" % (currentSeed, season)
-		print "current seed did not make playoffs"
-		return []
-		## return an empty list to indicate nada for opponent seeds
+def getSeedsInBracket(currentTeam, season):
+	
+	bracketTeamList = []
+	
 
 class watMuSeason(Season):
 	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
@@ -73,7 +50,7 @@ class watMuSeason(Season):
 		
 		## maybe a recursive function here that takes the teams list and the
 		## bracket list as arguments and returns lists of seeding positions
-		topPlayoffBracket = getSeedsInBracket(1, self, self.playoffBrackets[0])
+		topPlayoffBracket = getSeedsInBracket(topTeam, self)
 		print topPlayoffBracket
 			
 		
