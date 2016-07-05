@@ -14,8 +14,19 @@ class playoffBracket:
 
 
 def getSeedsInBracket(currentTeam, season, alreadyInBracket=[]):
+	thisTeamSeed = currentTeam.getSeasonRank()
+	## find the seed of the current team we are looking for
+	alreadyInBracket.append(thisTeamSeed)
 	
+	opponentSeeds = currentTeam.getPlayoffOpponentTeamSeeds(season)
 	
+	for opponentSeed in opponentSeeds:
+		if(opponentSeed not in alreadyInBracket):
+			opponent = season.getTeamByPosition(opponentSeed)
+			subSeeds = getSeedsInBracket(opponent, season, alreadyInBracket)
+			for subSeed in subSeeds:
+				alreadyInBracket.append(subSeed)
+	return alreadyInBracket
 
 class watMuSeason(Season):
 	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
