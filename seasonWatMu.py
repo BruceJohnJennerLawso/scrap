@@ -18,16 +18,14 @@ def getSeedsInBracket(currentTeam, season, count=0, alreadyInBracket=[]):
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
 		alreadyInBracket.append(thisTeamSeed)
-		if(count > 0):
-			##if(count > season.getTotalNumberOfTeams()):
-			##	print "depth exceeded number of teams in league"
-			##	return "Fuck"
-				
+		if(count > 0):				
 			print "-"*count, thisTeamSeed
+			## indent in to give us a sense of how deep the recursive calls have
+			## gone
 		else:
 			print thisTeamSeed
 		opponentSeeds = currentTeam.getPlayoffOpponentTeamSeeds(season)
-		##print opponentSeeds
+		## make a list of the opponent team seed numbers
 		for opponentSeed in opponentSeeds:
 			opponent = season.getTeamByPosition(opponentSeed)
 			if(opponentSeed not in alreadyInBracket):
@@ -69,10 +67,10 @@ class watMuSeason(Season):
 		
 		## maybe a recursive function here that takes the teams list and the
 		## bracket list as arguments and returns lists of seeding positions
-		topPlayoffBracket = []
+		self.topPlayoffBracket = []
 		
-		topPlayoffBracket = getSeedsInBracket(topTeam, self)
-		print "top playoff bracket: ", topPlayoffBracket
+		self.topPlayoffBracket = getSeedsInBracket(topTeam, self)
+		print "top playoff bracket: ", self.topPlayoffBracket
 			
 		
 		for team in self.Teams:

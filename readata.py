@@ -116,3 +116,4 @@ if(__name__ == "__main__"):
 	
 	for season in seasons:
 		print season.getTeamByPosition(1).getDescriptionString(), "\n"
+		print "Top Playoff Bracket: ", season.topPlayoffBracket, " %i" % len(season.topPlayoffBracket)
