@@ -60,7 +60,7 @@ class watMuSeason(Season):
 			team.loadTierII(self.Teams, self.Teams.index(team))
 		
 		self.playoffBrackets.append(playoffBracket())
-		topTeam = self.getTeamByPosition(1)
+		self.topTeam = self.getTeamByPosition(1)
 		## next work through the teams this one played and add their position
 		## numbers to the top playoff bracket, then look through their
 		## opponents and so on
@@ -69,7 +69,7 @@ class watMuSeason(Season):
 		## bracket list as arguments and returns lists of seeding positions
 		self.topPlayoffBracket = []
 		
-		self.topPlayoffBracket = getSeedsInBracket(topTeam, self)
+		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self)
 		print "top playoff bracket: ", self.topPlayoffBracket
 			
 		
