@@ -29,8 +29,10 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
 
 
 class playoffBracket:
-	def __init__(self):
+	def __init__(self, bracket):
 		self.bracketNumbers = []
+		for pos in bracket:
+			self.bracketNumbers.append(pos)
 		
 	def addStandingsPosition(self, position):
 		self.bracketNumbers.append(position)
@@ -62,7 +64,6 @@ class watMuSeason(Season):
 		for team in self.Teams:
 			team.loadTierII(self.Teams, self.Teams.index(team))
 		
-		self.playoffBrackets.append(playoffBracket())
 		self.topTeam = self.getTeamByPosition(1)
 		## next work through the teams this one played and add their position
 		## numbers to the top playoff bracket, then look through their
@@ -72,9 +73,48 @@ class watMuSeason(Season):
 		## bracket list as arguments and returns lists of seeding positions
 		
 		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self, [])
+		lastPlayoffBracket = self.topPlayoffBracket
+		
 		print "top playoff bracket: ", self.topPlayoffBracket
+		
+		self.playoffBrackets.append(self.topPlayoffBracket)
+		
+		teamsSoFar = len(self.topPlayoffBracket)
+		while(True):
+			totalTeams = self.getTotalPlayoffTeams()
+			print "total teams for %s: %i" % (self.seasonId, totalTeams)
+			print "teams so far: %i" % teamsSoFar
+			if(totalTeams > teamsSoFar):
+				lastSeed = max(lastPlayoffBracket)
+				topOfNewBracket = self.getTeamByPosition(lastSeed+1)
+				lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
+				
+				self.playoffBrackets.append(lastPlayoffBracket)
+				teamsSoFar += len(lastPlayoffBracket)
+			else:
+				break
+				## we reached the bottom of the league, no more brackets to crawl
 			
 		
 		for team in self.Teams:
 			team.loadTierIII(self.Teams)
-						
+	
+	def printPlayoffBrackets(self):
+		for i in range(0, len(self.playoffBrackets)):
+			if(i == 0):
+				print "Top Playoff Bracket ", self.playoffBrackets[i]
+			elif(i==1):
+				print "Second Playoff Bracket ", self.playoffBrackets[i]
+			elif(i==2):
+				print "Third Playoff Bracket ", self.playoffBrackets[i]
+			else:
+				print "%ith Playoff Bracket " % i, self.playoffBrackets[i]
+			print len(self.playoffBrackets[i])
+			
+	def getTotalPlayoffTeams(self):
+		output = 0
+		for team in self.Teams:
+			if(team.qualifiedForPlayoffs() == True):
+				output += 1
+		return output
+
