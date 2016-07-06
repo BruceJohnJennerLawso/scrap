@@ -45,6 +45,9 @@ class Team(object):
 	def getSeasonGoalsAgainstAverage(self):
 		return float(self.seasonTotalGoalsAgainst)/float(self.totalSeasonGames)
 		
+	def getSeasonPlusMinus(self):
+		return self.seasonPlusMinus
+		
 	def getSeasonAverageSOC(self):
 		return self.averageSOC
 	

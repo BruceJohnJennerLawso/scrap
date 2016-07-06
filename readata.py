@@ -69,20 +69,15 @@ def getAllSeasons(leagueId, levelId):
 			## extension
 	return seasons
 
-if(__name__ == "__main__"):
-	
-	leagueId = 'watMu'
-	levelId = 'beginner'
-	## ids needed to open the proper folders and csv files contained within
-	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
 
+def plotAllTeams(seasons):
 	mawquees = []
 	mapquees = []
 	offence = []
 	defence = []
 	gci = []
 	pointsPct = []
+	plusMinuses = []
 	## lists of values I want to plot in a histogram
 	
 	for season in seasons:
@@ -100,6 +95,7 @@ if(__name__ == "__main__"):
 			gci.append(team.getAGCI())
 			mapquees.append(team.getMaAPQI())
 			pointsPct.append(team.getPointsPercentage())
+			plusMinuses.append(team.getSeasonPlusMinus())
 			## appending all of those values into one big list for each measure
 			## so we can make a histogram of all of the values and display it
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, 'MaAWQI_Total_histogram.png')
@@ -108,7 +104,59 @@ if(__name__ == "__main__"):
 	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, 'Offence_Total_histogram.png')
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, 'Defence_Total_histogram.png')	
 	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'AGCI_Total_histogram.png', 0.0, 1.0)	
+	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'PlusMinus_Total_histogram.png', -40, 40)	
 	## plot all of the measures that we wanted as histograms
+
+
+def plotAllTopPlayoffTeams(seasons):
+	mawquees = []
+	mapquees = []
+	offence = []
+	defence = []
+	gci = []
+	pointsPct = []
+	plusMinuses = []
+	## lists of values I want to plot in a histogram
+	
+	for season in seasons:
+		print "################################################################################"
+		print season.seasonId
+		print "################################################################################\n"		
+		## loop through all of the seasons available and print the id of the
+		## season
+		for team in season.Teams:
+			## loop through all of the teams that played in that season
+			if(team.getSeasonRank() in season.topPlayoffBracket):
+				print team.getDescriptionString(), "\n"
+				mawquees.append(team.getMaAWQI())
+				offence.append(team.getSeasonGoalsForAverage())
+				defence.append(team.getSeasonGoalsAgainstAverage())
+				gci.append(team.getAGCI())
+				mapquees.append(team.getMaAPQI())
+				pointsPct.append(team.getPointsPercentage())
+				plusMinuses.append(team.getSeasonPlusMinus())
+				## appending all of those values into one big list for each measure
+				## so we can make a histogram of all of the values and display it
+	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, 'MaAWQI_PlayoffTeam_histogram.png')
+	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, 'MaAPQI_PlayoffTeam_histogram.png')
+	plotHistogram('Points Percentage', 'Count', 'Histogram of Points Percentages', pointsPct, 'PtsPct_PlayoffTeam_histogram.png', 0.0, 1.0, 12)		
+	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, 'Offence_PlayoffTeam_histogram.png')
+	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, 'Defence_PlayoffTeam_histogram.png')	
+	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'AGCI_PlayoffTeam_histogram.png', 0.0, 1.0)	
+	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'PlusMinus_PlayoffTeam_histogram.png', -40, 40)	
+	## plot all of the measures that we wanted as histograms
+
+
+if(__name__ == "__main__"):
+	
+	leagueId = 'watMu'
+	levelId = 'beginner'
+	## ids needed to open the proper folders and csv files contained within
+	seasons = getAllSeasons(leagueId, levelId)
+	## retrieve list of seasons from the manifest for this level
+	plotAllTeams(seasons)
+	plotAllTopPlayoffTeams(seasons)
+	
 
 	print "################################################################################"
 	print "Season Leaders"
