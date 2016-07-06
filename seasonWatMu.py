@@ -5,7 +5,7 @@
 from teamWatMu import *
 from season import *
 
-def getSeedsInBracket(currentTeam, season, count=0, alreadyInBracket=[]):
+def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
 	thisTeamSeed = currentTeam.getSeasonRank()
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
@@ -21,7 +21,7 @@ def getSeedsInBracket(currentTeam, season, count=0, alreadyInBracket=[]):
 		for opponentSeed in opponentSeeds:
 			opponent = season.getTeamByPosition(opponentSeed)
 			if(opponentSeed not in alreadyInBracket):
-				subSeeds = getSeedsInBracket(opponent, season, count+1, alreadyInBracket)
+				subSeeds = getSeedsInBracket(opponent, season, alreadyInBracket, count+1)
 				for subSeed in subSeeds:
 					if(subSeed not in alreadyInBracket):
 						alreadyInBracket.append(subSeed)
@@ -70,9 +70,8 @@ class watMuSeason(Season):
 		
 		## maybe a recursive function here that takes the teams list and the
 		## bracket list as arguments and returns lists of seeding positions
-		self.topPlayoffBracket = []
 		
-		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self)
+		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self, [])
 		print "top playoff bracket: ", self.topPlayoffBracket
 			
 		
