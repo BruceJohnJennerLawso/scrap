@@ -11,6 +11,10 @@ class Season(Team):
 		self.seasonId = seasonId
 		self.leagueId = leagueId
 		self.levelId = levelId
+	
+	def getTotalNumberOfTeams(self):
+		return len(self.Teams)
+	
 		
 	def getTeamByPosition(self, position):
 		for team in self.Teams:
