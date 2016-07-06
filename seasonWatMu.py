@@ -5,14 +5,6 @@
 from teamWatMu import *
 from season import *
 
-class playoffBracket:
-	def __init__(self):
-		self.bracketNumbers = []
-		
-	def addStandingsPosition(self, position):
-		self.bracketNumbers.append(position)
-
-
 def getSeedsInBracket(currentTeam, season, count=0, alreadyInBracket=[]):
 	thisTeamSeed = currentTeam.getSeasonRank()
 	## find the seed of the current team we are looking for
@@ -34,6 +26,17 @@ def getSeedsInBracket(currentTeam, season, count=0, alreadyInBracket=[]):
 					if(subSeed not in alreadyInBracket):
 						alreadyInBracket.append(subSeed)
 	return alreadyInBracket
+
+
+class playoffBracket:
+	def __init__(self):
+		self.bracketNumbers = []
+		
+	def addStandingsPosition(self, position):
+		self.bracketNumbers.append(position)
+
+
+
 
 class watMuSeason(Season):
 	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
