@@ -72,6 +72,21 @@ class Team(object):
 	def getAGCI(self):
 		return self.averageGameClosenessIndex
 		
+	def getTotalPlayoffGames(self):
+		return self.playoffGames
+
+	def getTotalPlayoffWins(self):
+		return self.playoffWins
+		
+	def getPlayoffWinPercentage(self):
+		return self.playoffWinPercentage
+	
+	def getRealPlayoffWinPercentage(self, season):
+		if(self.getSeasonRank() not in season.topPlayoffBracket):
+			return 0.000
+		else:
+			return self.getPlayoffWinPercentage()		
+		
 	## note that we try to squeeze down to shorter names here in order to make
 	## working on the front end a bit easier than typing out
 	## getAverageGameClosenessIndex() would be

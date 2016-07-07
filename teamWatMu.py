@@ -112,6 +112,16 @@ class watMuTeam(Team):
 			self.averageSOC += game.getSOC()
 		self.averageSOC /= float(self.totalSeasonGames)
 		
+		self.playoffWins = 0
+		self.playoffGames = 0
+		self.playoffWinPercentage = 0.000
+		if(self.qualifiedForPlayoffs() == True):
+			for game in self.getPlayoffGames():		
+				self.playoffGames = len(self.getPlayoffGames())
+				if(game.Won()):
+					self.playoffWins += 1
+				self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
+		
 		
 	## Tier II load call #######################################################	
 		
@@ -184,7 +194,7 @@ class watMuTeam(Team):
 		## being calculated at the end
 	
 	def getDescriptionString(self):
-		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC())		
+		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f, Playoff Win percentage of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage())		
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
