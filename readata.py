@@ -8,6 +8,8 @@ from seasonWatMu import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
+
+from scipy import stats
 ## I cant remember exactly what this was needed for, its some very specific
 ## aspect of graphing with matplotlib or something
 
@@ -50,13 +52,26 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_filename, 
 		maxShow = float(int(max(x_values)))			
 	
 	plt.plot(x_values, y_values, 'bs')
+		
 	
-	plt.plot(x_values, np.poly1d(np.polyfit(x_values, y_values, 1))(x_values))	
+	gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values,y_values)
+	
+	y_model = []
+	
+	for x in x_values:
+		y = gradient*x + intercept
+		y_model.append(y)
+	
+	plt.plot(x_values, y_model, "g")
+	r_square = r_value**2
 	## histogram construction step
 	## I forget, I think this was copy paste
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	## label our axes like good students
+	
+	title = "%s, r^2 = %f" % (title, r_square)
+	
 	plt.title(title)
 	## an' title it
 	plt.axis([minShow, maxShow, 0.0, 1.2])
@@ -122,6 +137,7 @@ def plotAllTeams(seasons):
 			## loop through all of the teams that played in that season
 			print team.getDescriptionString(), "\n"
 			mawquees.append(team.getMaAWQI())
+			##mawqueePctRel.append(team.getMaAWQI()/team.getPointsPercentage())			
 			offence.append(team.getSeasonGoalsForAverage())
 			defence.append(team.getSeasonGoalsAgainstAverage())
 			gci.append(team.getAGCI())
