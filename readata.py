@@ -49,7 +49,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_filename, 
 		minShow = float(int(min(x_values)))	
 		maxShow = float(int(max(x_values)))			
 	
-	plt.plot(x_values, y_values)
+	plt.plot(x_values, y_values, 'bs')
+	
+	plt.plot(x_values, np.poly1d(np.polyfit(x_values, y_values, 1))(x_values))	
 	## histogram construction step
 	## I forget, I think this was copy paste
 	plt.xlabel(xlabel)
@@ -58,8 +60,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_filename, 
 	plt.title(title)
 	## an' title it
 	plt.axis([minShow, maxShow, 0.0, 1.2])
-	## 40 here was a working value for the range of possible bin values for this
-	## dataset
+	## win percentages between 0.000 and 1.000, so we put our top limit a bit
+	## higher, so we can see the 1.000 datapoints without them going off the
+	## graph
 	
 	## I need to figure out how to get a max from our plt.hist output
 	plt.grid(True)
@@ -170,12 +173,18 @@ def plotAllTopPlayoffTeams(seasons):
 				## so we can make a histogram of all of the values and display it
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, 'MaAWQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAWQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted AWQI values', mawquees, playoffPercentages, 'PlayoffWinPct_by_MaAWQI.png')	
-	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, 'MaAPQI_PlayoffTeam_histogram.png')
+	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted APQI values', mapquees, 'MaAPQI_PlayoffTeam_histogram.png')
+	plotScatterplot('MaAPQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted APQI values', mapquees, playoffPercentages, 'PlayoffWinPct_by_MaAPQI.png')
 	plotHistogram('Points Percentage', 'Count', 'Histogram of Points Percentages', pointsPct, 'PtsPct_PlayoffTeam_histogram.png', 0.0, 1.0, 12)		
+	plotScatterplot('Points Percentage', 'Playoff Win %', 'Playoff Win % by Points Percentage values', pointsPct, playoffPercentages, 'PlayoffWinPct_by_PtsPct.png', 0.0, 1.0)
 	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, 'Offence_PlayoffTeam_histogram.png', 0.0, 8.0)
+	plotScatterplot('Average Goals For', 'Playoff Win %', 'Playoff Win % by Average Goals For', offence, playoffPercentages, 'PlayoffWinPct_by_Offence.png', 0.0, 8.0)	
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, 'Defence_PlayoffTeam_histogram.png', 0.0, 8.0)	
+	plotScatterplot('Average Goals Against', 'Playoff Win %', 'Playoff Win % by Average Goals Against', defence, playoffPercentages, 'PlayoffWinPct_by_Defence.png', 0.0, 8.0)
 	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'AGCI_PlayoffTeam_histogram.png', 0.0, 1.0)	
+	plotScatterplot('AGCI', 'Playoff Win %', 'Playoff Win % by AGCI', gci, playoffPercentages, 'PlayoffWinPct_by_AGCI.png', 0.0, 1.0)	
 	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'PlusMinus_PlayoffTeam_histogram.png', -40, 40)	
+	plotScatterplot('+/-', 'Playoff Win %', 'Playoff Win % by +/-', plusMinuses, playoffPercentages, 'PlayoffWinPct_by_PlusMinus.png', -40, 40)
 	## plot all of the measures that we wanted as histograms
 
 
