@@ -130,6 +130,9 @@ class watMuTeam(Team):
 		self.averageWinQualityIndex = 0
 		self.averagePlayQualityIndex = 0
 		
+		self.defenceQualityIndex = 0.0
+		self.offenceQualityIndex = 0.0		
+		
 		self.seasonRank = teamRank+1
 		## team rank is the index of this team after sorting
 		
@@ -150,6 +153,8 @@ class watMuTeam(Team):
 				print '\n'
 					## maybe this would be better done as a truly unique string,
 					## ie as teamname appended to season
+			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsForAverage())
+			self.defenceQualityIndex += (game.getGoalsAgainst()-opponent.getSeasonGoalsAgainstAverage())
 			if(game.Lost() != True):	
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
@@ -194,7 +199,7 @@ class watMuTeam(Team):
 		## being calculated at the end
 	
 	def getDescriptionString(self):
-		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f, Playoff Win percentage of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage())		
+		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f, Playoff Win percentage of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage())		
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())

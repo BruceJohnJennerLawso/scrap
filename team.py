@@ -101,6 +101,12 @@ class Team(object):
 		
 	def getSeasonRank(self):
 		return self.seasonRank
+		
+	def getOffenceQualityIndex(self):
+		return self.offenceQualityIndex
+		
+	def getDefenceQualityIndex(self):
+		return self.defenceQualityIndex
 
 	## Tier III ################################################################
 
