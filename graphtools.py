@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 from scipy import stats
 
+from scipy.optimize import curve_fit
+from scipy import asarray as ar,exp
+
+import math
 
 import pylab
 import distStats
@@ -26,21 +30,44 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	
 	plt.subplot(subplot_col, subplot_row, subplot_no)
 
-	plt.axvline(x=distMean, ymin=0.0, ymax = plotMax, linewidth=1, color='b', alpha=0.7)
-	plt.axvline(x=distMedian, ymin=0.0, ymax = plotMax, linewidth=1, color='r', alpha=0.7)
-	plt.axvline(x=distVar, ymin=0.0, ymax = plotMax, linewidth=1, color='g', alpha=0.7)		
+	plt.axvline(x=distMean, ymin=0.0, ymax = plotMax, linewidth=1, color='b', alpha=0.8)
+	plt.axvline(x=distMedian, ymin=0.0, ymax = plotMax, linewidth=1, color='r', alpha=0.8)
+	plt.axvline(x=distVar, ymin=0.0, ymax = plotMax, linewidth=1, color='g', alpha=0.8)		
 	
-	n, bins, patches = plt.hist(values, binCount, normed=0, facecolor='blue', alpha = 0.65)
+	n, bins, patches = plt.hist(values, binCount, normed=0, facecolor='blue', alpha = 0.55)
 	## bins are the endpoints of bins
 	
 	## n are the respective counts for those bins
+	print output_filename
+	print "n ", n, 'len %i\n bins ' % len(n) ,  bins, 'len %i\npatches ' % len(bins) , patches
+	
+	
+	def gaus(x,a,x0,sigma):
+		return a*exp(-(x-x0)**2/(2*sigma**2))
+	
+	def expDist(x, a, x0, sigma):
+		return a*(exp(-(x/x0))/x0)
 	
 	sigma = distStats.standardDeviation(values)
 	
-	y = pylab.normpdf(bins, distMean, sigma)
-	plt.plot(bins, y, 'k--', linewidth=1.5)
+	##plt.plot(bins[:-1], n, 'r-')
 	
-	print "n ", n, '\n bins ',  bins, '\npatches ' , patches
+	ableToFit = True
+	
+	try:
+		popt,pcov = curve_fit(gaus,bins[:-1],n,p0=[1,distMean,sigma])
+		plt.plot(bins[:-1],gaus(bins[:-1],*popt),'c-',label='gaussian fit', alpha=0.5)
+		print "Fitted gaussian curve to data"
+	except RuntimeError:
+		try:
+			popt,pcov = curve_fit(expDist,bins[:-1],n,p0=[1,distMean,sigma])
+			plt.plot(bins[:-1],expDist(bins[:-1],*popt),'c-',label='exponential fit', alpha=0.5)		
+			print "Fitted exponential curve to data"
+		except RuntimeError:	
+			print "Unable to fit curve"
+			ableToFit = False
+	if(ableToFit == True):
+		plt.legend()
 	
 	## histogram construction step
 	## I forget, I think this was copy paste
@@ -53,7 +80,6 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.axis([minShow, maxShow, 0.0, plotMax])
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
-	
 	## I need to figure out how to get a max from our plt.hist output
 	plt.grid(True)
 	## make sure we got a grid on
@@ -71,6 +97,41 @@ def trendline(x, gradient, intercept):
 	output = gradient*x + intercept		
 	return output
 	
+def getLinearModel(x_values, y_values, k=1.0, l=1.0):
+	gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values,y_values)	
+
+	y_model = []
+	
+	grad = k*gradient
+	interc = l*intercept
+	
+	for x in x_values:
+		y = trendline(x, grad, interc)
+		y_model.append(y)
+	
+	return y_model
+	
+def getLinearModel_rValue(x_values, y_values):
+	gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values,y_values)
+	return r_value
+
+def getLinearModel_pValue(x_values, y_values):
+	gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values,y_values)
+	return p_value
+		
+def getLinearModelDeltas(x_values, y_values, k=1.0, l=1.0):
+	if((k!=1.0)or(l!=1.0)):
+		y_model = getLinearModel(x_values, y_values, k, l)		
+	else:	
+		y_model = getLinearModel(x_values, y_values)
+	modelDeltas = []
+	
+	for i in range(0, len(x_values)):
+		modelDelta = y_values[i] - y_model[i]
+		modelDeltas.append(modelDelta)
+	return modelDeltas
+	
+	
 def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
 	if(minShow == 'foo'):
@@ -82,42 +143,30 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	modifiers =  [0.5, 1.0, 1.50]
 	
 	
-		
-	
-	gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values,y_values)
-	
-
 	for k in modifiers:
 		for l in modifiers:
-			grad = k*gradient
-			interc = intercept*l
-			y_model = []
-			
-			for x in x_values:
-				y_model.append(trendline(x, grad, interc))
-			plt.plot(x_values, y_model, 'm-', alpha=0.4)			
+			y_model = getLinearModel(x_values, y_values, k, l)
+			plt.plot(x_values, y_model, 'm-', alpha=0.4)
+			## for each possible k and l modifier combination, find what the
+			## model looks like when adjusted by k and l			
 	
-	y_model = []
-	
-	for x in x_values:
-		y = trendline(x, gradient, intercept)
-		y_model.append(y)
-		
-
-
+	y_model = getLinearModel(x_values, y_values)
+	## calculate the base model that linregress gives us as a best fit line 
 	plt.plot(x_values, y_model, "g")
-
+	## plot the base model without any modifiers
 	plt.plot(x_values, y_values, 'bs')
-
+	## plot the actual data points themselves
+	r_value = getLinearModel_rValue(x_values, y_values)
+	p_value = getLinearModel_pValue(x_values, y_values)	
+	## grab the r and p values that are calculated
 	r_square = r_value**2
-	## histogram construction step
-	## I forget, I think this was copy paste
+	## calculate the r_squared value of the base fit line
+
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	## label our axes like good students
 	
 	title = "%s,\n r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
-	
 	plt.title(title)
 	## an' title it
 	plt.axis([minShow, maxShow, 0.0, 1.2])
@@ -136,23 +185,13 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 
 	for k in range(0, len(modifiers)):
 		for l in range(0, len(modifiers)):
-			
-			grad = modifiers[k]*gradient
-			interc = intercept*modifiers[l]
-			modelDeltas = []
-			for i in range(0, len(x_values)):
-
-				modelDelta = y_values[i] - trendline(x_values[i], grad, interc)
-				modelDeltas.append(modelDelta)
-
-				histTitle = "k = %.2f, l = %.2f (k*m)x + (l*b)" % (modifiers[k], modifiers[l])
-				histOutputFilename = "%s_deltaModelHistogram_k%f_l%f.png" % (output_filename, k, l)
-			##plotloc = ( k*len(modifiers) + (l+1) )
+			modelDeltas = getLinearModelDeltas(x_values, y_values, modifiers[k], modifiers[l])
+			histTitle = "k = %.2f, l = %.2f (k*m)x + (l*b)" % (modifiers[k], modifiers[l])
+			histOutputFilename = "%s_deltaModelHistogram_k%f_l%f.png" % (output_filename, k, l)
 			plotloc = l+1
 			print "k %i, l %i, %i" % (k, l, plotloc)
 			generateHistogram("Delta from model", "Count", histTitle, modelDeltas, output_path, output_directory, histOutputFilename, len(modifiers), 1, plotloc , -2.0, 2.0, 40)
 	
-
 		left  = 0.125  # the left side of the subplots of the figure
 		right = 0.9    # the right side of the subplots of the figure
 		bottom = 0.1   # the bottom of the subplots of the figure
