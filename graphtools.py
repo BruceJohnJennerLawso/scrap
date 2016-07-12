@@ -7,7 +7,8 @@ import matplotlib.mlab as mlab
 from scipy import stats
 
 
-
+import pylab
+import distStats
 
 def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
 	if(minShow == 'foo'):
@@ -16,17 +17,40 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 		minShow = float(int(min(values)))	
 		maxShow = float(int(max(values)))			
 	
+	distMean = distStats.Mean(values)
+	distMedian = distStats.Median(values)
+	distVar = distStats.Variance(values)
+	
+	plotMax = 60.0
+	
+	
 	plt.subplot(subplot_col, subplot_row, subplot_no)
+
+	plt.axvline(x=distMean, ymin=0.0, ymax = plotMax, linewidth=1, color='b', alpha=0.7)
+	plt.axvline(x=distMedian, ymin=0.0, ymax = plotMax, linewidth=1, color='r', alpha=0.7)
+	plt.axvline(x=distVar, ymin=0.0, ymax = plotMax, linewidth=1, color='g', alpha=0.7)		
 	
 	n, bins, patches = plt.hist(values, binCount, normed=0, facecolor='blue', alpha = 0.65)
+	## bins are the endpoints of bins
+	
+	## n are the respective counts for those bins
+	
+	sigma = distStats.standardDeviation(values)
+	
+	y = pylab.normpdf(bins, distMean, sigma)
+	plt.plot(bins, y, 'k--', linewidth=1.5)
+	
+	print "n ", n, '\n bins ',  bins, '\npatches ' , patches
+	
 	## histogram construction step
 	## I forget, I think this was copy paste
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	## label our axes like good students
-	plt.title(title)
+	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f" % (title, distMean, distMedian, distVar)
+	plt.title(title_)
 	## an' title it
-	plt.axis([minShow, maxShow, 0.0, 60.0])
+	plt.axis([minShow, maxShow, 0.0, plotMax])
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
 	
@@ -92,7 +116,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	plt.ylabel(ylabel)
 	## label our axes like good students
 	
-	title = "%s,\n r^2 = %f, p = %f\n(k*m)x + (l*b)" % (title, r_square, p_value)
+	title = "%s,\n r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
 	
 	plt.title(title)
 	## an' title it
@@ -121,7 +145,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 				modelDelta = y_values[i] - trendline(x_values[i], grad, interc)
 				modelDeltas.append(modelDelta)
 
-				histTitle = "k = %.2f, l = %.2f\n(k*m)x + (l*b)" % (modifiers[k], modifiers[l])
+				histTitle = "k = %.2f, l = %.2f (k*m)x + (l*b)" % (modifiers[k], modifiers[l])
 				histOutputFilename = "%s_deltaModelHistogram_k%f_l%f.png" % (output_filename, k, l)
 			##plotloc = ( k*len(modifiers) + (l+1) )
 			plotloc = l+1
@@ -132,9 +156,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		left  = 0.125  # the left side of the subplots of the figure
 		right = 0.9    # the right side of the subplots of the figure
 		bottom = 0.1   # the bottom of the subplots of the figure
-		top = 0.9      # the top of the subplots of the figure
+		top = 0.85      # the top of the subplots of the figure
 		wspace = 0.2   # the amount of width reserved for blank space between subplots
-		hspace = 0.2   # the amount of height reserved for white space between subplots
+		hspace = 0.25   # the amount of height reserved for white space between subplots
 
 		plt.subplots_adjust(left, bottom, right, top, 4*wspace, 4*hspace)
 
