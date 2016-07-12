@@ -7,6 +7,8 @@ import matplotlib.mlab as mlab
 from scipy import stats
 
 
+
+
 def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
