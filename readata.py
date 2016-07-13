@@ -153,8 +153,33 @@ def plotAllTopPlayoffTeams(seasons):
 	plotScatterplot('MaAWQI Model Deltas', 'OQI', 'OQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, offquees, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'OQI_by_MaAWQI_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('MaAWQI Model Deltas', 'DQI', 'DQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, defquees, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'DQI_by_MaAWQI_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('MaAWQI Model Deltas', '+/-', '+/- by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, plusMinuses, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'PlusMinus_by_MaAWQI_Deltas.png', -1.0, 1.0)	
-	## plot all of the measures that we wanted as histograms
+	
+	mapqueeDeltas = getLinearModelDeltas(mapquees, playoffPercentages)
+	plotScatterplot('MaAPQI Model Deltas', 'AGCI', 'AGCI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, gci, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'AGCI_by_MaAPQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAPQI Model Deltas', 'MaAWQI', 'MaAWQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, mawquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'MaAPQI_by_MaAPQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAPQI Model Deltas', 'Offence', 'Offence by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, offence, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'Offence_by_MaAPQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAPQI Model Deltas', 'Defence', 'Defence by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, defence, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'Defence_by_MaAPQI_Deltas.png', -1.0, 1.0)				
+	plotScatterplot('MaAPQI Model Deltas', 'OQI', 'OQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, offquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'OQI_by_MaAPQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('MaAPQI Model Deltas', 'DQI', 'DQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, defquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'DQI_by_MaAPQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('MaAPQI Model Deltas', '+/-', '+/- by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, plusMinuses, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'PlusMinus_by_MaAPQI_Deltas.png', -1.0, 1.0)	
 
+	offqueeDeltas = getLinearModelDeltas(offquees, playoffPercentages)
+	plotScatterplot('OQI Model Deltas', 'AGCI', 'AGCI by OQI Deltas from the model', offqueeDeltas, gci, './results/playoffWinBy', 'OQI/modelDeltas', 'AGCI_by_OQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('OQI Model Deltas', 'MaAWQI', 'MaAWQI by OQI Deltas from the model', offqueeDeltas, mawquees, './results/playoffWinBy', 'OQI/modelDeltas', 'MaAWQI_by_OQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('OQI Model Deltas', 'Offence', 'Offence by OQI Deltas from the model', offqueeDeltas, offence, './results/playoffWinBy', 'OQI/modelDeltas', 'Offence_by_OQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('OQI Model Deltas', 'Defence', 'Defence by OQI Deltas from the model', offqueeDeltas, defence, './results/playoffWinBy', 'OQI/modelDeltas', 'Defence_by_OQI_Deltas.png', -1.0, 1.0)				
+	plotScatterplot('OQI Model Deltas', 'MaAPQI', 'MaAPQI by OQI Deltas from the model', offqueeDeltas, mapquees, './results/playoffWinBy', 'OQI/modelDeltas', 'MaAPQI_by_OQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('OQI Model Deltas', 'DQI', 'DQI by OQI Deltas from the model', offqueeDeltas, defquees, './results/playoffWinBy', 'OQI/modelDeltas', 'DQI_by_OQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('OQI Model Deltas', '+/-', '+/- by OQI Deltas from the model', offqueeDeltas, plusMinuses, './results/playoffWinBy', 'OQI/modelDeltas', 'PlusMinus_by_OQI_Deltas.png', -1.0, 1.0)	
+
+	defqueeDeltas = getLinearModelDeltas(defquees, playoffPercentages)
+	plotScatterplot('DQI Model Deltas', 'AGCI', 'AGCI by DQI Deltas from the model', defqueeDeltas, gci, './results/playoffWinBy', 'DQI/modelDeltas', 'AGCI_by_DQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('DQI Model Deltas', 'MaAWQI', 'MaAWQI by DQI Deltas from the model', defqueeDeltas, mawquees, './results/playoffWinBy', 'DQI/modelDeltas', 'MaAWQI_by_DQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('DQI Model Deltas', 'Offence', 'Offence by DQI Deltas from the model', defqueeDeltas, offence, './results/playoffWinBy', 'DQI/modelDeltas', 'Offence_by_DQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('DQI Model Deltas', 'Defence', 'Defence by DQI Deltas from the model', defqueeDeltas, defence, './results/playoffWinBy', 'DQI/modelDeltas', 'Defence_by_DQI_Deltas.png', -1.0, 1.0)				
+	plotScatterplot('DQI Model Deltas', 'MaAPQI', 'MaAPQI by DQI Deltas from the model', defqueeDeltas, mapquees, './results/playoffWinBy', 'DQI/modelDeltas', 'MaAPQI_by_DQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('DQI Model Deltas', 'OQI', 'OQI by DQI Deltas from the model', defqueeDeltas, offquees, './results/playoffWinBy', 'DQI/modelDeltas', 'OQI_by_DQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('DQI Model Deltas', '+/-', '+/- by DQI Deltas from the model', defqueeDeltas, plusMinuses, './results/playoffWinBy', 'DQI/modelDeltas', 'PlusMinus_by_DQI_Deltas.png', -1.0, 1.0)	
 
 if(__name__ == "__main__"):
 	

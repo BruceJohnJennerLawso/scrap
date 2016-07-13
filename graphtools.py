@@ -172,12 +172,15 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	plt.title(title)
 	## an' title it
 	
+	agciFix = False
+	
 	##plt.axis([minShow, maxShow, 0.0, 1.2])
 	try:
 		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.2, float(int(max(y_values)))*1.2])
 	except UserWarning:
-		plt.axis([minShow, maxShow, 0.0, 1.2])		
-	
+		agciFix = True
+	if(agciFix == True):
+		plt.axis([minShow, maxShow, 0.0, 1.2])	
 	## win percentages between 0.000 and 1.000, so we put our top limit a bit
 	## higher, so we can see the 1.000 datapoints without them going off the
 	## graph
