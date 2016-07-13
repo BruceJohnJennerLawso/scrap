@@ -140,8 +140,19 @@ def plotAllTopPlayoffTeams(seasons):
 	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'./results/histograms', 'PlusMinus', 'PlusMinus_PlayoffTeam_histogram.png', -40, 40)	
 	plotScatterplot('+/-', 'Playoff Win %', 'Playoff Win % by +/-', plusMinuses, playoffPercentages, './results/playoffWinBy', 'PlusMinus', 'PlayoffWinPct_by_PlusMinus.png', -40, 40)
 
+
+
 	plotScatterplot('Offence Quality Index', 'Playoff Win %', 'Playoff Win % by Offence Quality Index', offquees, playoffPercentages, './results/playoffWinBy', 'OQI', 'PlayoffWinPct_by_OQI.png', -30, 30)
 	plotScatterplot('Defence Quality Index', 'Playoff Win %', 'Playoff Win % by Defence Quality Index', defquees, playoffPercentages, './results/playoffWinBy', 'DQI', 'PlayoffWinPct_by_DQI.png', -30, 30)	
+
+	mawqueeDeltas = getLinearModelDeltas(mawquees, playoffPercentages)
+	plotScatterplot('MaAWQI Model Deltas', 'AGCI', 'AGCI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, gci, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'AGCI_by_MaAWQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAWQI Model Deltas', 'MaAPQI', 'MaAPQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, mapquees, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'MaAPQI_by_MaAWQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAWQI Model Deltas', 'Offence', 'Offence by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, offence, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'Offence_by_MaAWQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAWQI Model Deltas', 'Defence', 'Defence by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, defence, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'Defence_by_MaAWQI_Deltas.png', -1.0, 1.0)				
+	plotScatterplot('MaAWQI Model Deltas', 'OQI', 'OQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, offquees, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'OQI_by_MaAWQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('MaAWQI Model Deltas', 'DQI', 'DQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, defquees, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'DQI_by_MaAWQI_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('MaAWQI Model Deltas', '+/-', '+/- by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, plusMinuses, './results/playoffWinBy', 'MaAWQI/modelDeltas', 'PlusMinus_by_MaAWQI_Deltas.png', -1.0, 1.0)	
 	## plot all of the measures that we wanted as histograms
 
 
@@ -156,13 +167,13 @@ if(__name__ == "__main__"):
 	plotAllTopPlayoffTeams(seasons)
 	
 
-	print "################################################################################"
-	print "Season Leaders #################################################################"
-	print "################################################################################\n"	
+	##print "################################################################################"
+	##print "Season Leaders #################################################################"
+	##print "################################################################################\n"	
 	
-	for season in seasons:
-		print season.seasonId
-		print season.getTeamByPosition(1).getDescriptionString()
+	##for season in seasons:
+	##	print season.seasonId
+	##	print season.getTeamByPosition(1).getDescriptionString()
 		##print "Top Playoff Bracket: ", season.topPlayoffBracket, " %i" % len(season.topPlayoffBracket), "\n"
-		season.printPlayoffBrackets()
+	##	season.printPlayoffBrackets()
 

@@ -39,7 +39,7 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	
 	## n are the respective counts for those bins
 	print output_filename
-	print "n ", n, 'len %i\n bins ' % len(n) ,  bins, 'len %i\npatches ' % len(bins) , patches
+	##print "n ", n, 'len %i\n bins ' % len(n) ,  bins, 'len %i\npatches ' % len(bins) , patches
 	
 	
 	def gaus(x,a,x0,sigma):
@@ -138,7 +138,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
 		minShow = float(int(min(x_values)))	
-		maxShow = float(int(max(x_values)))			
+		maxShow = float(int(max(x_values)))	
+		
+	print "minShow %f, maxShow %f" % (minShow, maxShow)			
 	
 	modifiers =  [0.5, 1.0, 1.50]
 	
@@ -169,7 +171,13 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	title = "%s,\n r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
 	plt.title(title)
 	## an' title it
-	plt.axis([minShow, maxShow, 0.0, 1.2])
+	
+	##plt.axis([minShow, maxShow, 0.0, 1.2])
+	try:
+		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.2, float(int(max(y_values)))*1.2])
+	except UserWarning:
+		plt.axis([minShow, maxShow, 0.0, 1.2])		
+	
 	## win percentages between 0.000 and 1.000, so we put our top limit a bit
 	## higher, so we can see the 1.000 datapoints without them going off the
 	## graph
@@ -189,7 +197,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 			histTitle = "k = %.2f, l = %.2f (k*m)x + (l*b)" % (modifiers[k], modifiers[l])
 			histOutputFilename = "%s_deltaModelHistogram_k%f_l%f.png" % (output_filename, k, l)
 			plotloc = l+1
-			print "k %i, l %i, %i" % (k, l, plotloc)
+			##print "k %i, l %i, %i" % (k, l, plotloc)
 			generateHistogram("Delta from model", "Count", histTitle, modelDeltas, output_path, output_directory, histOutputFilename, len(modifiers), 1, plotloc , -2.0, 2.0, 40)
 	
 		left  = 0.125  # the left side of the subplots of the figure
