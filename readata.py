@@ -100,6 +100,10 @@ def plotAllTopPlayoffTeams(seasons):
 
 	offquees = []
 	defquees = []
+	
+	offqual = []
+	
+	megaThing = []
 	## lists of values I want to plot in a histogram
 	
 	for season in seasons:
@@ -123,6 +127,9 @@ def plotAllTopPlayoffTeams(seasons):
 
 				offquees.append(team.getOffenceQualityIndex())
 				defquees.append(team.getDefenceQualityIndex())
+				
+				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+				
 				## appending all of those values into one big list for each measure
 				## so we can make a histogram of all of the values and display it
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/histograms', 'MaAWQI', 'MaAWQI_PlayoffTeam_histogram.png')
@@ -140,7 +147,8 @@ def plotAllTopPlayoffTeams(seasons):
 	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'./results/histograms', 'PlusMinus', 'PlusMinus_PlayoffTeam_histogram.png', -40, 40)	
 	plotScatterplot('+/-', 'Playoff Win %', 'Playoff Win % by +/-', plusMinuses, playoffPercentages, './results/playoffWinBy', 'PlusMinus', 'PlayoffWinPct_by_PlusMinus.png', -40, 40)
 
-
+	plotHistogram('Offence Quality Margin', 'Count', 'Histogram of OQM', offqual,'./results/histograms', 'experimental', 'OQM_PlayoffTeam_histogram.png', -180, 10)	
+	plotScatterplot('Offence Quality Margin', 'Playoff Win %', 'Playoff Win % by OQM', offqual, playoffPercentages, './results/playoffWinBy', 'experimental', 'PlayoffWinPct_by_OQM.png', -180, 10)
 
 	plotScatterplot('Offence Quality Index', 'Playoff Win %', 'Playoff Win % by Offence Quality Index', offquees, playoffPercentages, './results/playoffWinBy', 'OQI', 'PlayoffWinPct_by_OQI.png', -30, 30)
 	plotScatterplot('Defence Quality Index', 'Playoff Win %', 'Playoff Win % by Defence Quality Index', defquees, playoffPercentages, './results/playoffWinBy', 'DQI', 'PlayoffWinPct_by_DQI.png', -30, 30)	
@@ -156,7 +164,7 @@ def plotAllTopPlayoffTeams(seasons):
 	
 	mapqueeDeltas = getLinearModelDeltas(mapquees, playoffPercentages)
 	plotScatterplot('MaAPQI Model Deltas', 'AGCI', 'AGCI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, gci, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'AGCI_by_MaAPQI_Deltas.png', -1.0, 1.0)
-	plotScatterplot('MaAPQI Model Deltas', 'MaAWQI', 'MaAWQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, mawquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'MaAPQI_by_MaAPQI_Deltas.png', -1.0, 1.0)
+	plotScatterplot('MaAPQI Model Deltas', 'MaAWQI', 'MaAWQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, mawquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'MaAWQI_by_MaAPQI_Deltas.png', -1.0, 1.0)
 	plotScatterplot('MaAPQI Model Deltas', 'Offence', 'Offence by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, offence, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'Offence_by_MaAPQI_Deltas.png', -1.0, 1.0)
 	plotScatterplot('MaAPQI Model Deltas', 'Defence', 'Defence by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, defence, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'Defence_by_MaAPQI_Deltas.png', -1.0, 1.0)				
 	plotScatterplot('MaAPQI Model Deltas', 'OQI', 'OQI by Mean Adjusted APQI Deltas from the model', mapqueeDeltas, offquees, './results/playoffWinBy', 'MaAPQI/modelDeltas', 'OQI_by_MaAPQI_Deltas.png', -1.0, 1.0)	
@@ -180,6 +188,15 @@ def plotAllTopPlayoffTeams(seasons):
 	plotScatterplot('DQI Model Deltas', 'MaAPQI', 'MaAPQI by DQI Deltas from the model', defqueeDeltas, mapquees, './results/playoffWinBy', 'DQI/modelDeltas', 'MaAPQI_by_DQI_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('DQI Model Deltas', 'OQI', 'OQI by DQI Deltas from the model', defqueeDeltas, offquees, './results/playoffWinBy', 'DQI/modelDeltas', 'OQI_by_DQI_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('DQI Model Deltas', '+/-', '+/- by DQI Deltas from the model', defqueeDeltas, plusMinuses, './results/playoffWinBy', 'DQI/modelDeltas', 'PlusMinus_by_DQI_Deltas.png', -1.0, 1.0)	
+	
+	plusminusDeltas = getLinearModelDeltas(plusMinuses, playoffPercentages)
+	plotScatterplot('+/- Model Deltas', 'AGCI', 'AGCI by +/- Deltas from the model', plusminusDeltas, gci, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'AGCI_by_PlusMinus_Deltas.png', -1.0, 1.0)
+	plotScatterplot('+/- Model Deltas', 'MaAWQI', 'MaAWQI by +/- Deltas from the model', plusminusDeltas, mawquees, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'MaAWQI_by_PlusMinus_Deltas.png', -1.0, 1.0)
+	plotScatterplot('+/- Model Deltas', 'Offence', 'Offence by +/- Deltas from the model', plusminusDeltas, offence, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'Offence_by_PlusMinus_Deltas.png', -1.0, 1.0)
+	plotScatterplot('+/- Model Deltas', 'Defence', 'Defence by +/- Deltas from the model', plusminusDeltas, defence, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'Defence_by_PlusMinus_Deltas.png', -1.0, 1.0)				
+	plotScatterplot('+/- Model Deltas', 'MaAPQI', 'MaAPQI by +/- Deltas from the model', plusminusDeltas, mapquees, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'MaAPQI_by_PlusMinus_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('+/- Model Deltas', 'OQI', 'OQI by +/- Deltas from the model', plusminusDeltas, offquees, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'OQI_by_PlusMinus_Deltas.png', -1.0, 1.0)	
+	plotScatterplot('+/- Model Deltas', 'DQI', 'DQI by +/- Deltas from the model', plusminusDeltas, defquees, './results/playoffWinBy', 'PlusMinus/modelDeltas', 'DQI_by_PlusMinus_Deltas.png', -1.0, 1.0)		
 
 if(__name__ == "__main__"):
 	

@@ -176,7 +176,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	
 	##plt.axis([minShow, maxShow, 0.0, 1.2])
 	try:
-		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.2, float(int(max(y_values)))*1.2])
+		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values)))*1.4])
 	except UserWarning:
 		agciFix = True
 	if(agciFix == True):
