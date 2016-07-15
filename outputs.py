@@ -8,6 +8,8 @@ from seasonWatMu import *
 from graphtools import *
 
 
+
+
 def getAllSeasons(leagueId, levelId):
 	## returns a list of every season
 	seasons = []
@@ -233,3 +235,54 @@ def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 	plotScatterplot('+/- Model Deltas', 'MaAPQI', 'MaAPQI by +/- Deltas from the model', plusminusDeltas, mapquees, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'PlusMinus/modelDeltas', 'MaAPQI_by_PlusMinus_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('+/- Model Deltas', 'OQI', 'OQI by +/- Deltas from the model', plusminusDeltas, offquees, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'PlusMinus/modelDeltas', 'OQI_by_PlusMinus_Deltas.png', -1.0, 1.0)	
 	plotScatterplot('+/- Model Deltas', 'DQI', 'DQI by +/- Deltas from the model', plusminusDeltas, defquees, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'PlusMinus/modelDeltas', 'DQI_by_PlusMinus_Deltas.png', -1.0, 1.0)			
+
+
+
+def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
+	mawquees = []
+	mapquees = []
+	offence = []
+	defence = []
+	gci = []
+	pointsPct = []
+	plusMinuses = []
+	playoffPercentages = []
+	offquees = []
+	defquees = []
+	offqual = []
+	
+	data = []
+	
+	for season in seasons:
+		print "################################################################################"
+		print season.seasonId
+		print "################################################################################\n"		
+		## loop through all of the seasons available and print the id of the
+		## season
+		for team in season.Teams:
+			## loop through all of the teams that played in that season
+			if(team.getSeasonRank() in season.topPlayoffBracket):
+				print team.getDescriptionString(), "\n"
+				
+				data.append([team.getMaAWQI(), team.getSeasonGoalsAgainstAverage(), team.getSeasonGoalsForAverage(), team.getAGCI()])
+				
+				mawquees.append(team.getMaAWQI())
+				offence.append(team.getSeasonGoalsForAverage())
+				defence.append(team.getSeasonGoalsAgainstAverage())
+				gci.append(team.getAGCI())
+				mapquees.append(team.getMaAPQI())
+				pointsPct.append(team.getPointsPercentage())
+				plusMinuses.append(team.getSeasonPlusMinus())
+				playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
+
+				offquees.append(team.getOffenceQualityIndex())
+				defquees.append(team.getDefenceQualityIndex())
+				
+				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+				
+				## appending all of those values into one big list for each measure
+				## so we can make a histogram of all of the values and display it
+
+	dataPanda = pd.DataFrame(data, columns=['MaAWQI', 'GAA', 'GFA', 'AGCI'])
+
+	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
