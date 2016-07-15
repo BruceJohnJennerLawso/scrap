@@ -264,7 +264,7 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 			if(team.getSeasonRank() in season.topPlayoffBracket):
 				print team.getDescriptionString(), "\n"
 				
-				data.append([team.getMaAWQI(), team.getSeasonGoalsAgainstAverage(), team.getSeasonGoalsForAverage(), team.getAGCI()])
+				data.append([team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getSeasonGoalsAgainstAverage(), team.getSeasonGoalsForAverage(), team.getPointsPercentage()])
 				
 				mawquees.append(team.getMaAWQI())
 				offence.append(team.getSeasonGoalsForAverage())
@@ -283,6 +283,6 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 				## appending all of those values into one big list for each measure
 				## so we can make a histogram of all of the values and display it
 
-	dataPanda = pd.DataFrame(data, columns=['MaAWQI', 'GAA', 'GFA', 'AGCI'])
+	dataPanda = pd.DataFrame(data, columns=['MaAWQI', 'MaAPQI', 'AGCI', 'GAA', 'GFA', 'Points Pct'])
 
 	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
