@@ -26,4 +26,4 @@ if(__name__=="__main__"):
 	##leagueId = 'watMu'
 	##levelId = 'beginner'
 	## ids needed to open the proper folders and csv files contained within
-	scrapeListedTeams(False, leagueId, levelId)
+	scrapeListedTeams(True, leagueId, levelId)
