@@ -17,4 +17,8 @@ python-requests
 ## used by the web scraper to acquire our data from the web
 python-pandas
 python-seaborn
-
+## these are awesome voodoo that seem to work with matplotlib to
+## generate really complex plots that would otherwise be really
+## hard to do
+##
+## also lots of useful statistical tools 
