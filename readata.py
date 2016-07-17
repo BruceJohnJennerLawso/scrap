@@ -4,7 +4,7 @@
 ################################################################################
 
 ##import csv
-
+from sys import argv
 from outputs import *
 
 ## I cant remember exactly what this was needed for, its some very specific
@@ -12,16 +12,19 @@ from outputs import *
 
 if(__name__ == "__main__"):
 	
-	leagueId = 'watMu'
-	levelId = 'beginner'
+	leagueId = argv[1]
+	levelId = argv[2]
+	
+	##leagueId = 'watMu'
+	##levelId = 'beginner'
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level
 	
 	
-	##plotAllTeams(seasons, leagueId, levelId)
-	##plotAllTopPlayoffTeams(seasons, leagueId, levelId)
-	##plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	
+	plotAllTeams(seasons, leagueId, levelId)
+	plotAllTopPlayoffTeams(seasons, leagueId, levelId)
+	plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	
 	plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId)
 
 	##print "################################################################################"

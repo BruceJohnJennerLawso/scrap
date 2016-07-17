@@ -57,8 +57,14 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason):
 	
 	## the sixth layer isnt needed, so we wont bother
 
+	if(debugInfo):
+		print content1, '\n\n', content2, '\n\n', content3, '\n\n', content4, '\n\n', content5, '\n\n\n'
+
 	teamString = content1[0].encode('utf-8')
+	if(debugInfo):
+		print 'teamString ', teamString
 	teamName = getTeamName(teamString)
+	print teamName
 	
 	indiesTeam = False
 	if('Indies' in teamName):

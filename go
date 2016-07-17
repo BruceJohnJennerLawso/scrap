@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python readata.py
+python readata.py watMu allstar
 
 exit 0

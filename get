@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python scrap.py
+python scrap.py watMu allstar
 
 exit 0
