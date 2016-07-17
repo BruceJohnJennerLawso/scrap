@@ -13,7 +13,7 @@ def scrapeListedTeams(debugInfo, leagueId, levelId):
 			with open(idPath, 'rb') as bar:
 				reading = csv.reader(bar)
 				for teamId in reading:
-					scrapeTeamData(int(teamId[0]), debugInfo, row[0], False)
+					scrapeTeamData(int(teamId[0]), debugInfo, row[0], False, leagueId, levelId)
 
 
 if(__name__=="__main__"):

@@ -13,8 +13,8 @@ from gameProcessing import *
 
 
 
-def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule):
-	outputPath = ("./data/watMu/beginner/%s/%i.csv" % (seasonString, teamId))
+def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId):
+	outputPath = ("./data/%s/%s/%s/%i.csv" % (leagueId, levelId,seasonString, teamId))
 	print "current output path: %s" % outputPath
 	with open(outputPath, 'wb') as foo:
 		bar = csv.writer(foo)
@@ -28,7 +28,7 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 
 ## abandon all hope of comprehension, ye who enter here
 
-def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason):
+def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, levelId):
 	## gotta pass in the season, since the system doesnt display it anywhere
 	## for some reason
 	
@@ -269,7 +269,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason):
 	## TO BE CONTINUED DUN DUN DUN
 	
 	## this might be a good spot to jump into a second function with the data
-	saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule)
+	saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId)
 	
 	## cant decide whether I want to break the date strings down a bit before
 	## I start on this
