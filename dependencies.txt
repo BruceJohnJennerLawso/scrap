@@ -1,0 +1,20 @@
+
+sudo apt-get install the following...
+
+python-matplotlib
+## needed for doing graphing
+python-numpy
+## lets face it, reality pretty much depends on np
+python-scipy
+## used for the curve fitting that slaps a gaussian/exponential on our 
+## histograms
+##
+## probably going to be used elsewhere a lot with scipy.stats and other
+## things
+python-requests
+## this might just be python-request?
+##
+## used by the web scraper to acquire our data from the web
+python-pandas
+python-seaborn
+
