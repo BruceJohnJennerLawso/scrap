@@ -9,4 +9,3 @@ readata.py is the analysis part, loads the data from the csv files and construct
 (((game)team)league) which can then output more complex stats for the data at each level. Stats are loaded
 in layers (I, II, III, ...) in order to allow for stats that rely on one another 
 (AWQI (Tier II) relying on points and goals (Tier I), and MaAWQI (Tier III) relying on AWQI (Tier II))
-The functions for this part of the analysis are about 40% ish done right now
