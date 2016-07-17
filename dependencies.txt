@@ -21,4 +21,8 @@ python-seaborn
 ## generate really complex plots that would otherwise be really
 ## hard to do
 ##
-## also lots of useful statistical tools 
+## also lots of useful statistical tools
+##
+## check out
+## http://python-for-multivariate-analysis.readthedocs.io/a_little_book_of_python_for_multivariate_analysis.html
+## for more info
