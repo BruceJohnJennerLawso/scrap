@@ -39,6 +39,19 @@ def getAllSeasons(leagueId, levelId):
 	return seasons
 
 
+def getFranchiseList(leagueId, levelId):
+	## returns a list of every season
+	output = []
+	with open('./data/%s/%s/franchises.csv' % (leagueId, levelId), 'rb') as foo:
+		## open the manifest csv file for this particular league & level
+		## which lists the franchises on each row
+		reader = csv.reader(foo)
+		for row in reader:
+			output.append(row)
+			## append on the list of names, with the primary one first, ie
+			## [...['Pucked Up', 'Pucked UP'],...]
+	return output
+
 def plotAllTeams(seasons, leagueId, levelId):
 	mawquees = []
 	mapquees = []
