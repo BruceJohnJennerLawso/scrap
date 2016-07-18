@@ -63,7 +63,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 	teamString = content1[0].encode('utf-8')
 	if(debugInfo):
 		print 'teamString ', teamString
-	teamName = getTeamName(teamString)
+	teamName = getTeamName(teamString).replace(',', '')
 	print teamName
 	
 	indiesTeam = False
@@ -175,7 +175,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
 
-				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].replace(',', '').encode('utf-8')])
 				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 				print "Added Season game # %i" % gameVal
 
@@ -198,7 +198,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
 
-				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].replace(',', '').encode('utf-8')])
 				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 				print "Added SOC game # %i" % gameVal
 
@@ -215,7 +215,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
 
-				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].encode('utf-8')])
+				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].replace(',', '').encode('utf-8')])
 				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
 				print "Added Playoff game # %i" % gameVal
 

@@ -237,5 +237,10 @@ class watMuTeam(Team):
 			output.append(opponentTeam.getSeasonRank())
 		return output	
 
-
+	def getFranchise(self, franchiseList):
+		output = 'None'
+		for franchise in franchiseList:
+			if(self.getTeamName() in franchise):
+				output = franchise[0]
+		return output
 

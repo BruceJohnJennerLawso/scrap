@@ -16,6 +16,7 @@ if(__name__ == "__main__"):
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level
+	franchises = getFranchiseList(leagueId, levelId)
 	
 	print "################################################################################"
 	print "Season Teams ###################################################################"
@@ -24,4 +25,12 @@ if(__name__ == "__main__"):
 	for season in seasons:
 		print season.seasonId, '\n'
 		for team in season.Teams:
-			print "		", team.getTeamName()
+			print "		", team.getTeamName(), "Franchise: %s" % (team.getFranchise(franchises))
+	print "################################################################################"
+
+	for season in seasons:
+		print season.seasonId, '\n'
+		for team in season.Teams:
+			if(team.getFranchise(franchises)=="None"):
+				print "		", team.getTeamName(), "Franchise: %s" % (team.getFranchise(franchises))
+	
