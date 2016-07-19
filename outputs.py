@@ -310,8 +310,9 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 	dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence','GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	dataTruong = pd.DataFrame(daterd, columns=['Franchise' , 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	## Hi Ryan
-	print "Data means"
-	print dataPanda.apply(np.mean)
+	
+	print "\n\nData means"
+	print dataPanda.apply(np.mean), '\n'
 	print "Data standard deviations"
 	print dataPanda.apply(np.std)
 	
