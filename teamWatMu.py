@@ -115,13 +115,17 @@ class watMuTeam(Team):
 		self.playoffWins = 0
 		self.playoffGames = 0
 		self.playoffWinPercentage = 0.000
+		
+		self.playoffGoalsFor = 0
+		self.playoffGoalsAgainst = 0
 		if(self.qualifiedForPlayoffs() == True):
+			self.playoffGames = len(self.getPlayoffGames())
 			for game in self.getPlayoffGames():		
-				self.playoffGames = len(self.getPlayoffGames())
 				if(game.Won()):
 					self.playoffWins += 1
+				self.playoffGoalsFor += game.getGoalsFor()
+				self.playoffGoalsAgainst += game.getGoalsAgainst()				
 				self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
-		
 		
 	## Tier II load call #######################################################	
 		

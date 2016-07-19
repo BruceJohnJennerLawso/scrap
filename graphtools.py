@@ -31,6 +31,22 @@ def plotScatterMatrix(data, output_path, output_directory, output_filename):
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
 	plt.savefig(output_)
 	plt.close()
+	
+	
+def seabornHeatmap(data, output_path, output_directory, output_filename):
+	corrmat = data.corr()
+	ax = sns.heatmap(corrmat, vmax=1., square=False)
+	ax.xaxis.tick_top()
+	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
+	_output = "%s/%s/corrs.csv" % (output_path, output_directory)	
+	
+	corrmat.to_csv(_output)
+	
+	plt.xticks(rotation=20)
+	plt.savefig(output_)
+	plt.tight_layout()
+	
+	plt.close()
 
 def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
 	if(minShow == 'foo'):

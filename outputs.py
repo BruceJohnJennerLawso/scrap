@@ -284,7 +284,7 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 			if(team.getSeasonRank() in season.topPlayoffBracket):
 				##print team.getDescriptionString(), "\n"
 				
-				data.append([team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+				data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
 				##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
 				teamFran = str(team.getFranchise(franchises).decode('utf-8'))
 				print teamFran
@@ -307,8 +307,17 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 				## appending all of those values into one big list for each measure
 				## so we can make a histogram of all of the values and display it
 
-	dataPanda = pd.DataFrame(data, columns=['MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
+	dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence','GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	dataTruong = pd.DataFrame(daterd, columns=['Franchise' , 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	## Hi Ryan
+	print "Data means"
+	print dataPanda.apply(np.mean)
+	print "Data standard deviations"
+	print dataPanda.apply(np.std)
+	
+	##pd.printMeanAndSdByGroup(dataTruong, 'Franchise') 
+
 	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
-	plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
+	##plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
+
+	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap.png')
