@@ -48,7 +48,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	
 	plt.close()
 
-def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
+def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39, plotMax=60.0):
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
@@ -59,7 +59,6 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	distMedian = distStats.Median(values)
 	distVar = distStats.Variance(values)
 	
-	plotMax = 60.0
 	
 	
 	plt.subplot(subplot_col, subplot_row, subplot_no)
@@ -120,9 +119,9 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	##plt.show()
 	## showit
 
-def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
+def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39, plotMax=60.0):
 	## TLDR, takes a set of values and histograms them, whoop whop
-	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount)
+	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount, plotMax)
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
 	plt.savefig(output_)
 	plt.close()

@@ -23,7 +23,7 @@ if(__name__ == "__main__"):
 	
 	
 	##plotAllTeams(seasons, leagueId, levelId)
-	##plotAllTopPlayoffTeams(seasons, leagueId, levelId)
+	plotAllTopPlayoffTeams(seasons, leagueId, levelId)
 	##plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	
 	plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises)
 

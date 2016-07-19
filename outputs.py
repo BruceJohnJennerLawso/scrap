@@ -111,6 +111,7 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 	pointsPct = []
 	plusMinuses = []
 	playoffPercentages = []
+	playoffOffence = []
 
 	offquees = []
 	defquees = []
@@ -138,6 +139,7 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 				pointsPct.append(team.getPointsPercentage())
 				plusMinuses.append(team.getSeasonPlusMinus())
 				playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
+				playoffOffence.append(team.getPlayoffGoalsForAverage())
 
 				offquees.append(team.getOffenceQualityIndex())
 				defquees.append(team.getDefenceQualityIndex())
@@ -148,12 +150,18 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 				## so we can make a histogram of all of the values and display it
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAWQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted AWQI values', mawquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffWinPct_by_MaAWQI.png')	
+	plotScatterplot('MaAWQI', 'Playoff Offence', 'Playoff Offence by Mean Adjusted AWQI values', mawquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffOffence_by_MaAWQI.png')		
+	
 	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted APQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAPQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted APQI values', mapquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAPQI', 'PlayoffWinPct_by_MaAPQI.png')
+	plotScatterplot('MaAPQI', 'Playoff Offence', 'Playoff Offence by Mean Adjusted APQI values', mapquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'MaAPQI', 'PlayoffOffence_by_MaAPQI.png')
+
 	plotHistogram('Points Percentage', 'Count', 'Histogram of Points Percentages', pointsPct, './results/%s/%s/histograms' % (leagueId, levelId), 'PtsPct', 'PtsPct_PlayoffTeam_histogram.png', 0.0, 1.0, 12)		
 	plotScatterplot('Points Percentage', 'Playoff Win %', 'Playoff Win % by Points Percentage values', pointsPct, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'PtsPct', 'PlayoffWinPct_by_PtsPct.png', 0.0, 1.0)
 	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, './results/%s/%s/histograms' % (leagueId, levelId), 'Offence', 'Offence_PlayoffTeam_histogram.png', 0.0, 8.0)
 	plotScatterplot('Average Goals For', 'Playoff Win %', 'Playoff Win % by Average Goals For', offence, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'Offence', 'PlayoffWinPct_by_Offence.png', 0.0, 8.0)	
+	plotScatterplot('Average Goals For', 'Playoff Offence', 'Playoff Offence by Average Goals For', offence, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'Offence', 'PlayoffOffence_by_Offence.png', 0.0, 8.0)	
+
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, './results/%s/%s/histograms' % (leagueId, levelId), 'Defence', 'Defence_PlayoffTeam_histogram.png', 0.0, 8.0)	
 	plotScatterplot('Average Goals Against', 'Playoff Win %', 'Playoff Win % by Average Goals Against', defence, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'Defence', 'PlayoffWinPct_by_Defence.png', 0.0, 8.0)
 	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'./results/%s/%s/histograms' % (leagueId, levelId), 'AGCI', 'AGCI_PlayoffTeam_histogram.png', 0.0, 1.0)	
@@ -165,6 +173,8 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 	plotScatterplot('Offence Quality Margin', 'Playoff Win %', 'Playoff Win % by OQM', offqual, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'experimental', 'PlayoffWinPct_by_OQM.png', -180, 10)
 
 	plotScatterplot('Offence Quality Index', 'Playoff Win %', 'Playoff Win % by Offence Quality Index', offquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'OQI', 'PlayoffWinPct_by_OQI.png', -30, 30)
+	plotScatterplot('Offence Quality Index', 'Playoff Offence', 'Playoff Offence by Offence Quality Index', offquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'OQI', 'PlayoffOffence_by_OQI.png', -30, 30)
+		
 	plotScatterplot('Defence Quality Index', 'Playoff Win %', 'Playoff Win % by Defence Quality Index', defquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'DQI', 'PlayoffWinPct_by_DQI.png', -30, 30)	
 	
 def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
