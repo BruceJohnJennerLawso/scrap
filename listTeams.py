@@ -20,6 +20,8 @@ if(__name__ == "__main__"):
 	## retrieve list of seasons from the manifest for this level
 	franchises = getFranchiseList(leagueId, levelId)
 	
+	seasonIndexList = getSeasonIndexList(leagueId)
+	
 	print "################################################################################"
 	print "Season Teams ###################################################################"
 	print "################################################################################\n"	
