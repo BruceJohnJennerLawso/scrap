@@ -5,6 +5,8 @@
 from sys import argv
 from outputs import *
 
+from collections import Counter
+
 
 if(__name__ == "__main__"):
 		
@@ -30,6 +32,19 @@ if(__name__ == "__main__"):
 			print team.Roster
 	print "################################################################################"
 
+	playerNames = []
+	for season in seasons:
+		for team in season.Teams:
+			for player in team.Roster:
+				playerNames.append(player)
+	playerCounts = Counter(playerNames)
+	
+	seasonHits = []
+	
+	for name in playerCounts:
+		seasonHits.append(playerCounts[name])
+				
+		plotHistogram('Seasons Played', 'Count', 'Histogram of Total Seasons Played by Players', seasonHits, './results/%s/%s' % (leagueId, levelId), 'playerData', 'playerSeasonCountHistogram.png')
 	jimbo = watMuPlayer('Jim Brooks', seasons)
 	jimbo.getStatsLine()
 	

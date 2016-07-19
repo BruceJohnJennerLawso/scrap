@@ -14,10 +14,20 @@ class watMuPlayer(Player):
 			for team in season.Teams:
 				if(self.getName() in team.getRoster()):
 					self.playedFor.append(team)
+		self.playerMaAWQI = 0.000
+		if(self.getNumberOfSeasonsPlayed() > 0):
+			for team in self.playedFor:
+				self.playerMaAWQI += team.getMaAWQI()
+			self.playerMaAWQI /= float(self.getNumberOfSeasonsPlayed())
 		
 	def getStatsLine(self):
-		print "Player: %s, %i seasons played\n\n" % (self.getName(), len(self.playedFor))
+		print "\n\nPlayer: %s, %i seasons played, average MaAWQI of %.3f\n" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerMaAWQI())
 		
 		for team in self.playedFor:
 			print team.getDescriptionString(), '\n'
+			
+	def getNumberOfSeasonsPlayed(self):
+		return len(self.playedFor)
 	
+	def getPlayerMaAWQI(self):
+		return self.playerMaAWQI
