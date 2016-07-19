@@ -205,15 +205,24 @@ class watMuTeam(Team):
 		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
 		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
 		
-		awqiMean = 0
-		apqiMean = 0
+		self.meanAdjustedOffenceQualityIndex = self.getOffenceQualityIndex()
+		self.meanAdjustedDefenceQualityIndex = self.getDefenceQualityIndex()
+		
+		awqiMean = 0.00
+		apqiMean = 0.00
+		oqiMean = 0.00
+		dqiMean = 0.00
 		
 		for team in teamsList:
 			awqiMean += team.getAWQI()
 			apqiMean += team.getAPQI()
+			oqiMean += team.getOffenceQualityIndex()
+			dqiMean += team.getDefenceQualityIndex()
 			
 		awqiMean /= float(len(teamsList))
 		apqiMean /= float(len(teamsList))
+		oqiMean /= float(len(teamsList))
+		dqiMean /= float(len(teamsList))		
 		
 		self.meanAdjustedAverageWinQualityIndex /= awqiMean
 		## this matches the spreadsheet perfectly
@@ -228,6 +237,8 @@ class watMuTeam(Team):
 		## thats why these values are different from what the spreadsheet had
 		## cause they get calculated for every game and then summed, instead of
 		## being calculated at the end
+		self.meanAdjustedOffenceQualityIndex -= oqiMean
+		self.meanAdjustedDefenceQualityIndex -= dqiMean
 	
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		

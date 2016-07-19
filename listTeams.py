@@ -48,6 +48,7 @@ if(__name__ == "__main__"):
 		## p[0] is the name, p[1] is the count
 		playah = watMuPlayer(p[0], seasons)
 		playah.getStatsLine()
+		playah.plotSeasonBySeasonStats('./results/%s/%s' % (leagueId, levelId), 'playerData', 'player_%s_SeasonBySeasonMaAWQI.png' % playah.getName())
 	
 	seasonHits = []
 	
@@ -70,9 +71,9 @@ if(__name__ == "__main__"):
 	##jimbo = watMuPlayer('Jim Brooks', seasons)
 	##jimbo.getStatsLine()
 	
-	##brucie = watMuPlayer('John Lawson', seasons)
-	##brucie.getStatsLine()
-	
+	brucie = watMuPlayer('John Lawson', seasons)
+	brucie.getStatsLine()
+	brucie.plotSeasonBySeasonStats('./results/%s/%s' % (leagueId, levelId), 'playerData', 'player_%s_SeasonBySeasonMaAWQI.png' % brucie.getName())	
 	##tallionStallion = watMuPlayer('Giacomo Torlai', seasons)
 	##tallionStallion.getStatsLine()
 

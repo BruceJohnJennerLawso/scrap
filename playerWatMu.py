@@ -31,3 +31,29 @@ class watMuPlayer(Player):
 	
 	def getPlayerMaAWQI(self):
 		return self.playerMaAWQI
+		
+	def plotSeasonBySeasonStats(self, output_path, output_directory, output_filename):
+		
+		import matplotlib.pyplot as plt
+		
+		seasonIndexes = []
+		seasonMawquees = []
+		seasonOQI = []
+		seasonDQI = []
+		
+		for team in self.playedFor:
+			seasonIndexes.append(team.getSeasonIndex())
+			seasonMawquees.append(team.getMaAWQI())
+			seasonOQI.append(team.getOffenceQualityIndex())
+			seasonDQI.append(team.getDefenceQualityIndex())
+		plt.plot(seasonIndexes, seasonMawquees, 'go--', label='MaAWQI')
+		plt.plot(seasonIndexes, seasonOQI, 'ro--', label='OQI')
+		plt.plot(seasonIndexes, seasonDQI, 'bo--', label='DQI')		
+		
+		
+		plt.xlabel('Season Number')
+		plt.ylabel("Team Value")
+		plt.legend()
+		output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
+		plt.savefig(output_)
+		plt.close()

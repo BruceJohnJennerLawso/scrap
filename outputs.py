@@ -280,6 +280,9 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 	daterd = []
 	## ermagherd, daterd
 	
+	mahoffquees = []
+	mahdefquees = []
+	
 	reload(sys)  
 	sys.setdefaultencoding('utf8')
 	
@@ -294,7 +297,7 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 			if(team.getSeasonRank() in season.topPlayoffBracket):
 				##print team.getDescriptionString(), "\n"
 				
-				data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+				data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaOQI(), team.getMaDQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
 				##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
 				teamFran = str(team.getFranchise(franchises).decode('utf-8'))
 				print teamFran
@@ -314,10 +317,13 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 				
 				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
 				
+				mahoffquees.append(team.getMaOQI())
+				mahdefquees.append(team.getMaDQI())
+				
 				## appending all of those values into one big list for each measure
 				## so we can make a histogram of all of the values and display it
 
-	dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence','GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
+	dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence', 'MaOQI', 'MaDQI', 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	dataTruong = pd.DataFrame(daterd, columns=['Franchise' , 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	## Hi Ryan
 	

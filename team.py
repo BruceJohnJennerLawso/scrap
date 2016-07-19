@@ -134,6 +134,12 @@ class Team(object):
 		
 	def getMaAPQI(self):
 		return self.meanAdjustedAveragePlayQualityIndex
+		
+	def getMaOQI(self):
+		return self.meanAdjustedOffenceQualityIndex
+		
+	def getMaDQI(self):
+		return self.meanAdjustedDefenceQualityIndex
 
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 
