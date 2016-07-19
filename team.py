@@ -4,6 +4,7 @@
 ## redoing it for every different team type ####################################
 ################################################################################
 from game import *
+from playerWatMu import *
 import csv
 
 class Team(object):
@@ -38,6 +39,9 @@ class Team(object):
 	
 	def getTeamName(self):
 		return self.teamName	
+	
+	def getSeasonId(self):
+		return self.seasonId	
 		
 	def getSeasonGoalsForAverage(self):
 		return float(self.seasonTotalGoalsFor)/float(self.totalSeasonGames)
@@ -88,10 +92,19 @@ class Team(object):
 			return self.getPlayoffWinPercentage()	
 			
 	def getPlayoffGoalsForAverage(self):
-		return float(self.playoffGoalsFor)/float(self.playoffGames)
+		output = 0.000
+		if(self.playoffGames > 0):
+			output = float(self.playoffGoalsFor)/float(self.playoffGames)
+		return output
 
 	def getPlayoffGoalsAgainstAverage(self):
-		return float(self.playoffGoalsAgainst)/float(self.playoffGames)
+		output = 0.000
+		if(self.playoffGames > 0):
+			output = float(self.playoffGoalsAgainst)/float(self.playoffGames)
+		return output
+		
+	def getRoster(self):
+		return self.Roster
 		
 	## note that we try to squeeze down to shorter names here in order to make
 	## working on the front end a bit easier than typing out

@@ -26,11 +26,22 @@ if(__name__ == "__main__"):
 		print season.seasonId, '\n'
 		for team in season.Teams:
 			print "		", team.getTeamName(), "Franchise: %s" % (team.getFranchise(franchises))
+			print team.getDescriptionString()
+			print team.Roster
 	print "################################################################################"
 
-	for season in seasons:
-		print season.seasonId, '\n'
-		for team in season.Teams:
-			if(team.getFranchise(franchises)=="None"):
-				print "		", team.getTeamName(), "Franchise: %s" % (team.getFranchise(franchises))
+	jimbo = watMuPlayer('Jim Brooks', seasons)
+	jimbo.getStatsLine()
+	
+	brucie = watMuPlayer('John Lawson', seasons)
+	brucie.getStatsLine()
+	
+	tallionStallion = watMuPlayer('Giacomo Torlai', seasons)
+	tallionStallion.getStatsLine()
+
+##	for season in seasons:
+##		print season.seasonId, '\n'
+##		for team in season.Teams:
+##			if(team.getFranchise(franchises)=="None"):
+##				print "		", team.getTeamName(), "Franchise: %s" % (team.getFranchise(franchises))
 	

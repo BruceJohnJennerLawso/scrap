@@ -15,7 +15,11 @@ class watMuGame(Game):
 class watMuTeam(Team):
 	def __init__(self, leagueId, levelId, seasonId, teamId):
 		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
+		
+		self.seasonId = seasonId
+		
 		self.loadTierI()
+		
 	
 		
 	## Tier I load call ########################################################	
@@ -50,6 +54,10 @@ class watMuTeam(Team):
 		for game in scheduleData:
 			self.Games.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
 			## set up each game as an object in memory
+		
+		
+		## rosters...
+		self.Roster = rows[(self.seasonLength + 3)]
 		
 		self.averageSOC = 0
 		self.seasonPlusMinus = 0
@@ -203,7 +211,7 @@ class watMuTeam(Team):
 		## being calculated at the end
 	
 	def getDescriptionString(self):
-		return "%s, Rank: %i (%i)%s, Pts %i Pct: %.3f, AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f, Playoff Win percentage of %.3f" % (self.teamName, self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage())		
+		return "%s, %s\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
