@@ -7,6 +7,8 @@
 from seasonWatMu import *
 from graphtools import *
 
+import sys  
+
 
 
 
@@ -251,7 +253,7 @@ def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 
 
 
-def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
+def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 	mawquees = []
 	mapquees = []
 	offence = []
@@ -265,6 +267,11 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 	offqual = []
 	
 	data = []
+	daterd = []
+	## ermagherd, daterd
+	
+	reload(sys)  
+	sys.setdefaultencoding('utf8')
 	
 	for season in seasons:
 		print "################################################################################"
@@ -275,10 +282,14 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 		for team in season.Teams:
 			## loop through all of the teams that played in that season
 			if(team.getSeasonRank() in season.topPlayoffBracket):
-				print team.getDescriptionString(), "\n"
+				##print team.getDescriptionString(), "\n"
 				
 				data.append([team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+				##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
+				teamFran = str(team.getFranchise(franchises).decode('utf-8'))
+				print teamFran
 				
+				daterd.append([teamFran.encode('utf-8'), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
 				mawquees.append(team.getMaAWQI())
 				offence.append(team.getSeasonGoalsForAverage())
 				defence.append(team.getSeasonGoalsAgainstAverage())
@@ -297,5 +308,7 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 				## so we can make a histogram of all of the values and display it
 
 	dataPanda = pd.DataFrame(data, columns=['MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
-
+	dataTruong = pd.DataFrame(daterd, columns=['Franchise' , 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
+	## Hi Ryan
 	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
+	plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')

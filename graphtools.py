@@ -15,7 +15,14 @@ import pylab
 import distStats
 
 import pandas as pd
+import seaborn as sns
 
+
+def plotScatterLabelled(data, x_param, y_param, huey, output_path, output_directory, output_filename):
+	sns.lmplot(x_param, y_param, data, hue=huey, fit_reg=False);
+	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
+	plt.savefig(output_)
+	plt.close()
 
 def plotScatterMatrix(data, output_path, output_directory, output_filename):
 	pd.tools.plotting.scatter_matrix(data, diagonal="kde")

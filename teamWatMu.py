@@ -240,7 +240,7 @@ class watMuTeam(Team):
 	def getFranchise(self, franchiseList):
 		output = 'None'
 		for franchise in franchiseList:
-			if(self.getTeamName() in franchise):
-				output = franchise[0]
+			if(self.getTeamName().decode('utf-8') in franchise):
+				output = franchise[0].decode('utf-8')
 		return output
 
