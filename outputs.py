@@ -38,6 +38,8 @@ def getAllSeasons(leagueId, levelId):
 			## this should create a season from this data, and by extension
 			## constructs all of the teams that played in those seasons by
 			## extension
+	for season in seasons:
+		season.loadTierIV(seasons)
 	return seasons
 
 

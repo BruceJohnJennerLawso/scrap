@@ -49,6 +49,10 @@ class watMuTeam(Team):
 			reader = csv.reader(foo)
 			for row in reader:
 				rows.append(row)
+			## create a list called row, which will hold all of the data in the
+			## csv as a sublist for each row, ie
+			
+			## [[row 1...], [row 2...],...]
 		
 		self.teamName = rows[0][0]
 		print "%s: %s, Id: %s" % (self.teamName, rows[0][1], self.teamId)
@@ -77,6 +81,8 @@ class watMuTeam(Team):
 		
 		## rosters...
 		self.Roster = rows[(self.seasonLength + 3)]
+		
+			
 		
 		self.averageSOC = 0
 		self.seasonPlusMinus = 0
@@ -239,6 +245,12 @@ class watMuTeam(Team):
 		## being calculated at the end
 		self.meanAdjustedOffenceQualityIndex -= oqiMean
 		self.meanAdjustedDefenceQualityIndex -= dqiMean
+	
+	def loadTierIV(self, teamsList, seasonsList):
+		self.Players = []
+		## list containing player objects 
+		for playerName in self.Roster:
+			self.Players.append(watMuPlayer(playerName, seasonsList))
 	
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		

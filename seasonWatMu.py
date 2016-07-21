@@ -99,6 +99,10 @@ class watMuSeason(Season):
 		for team in self.Teams:
 			team.loadTierIII(self.Teams)
 	
+	def loadTierIV(self, seasonsList):
+		for team in self.Teams:
+			team.loadTierIV(self.Teams, seasonsList)
+	
 	def printPlayoffBrackets(self):
 		for i in range(0, len(self.playoffBrackets)):
 			if(i == 0):

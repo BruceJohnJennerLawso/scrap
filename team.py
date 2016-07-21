@@ -32,7 +32,10 @@ class Team(object):
 		print "Bad call to Team.loadTierII"
 		
 	def loadTierIII(self, teamsList):
-		print "Bad call to Team.loadTierIII"		
+		print "Bad call to Team.loadTierIII"
+		
+	def loadTierIV(self, teamsList, seasonsList):
+		print "Bad call to Team.loadTierIV"		
 	
 	
 	## Tier I ##################################################################
@@ -151,3 +154,8 @@ class Team(object):
 	## (Winter 2014 Pucked Up) with a MaAWQI of 0.922
 	
 	## Its pronounced "Mah-Quee" in case you were wondering 
+
+	## Tier IV #################################################################
+	
+	def getPlayers(self):
+		return self.Players
