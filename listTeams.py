@@ -71,9 +71,9 @@ if(__name__ == "__main__"):
 	##jimbo = watMuPlayer('Jim Brooks', seasons)
 	##jimbo.getStatsLine()
 	
-	brucie = watMuPlayer('John Lawson', seasons)
-	brucie.getStatsLine()
-	brucie.plotSeasonBySeasonStats('./results/%s/%s' % (leagueId, levelId), 'playerData', 'player_%s_SeasonBySeasonMaAWQI.png' % brucie.getName())	
+	##brucie = watMuPlayer('John Lawson', seasons)
+	##brucie.getStatsLine()
+	##brucie.plotSeasonBySeasonStats('./results/%s/%s' % (leagueId, levelId), 'playerData', 'player_%s_SeasonBySeasonMaAWQI.png' % brucie.getName())	
 	##tallionStallion = watMuPlayer('Giacomo Torlai', seasons)
 	##tallionStallion.getStatsLine()
 

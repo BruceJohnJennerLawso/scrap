@@ -1,6 +1,6 @@
 #!/bin/bash
 
-geany gameProcessing.py scraper.py scrap.py game.py player.py playerWatMu.py team.py teamWatMu.py season.py seasonWatMu.py distStats.py graphtools.py outputs.py readata.py get go dependencies.txt &
+geany gameProcessing.py scraper.py scrap.py game.py player.py playerWatMu.py team.py teamWatMu.py season.py seasonWatMu.py distStats.py graphtools.py outputs.py readata.py teamSummary.py get go dependencies.txt &
 ## got tired of doing this manually every time with geany
 
 exit 0
