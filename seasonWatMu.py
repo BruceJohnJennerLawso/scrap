@@ -112,7 +112,7 @@ class watMuSeason(Season):
 			elif(i==2):
 				print "Third Playoff Bracket ", self.playoffBrackets[i]
 			else:
-				print "%ith Playoff Bracket " % i, self.playoffBrackets[i]
+				print "%th Playoff Bracket " % i, self.playoffBrackets[i]
 			print len(self.playoffBrackets[i])
 			
 	def getTotalPlayoffTeams(self):

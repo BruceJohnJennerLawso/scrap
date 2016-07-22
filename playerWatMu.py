@@ -14,23 +14,68 @@ class watMuPlayer(Player):
 			for team in season.Teams:
 				if(self.getName() in team.getRoster()):
 					self.playedFor.append(team)
-		self.playerMaAWQI = 0.000
-		if(self.getNumberOfSeasonsPlayed() > 0):
-			for team in self.playedFor:
-				self.playerMaAWQI += team.getMaAWQI()
-			self.playerMaAWQI /= float(self.getNumberOfSeasonsPlayed())
+		self.playedFor.sort(key=lambda x: x.getSeasonIndex, reverse=True)
+		## sort the list in place by season index to get a proper chronological
+		## order
 		
-	def getStatsLine(self):
-		print "\n\nPlayer: %s, %i seasons played, average MaAWQI of %.3f\n" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerMaAWQI())
+	def getStatsLine(self, currentSeasonIndex=-1):
+		
+		print "\n\nPlayer: %s, %i seasons played, average MaAWQI of %.3f\n" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerMaAWQI(currentSeasonIndex))
 		
 		for team in self.playedFor:
 			print team.getDescriptionString(), '\n'
 			
 	def getNumberOfSeasonsPlayed(self):
 		return len(self.playedFor)
+
+	def getPlayerMaAWQI(self, currentSeasonIndex=-1):
+		output = 0.000
+		if(self.getNumberOfSeasonsPlayed() > 0):
+			seasonCount = 0
+			for team in self.playedFor:
+				if(currentSeasonIndex != -1):
+					if(team.getSeasonIndex() < currentSeasonIndex):
+						output += team.getMaAWQI()
+						seasonCount += 1
+				else:
+					output += team.getMaAWQI()
+					seasonCount += 1
+			if(seasonCount > 0):
+				output /= float(seasonCount)
+			return output
+
 	
-	def getPlayerMaAWQI(self):
-		return self.playerMaAWQI
+	def getPlayerMaAPQI(self, currentSeasonIndex=-1):
+		output = 0.000
+		if(self.getNumberOfSeasonsPlayed() > 0):
+			seasonCount = 0
+			for team in self.playedFor:
+				if(currentSeasonIndex != -1):
+					if(team.getSeasonIndex() < currentSeasonIndex):
+						output += team.getMaAPQI()
+						seasonCount += 1
+				else:
+					output += team.getMaAPQI()
+					seasonCount += 1
+			if(seasonCount > 0):
+				output /= float(seasonCount)
+			return output
+			
+	def getPlayerProperty(self, func, currentSeasonIndex=-1):
+		output = 0.000
+		if(self.getNumberOfSeasonsPlayed() > 0):
+			seasonCount = 0
+			for team in self.playedFor:
+				if(currentSeasonIndex != -1):
+					if(team.getSeasonIndex() < currentSeasonIndex):
+						output += team.func()
+						seasonCount += 1
+				else:
+					output += team.func()
+					seasonCount += 1
+			if(seasonCount > 0):
+				output /= float(seasonCount)
+			return output			
 		
 	def plotSeasonBySeasonStats(self, output_path, output_directory, output_filename):
 		
