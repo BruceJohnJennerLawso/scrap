@@ -60,22 +60,7 @@ class watMuPlayer(Player):
 			if(seasonCount > 0):
 				output /= float(seasonCount)
 			return output
-			
-	def getPlayerProperty(self, func, currentSeasonIndex=-1):
-		output = 0.000
-		if(self.getNumberOfSeasonsPlayed() > 0):
-			seasonCount = 0
-			for team in self.playedFor:
-				if(currentSeasonIndex != -1):
-					if(team.getSeasonIndex() < currentSeasonIndex):
-						output += team.func()
-						seasonCount += 1
-				else:
-					output += team.func()
-					seasonCount += 1
-			if(seasonCount > 0):
-				output /= float(seasonCount)
-			return output			
+						
 		
 	def plotSeasonBySeasonStats(self, output_path, output_directory, output_filename):
 		

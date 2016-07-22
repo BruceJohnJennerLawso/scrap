@@ -2,7 +2,7 @@
 from sys import argv
 import csv
 
-from scraper import *
+from watMuScraper import *
 
 
 def scrapeListedTeams(debugInfo, leagueId, levelId):

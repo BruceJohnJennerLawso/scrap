@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
-## scraper.py ##################################################################
-## utilities to scrape a teams data out of the intramurals system ##############
-## may need to someday scrape the playoff brackets as well, ####################
-## but not going to worry about that yet #######################################
+## nhlScraper.py ###############################################################
+## scraper to grab season data from hockey-reference.com, which has NHL and ####
+## WHA data going back to 1918, and possibly even more #########################
 ################################################################################
+
+# -*- coding: utf-8 -*-
+
 from lxml import html
 import requests
 
