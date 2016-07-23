@@ -59,26 +59,26 @@ def scrapeTeamData():
 		Fucked = True
 	gamesLists = []
 	for i in (range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)):
-		print i, ' ', tree.xpath('//table/tbody/tr[%i]/*/text()' % i), ' ', len(tree.xpath('//table/tbody/tr[%i]/*/text()' % i)), '\n'
-		if(len(tree.xpath('//table/tbody/tr[%i]/*/text()' % i)) > 0):
-			gamesLists.append(tree.xpath('//table/tbody/tr[%i]/*/text()' % i))
-	print 'seasonLength ', len(gamesLists)
-	i = 26
-	while((i+22) < len(content3)):
-		lineEnd = 21
-		offset = 0
-		if(content3[i+2] == '@'):
-			##print "Away game"
-			lineEnd += 1
-			offset += 1
-		if((content3[i+offset+5] == 'SO')or(content3[i+offset+5] == 'OT')):
-			lineEnd += 1
-			offset += 1
+		gameRow = tree.xpath('//table/tbody/tr[%i]/*/text()' % i)
+		gameRow2 = tree.xpath('//table/tbody/tr[%i]/*/*/text()' % i)		
 		
-		##for z in range(0, lineEnd):
-		##	print content3[i+z],
-		##print '\n'
-		i+=lineEnd
+		ofs = 0
+		if(gameRow[2] != '@'):
+			gameRow.insert(2, ';)')
+			ofs += 1
+			
+		print (5+ofs), ' ', gameRow[5+ofs]	
+		if(gameRow[6] not in ['OT', 'SO']):
+			## a little bit weird, but I think it works
+			gameRow.insert(6, ':o')
+		gameRow.insert(1, gameRow2[0])
+		gameRow.insert(3, gameRow2[1])
+		
+		print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
+		if(len(gameRow) > 0):
+			gamesLists.append(gameRow)
+	print 'seasonLength ', len(gamesLists)
+
 	teamString = content1[0].encode('utf-8')
 	
 	
