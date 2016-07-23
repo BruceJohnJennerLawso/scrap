@@ -62,20 +62,19 @@ def scrapeTeamData():
 		gameRow = tree.xpath('//table/tbody/tr[%i]/*/text()' % i)
 		gameRow2 = tree.xpath('//table/tbody/tr[%i]/*/*/text()' % i)		
 		
-		ofs = 0
-		if(gameRow[2] != '@'):
-			gameRow.insert(2, ';)')
-			ofs += 1
-			
-		print (5+ofs), ' ', gameRow[5+ofs]	
-		if(gameRow[6] not in ['OT', 'SO']):
-			## a little bit weird, but I think it works
-			gameRow.insert(6, ':o')
-		gameRow.insert(1, gameRow2[0])
-		gameRow.insert(3, gameRow2[1])
-		
-		print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
 		if(len(gameRow) > 0):
+			if(gameRow[2] != '@'):
+				gameRow.insert(2, '')
+				## maybe 'H' here for host?
+			
+			if(gameRow[6] not in ['OT', 'SO']):
+				## a little bit weird, but I think it works
+				gameRow.insert(6, '')
+			gameRow.insert(1, gameRow2[0])
+			gameRow.insert(4, gameRow2[1])
+		
+		if(len(gameRow) > 0):
+			print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
 			gamesLists.append(gameRow)
 	print 'seasonLength ', len(gamesLists)
 
