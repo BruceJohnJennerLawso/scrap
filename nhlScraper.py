@@ -57,9 +57,12 @@ def scrapeTeamData():
 	if(debugInfo):
 		##print content1, '\n\n', content2, '\n\n', content3, '\n\n', content4, '\n\n'
 		Fucked = True
-	for i in (range(1, 20)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 87)):
+	gamesLists = []
+	for i in (range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)):
 		print i, ' ', tree.xpath('//table/tbody/tr[%i]/*/text()' % i), ' ', len(tree.xpath('//table/tbody/tr[%i]/*/text()' % i)), '\n'
-
+		if(len(tree.xpath('//table/tbody/tr[%i]/*/text()' % i)) > 0):
+			gamesLists.append(tree.xpath('//table/tbody/tr[%i]/*/text()' % i))
+	print 'seasonLength ', len(gamesLists)
 	i = 26
 	while((i+22) < len(content3)):
 		lineEnd = 21
