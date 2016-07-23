@@ -27,41 +27,58 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 
 
 
+
 ## abandon all hope of comprehension, ye who enter here
 
-def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, levelId):
+##def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, levelId):
+
+def scrapeTeamData():
 	## gotta pass in the season, since the system doesnt display it anywhere
 	## for some reason
-	
-	page = requests.get('http://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i&sport=1' % (teamId))
+	teamId = 'TOR'
+	debugInfo = True
+	page = requests.get('http://www.hockey-reference.com/teams/%s/2016_games.html' % (teamId))
 	tree = html.fromstring(page.content)
 
 	## actually a string with the sport, team name, then play level (casual)
 
-	content1 = tree.xpath('//div[@id="primarycontent"]/*/text()')
-	## used to retrieve the team name and play level
-	content2 = tree.xpath('//div[@id="primarycontent"]/*/*/text()')
-	## used to grab the roster, except for the captains name, which is retrieved
-	## from the next section
-	content3 = tree.xpath('//div[@id="primarycontent"]/*/*/*/text()')
-	## captains name at the start
-	
-	## then we can pull the dates, location (always CIF), results and SOC from
-	## the rest
-	content4 = tree.xpath('//div[@id="primarycontent"]/*/*/*/*/text()')
+	content1 = tree.xpath('//table[@id="games"]/*/text()')
+	## gets us the title of the table and some blank space
+	content2 = tree.xpath('//table[@id="games"]/*/*/text()')
+	## gets us a bazillion blank spaces which I really dont know what they
+	## represent in the actual page
+	content3 = tree.xpath('//table[@id="games"]/*/*/*/text()')
+	## starts off with the header row for the table, then the actual data, save
+	## for the data that
+	content4 = tree.xpath('//table[@id="games"]/*/*/*/*/text()')
 	## The column of opponents faced during the season, with the first round
 	## byes at the end
-	content5 = tree.xpath('//div[@id="primarycontent"]/*/*/*/*/*/text()')	
-	## playoff data, not sure how much we care about this yet, since it can
-	## be retrieved from the rest of the data that we already pulled, but it
-	## might be needed to make sense of playoff seedings at some point
-	
-	## the sixth layer isnt needed, so we wont bother
-
+	print "search finished"
 	if(debugInfo):
-		print content1, '\n\n', content2, '\n\n', content3, '\n\n', content4, '\n\n', content5, '\n\n\n'
+		##print content1, '\n\n', content2, '\n\n', content3, '\n\n', content4, '\n\n'
+		Fucked = True
+	for i in (range(1, 20)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 87)):
+		print i, ' ', tree.xpath('//table/tbody/tr[%i]/*/text()' % i), ' ', len(tree.xpath('//table/tbody/tr[%i]/*/text()' % i)), '\n'
 
+	i = 26
+	while((i+22) < len(content3)):
+		lineEnd = 21
+		offset = 0
+		if(content3[i+2] == '@'):
+			##print "Away game"
+			lineEnd += 1
+			offset += 1
+		if((content3[i+offset+5] == 'SO')or(content3[i+offset+5] == 'OT')):
+			lineEnd += 1
+			offset += 1
+		
+		##for z in range(0, lineEnd):
+		##	print content3[i+z],
+		##print '\n'
+		i+=lineEnd
 	teamString = content1[0].encode('utf-8')
+	
+	
 	if(debugInfo):
 		print 'teamString ', teamString
 	teamName = getTeamName(teamString).replace(',', '')
@@ -270,7 +287,10 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 	## TO BE CONTINUED DUN DUN DUN
 	
 	## this might be a good spot to jump into a second function with the data
-	saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId)
+	##saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId)
 	
 	## cant decide whether I want to break the date strings down a bit before
 	## I start on this
+
+if(__name__ == "__main__"):
+	scrapeTeamData()
