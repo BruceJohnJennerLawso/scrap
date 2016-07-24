@@ -32,7 +32,7 @@ def seasonLength(val):
 		## only seen this once so far
 	return output
 	
-def gameResult(rawDataString):
+def getGameResult(rawDataString):
 	if('tie' in rawDataString):
 		return 'tie'
 	elif('won' in rawDataString):	
@@ -56,51 +56,72 @@ def smallerOne(val1, val2):
 
 
 		
-def processGoalsFor(rawDataString, gameResult):
+def processGoalsFor(rawDataString):
 	## take the raw score string that waterloo intramurals uses and then extract
 	## how many goals *this team* scored, made harder because the system does
 	## things like 'won 0-6' for some stupid reason
+	gameResult = getGameResult(rawDataString)
 	
+	data = rawDataString
 	if(gameResult == 'tie'):
-		return int(rawDataString[4:len(rawDataString)-4])
+		data = rawDataString[4:len(rawDataString)]
+	else:
+		if(gameResult == 'won'):
+			data = rawDataString[4:len(rawDataString)]
+		elif(gameResult == 'lost'):
+			data = rawDataString[5:len(rawDataString)]
+	## depending on what the result of this game was, we start by snipping off
+	## the part of the string that listed the gameResult, ie
+	## 'tie 2 - 2' --> '2 - 2'
+	dashIndex = data.index('-')
+	## find where the dash is in this string so we can start properly placing
+	## the scores
+	score1 = int(data[0:(dashIndex-1)])
+	score2 = int(data[(dashIndex+1):len(data)])
+	if(gameResult == 'tie'):
+		return score1
 		## easy here cause both scores are the same here
 	else:
 		if(gameResult == 'won'):
-			score1 = int(rawDataString[4:len(rawDataString)-4])
-			score2 = int(rawDataString[8:len(rawDataString)])
 			return biggerOne(score1, score2)
 		elif(gameResult == 'lost'):
-			score1 = int(rawDataString[5:len(rawDataString)-4])
-			score2 = int(rawDataString[9:len(rawDataString)])
 			return smallerOne(score1, score2)
-		
+	## a bit more complex than the original, but much easier to read, and much
+	## more reliable in getting the right values	
 	
 
-def processGoalsAgainst(rawDataString, gameResult):
+def processGoalsAgainst(rawDataString):
 	## take the raw score string that waterloo intramurals uses and then extract
 	## how many goals *this team* allowed, made harder because the system does
 	## things like 'won 0-6' for some stupid reason
-	
+	gameResult = getGameResult(rawDataString)
+
+	data = rawDataString
 	if(gameResult == 'tie'):
-		return int(rawDataString[4:len(rawDataString)-4])
+		data = rawDataString[4:len(rawDataString)]
+	else:
+		if(gameResult == 'won'):
+			data = rawDataString[4:len(rawDataString)]
+		elif(gameResult == 'lost'):
+			data = rawDataString[5:len(rawDataString)]
+	## depending on what the result of this game was, we start by snipping off
+	## the part of the string that listed the gameResult, ie
+	## 'tie 2 - 2' --> '2 - 2'
+	dashIndex = data.index('-')
+	## find where the dash is in this string so we can start properly placing
+	## the scores
+	score1 = int(data[0:(dashIndex-1)])
+	score2 = int(data[(dashIndex+1):len(data)])
+	if(gameResult == 'tie'):
+		return score1
 		## easy here cause both scores are the same here
 	else:
 		if(gameResult == 'won'):
-			score1 = int(rawDataString[4:len(rawDataString)-4])
-			score2 = int(rawDataString[8:len(rawDataString)])
 			return smallerOne(score1, score2)
 		elif(gameResult == 'lost'):
-			score1 = int(rawDataString[5:len(rawDataString)-4])
-			score2 = int(rawDataString[9:len(rawDataString)])
 			return biggerOne(score1, score2)
-		## this just barely handles double digit scores properly, but I could
-		## swear theres a weird 10-7 or 11-10 game somewhere in the system thats
-		## going to crash this
-		
-		## it handles the case of a first double digit score fine, which is the
-		## only case I was able to find in the system (9749), but if the second
-		## score or both are double digit we're fucked
 	
+		
 	
 def processSOC(rawDataString):
 	if(rawDataString == 'avg.'):
@@ -111,3 +132,9 @@ def processSOC(rawDataString):
 	else:
 		return int(rawDataString)
 		## force it out as an integer so it can be summed a bit more easily
+
+
+if(__name__ == "__main__"):
+	gf =  processGoalsFor('won 100 - 9', 'won')
+	ga = processGoalsAgainst('won 100 - 9', 'won')
+	print "gf %i, ga %i" % (gf, ga)

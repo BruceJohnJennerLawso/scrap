@@ -160,7 +160,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 			gameVal = game
 			rawScoreData = content3[access+2]
 			##print rawScoreData
-			outcome = gameResult(rawScoreData)
+			outcome = getGameResult(rawScoreData)
 			if(('won' not in rawScoreData)and('lost' not in rawScoreData)and('tie' not in rawScoreData)):
 				print "Found a postponed game"
 				## we found a game that was replayed (or if we are in an in
@@ -171,8 +171,8 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				continue
 				## jump past this game, cause we dont want it in the schedule
 			else:
-				goalsFor = processGoalsFor(rawScoreData, outcome)
-				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+				goalsFor = processGoalsFor(rawScoreData)
+				goalsAgainst = processGoalsAgainst(rawScoreData)
 				atHome = False
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
@@ -193,9 +193,9 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				## this isnt quite right, but I dont think we'll have a season
 				## with both rescheduled games and SOC games
 				rawScoreData = content3[access+2]
-				outcome = gameResult(rawScoreData)
-				goalsFor = processGoalsFor(rawScoreData, outcome)
-				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+				outcome = getGameResult(rawScoreData)
+				goalsFor = processGoalsFor(rawScoreData)
+				goalsAgainst = processGoalsAgainst(rawScoreData)
 			
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
@@ -211,9 +211,9 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				print "access ", access, "/", (len(content3)-1), "game ", gameVal
 				print "gameVal ", gameVal
 				rawScoreData = content3[access+2]
-				outcome = gameResult(rawScoreData)				
-				goalsFor = processGoalsFor(rawScoreData, outcome)
-				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
+				outcome = getGameResult(rawScoreData)				
+				goalsFor = processGoalsFor(rawScoreData)
+				goalsAgainst = processGoalsAgainst(rawScoreData)
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
 
