@@ -35,32 +35,25 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 def scrapeTeamData():
 	## gotta pass in the season, since the system doesnt display it anywhere
 	## for some reason
-	teamId = 'TOR'
+	teamId = 'SJS'
+	seasonString = '2016'
 	debugInfo = True
-	page = requests.get('http://www.hockey-reference.com/teams/%s/2016_games.html' % (teamId))
+	page = requests.get('http://www.hockey-reference.com/teams/%s/%s_games.html' % (teamId, seasonString))
 	tree = html.fromstring(page.content)
 
-	## actually a string with the sport, team name, then play level (casual)
-
-	content1 = tree.xpath('//table[@id="games"]/*/text()')
-	## gets us the title of the table and some blank space
-	content2 = tree.xpath('//table[@id="games"]/*/*/text()')
-	## gets us a bazillion blank spaces which I really dont know what they
-	## represent in the actual page
-	content3 = tree.xpath('//table[@id="games"]/*/*/*/text()')
-	## starts off with the header row for the table, then the actual data, save
-	## for the data that
-	content4 = tree.xpath('//table[@id="games"]/*/*/*/*/text()')
-	## The column of opponents faced during the season, with the first round
-	## byes at the end
-	print "search finished"
-	if(debugInfo):
-		##print content1, '\n\n', content2, '\n\n', content3, '\n\n', content4, '\n\n'
-		Fucked = True
 	gamesLists = []
+	
+	teamInfo = tree.xpath('//h1[@itemprop="name"]/*/text()')
+	print "teamInfo ", teamInfo
+	
+	seasonName = teamInfo[0]
+	teamName = teamInfo[1]
+	
+	print "Regular Season"
+	
 	for i in (range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)):
-		gameRow = tree.xpath('//table/tbody/tr[%i]/*/text()' % i)
-		gameRow2 = tree.xpath('//table/tbody/tr[%i]/*/*/text()' % i)		
+		gameRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % i)
+		gameRow2 = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
 		
 		if(len(gameRow) > 0):
 			if(gameRow[2] != '@'):
@@ -76,24 +69,71 @@ def scrapeTeamData():
 		if(len(gameRow) > 0):
 			print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
 			gamesLists.append(gameRow)
-	print 'seasonLength ', len(gamesLists)
+	seasonLength = len(gamesLists)
+	
+	print 'seasonLength %i games' % seasonLength
 
-	teamString = content1[0].encode('utf-8')
+	print "Playoffs"
+
+	playoffGameLists = []
+	
+	playoffRound = 0
+	## index of the current playoff round
+	playoffRoundLengths = [0]
+	## a list of the number of games in each playoff round
+	for i in (range(1, 33)):
+		gameRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/text()' % i)
+		if(len(gameRow) == 0):
+			print "No Playoff Games"
+			break
+		
+		gameRow2 = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
+		
+		
+		
+		if(len(gameRow) == 0):
+			## we hit the end of the playoffs for this team, so the loop will
+			## just keep cycling and doing this until we hit 33
+			continue
+			
+		if(gameRow[0] == 'GP'):
+			playoffRound += 1
+			playoffRoundLengths.append(0)
+			continue
+		if(len(gameRow) > 0):
+			if(gameRow[2] != '@'):
+				gameRow.insert(2, '')
+				## maybe 'H' here for host?
+			
+			if(gameRow[6] not in ['OT', 'SO']):
+				## a little bit weird, but I think it works
+				gameRow.insert(6, '')
+			gameRow.insert(1, gameRow2[0])
+			gameRow.insert(4, gameRow2[1])
+		
+		if(len(gameRow) > 0):
+			print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
+			playoffGameLists.append(gameRow)
+	print 'playoffLength ', len(playoffGameLists), ' games'
+
+
+
+
+
+
+	##teamString = content1[0].encode('utf-8')
 	
 	
-	if(debugInfo):
-		print 'teamString ', teamString
-	teamName = getTeamName(teamString).replace(',', '')
-	print teamName
+	##if(debugInfo):
+	##	print 'teamString ', teamString
+	##teamName = getTeamName(teamString).replace(',', '')
 	
-	indiesTeam = False
-	if('Indies' in teamName):
-		indiesTeam = True
-		## Apparently indies teams dont have captains
-		## which royally fucks this up
+	print "Team Name: %s, %s" % (teamName, seasonName)
 	
-	print "Team String, ", teamString
-	print "Team Name: %s, %s, Id: %s" % (teamName, seasonString, teamId)
+	
+	page = requests.get('http://www.hockey-reference.com/teams/%s/%s.html' % (teamId, seasonString))
+	tree = html.fromstring(page.content)	
+	## lets try to reset this to get the roster info
 	
 	players = []
 	for i in range(6, len(content2)):
