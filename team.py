@@ -3,9 +3,28 @@
 ## hoping to define a specific stat type here instead of #######################
 ## redoing it for every different team type ####################################
 ################################################################################
-from game import *
-from playerWatMu import *
+##from game import *
+from player import *
 import csv
+
+def getSeasonIndexList(leagueId):
+	## returns a list of every season
+	output = []
+	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
+		reader = csv.reader(foo)
+		for row in reader:
+			output.append(row)
+			## append on the list of names, with the primary one first, ie
+			## [...['winter2010', 'winter2010Contact'],...]
+	return output
+	
+def getSeasonIndexById(seasonId, indexList):
+	output = 0
+	## default error if we cant find the proper position for the season
+	for i in range(0, len(indexList)):
+		if(seasonId in indexList[i]):
+			output = i
+	return output	
 
 class Team(object):
 	## constructor

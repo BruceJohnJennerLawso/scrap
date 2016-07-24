@@ -173,7 +173,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 			else:
 				goalsFor = processGoalsFor(rawScoreData, outcome)
 				goalsAgainst = processGoalsAgainst(rawScoreData, outcome)
-				
+				atHome = False
 				##if(debugInfo == False):
 				##	assert isinstance(content4[game], str)
 

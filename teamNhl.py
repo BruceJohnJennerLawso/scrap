@@ -1,13 +1,18 @@
-## teamWatMu.py ################################################################
-## object representing a team playing in waterloo ##############################
-## intramural hockey ###########################################################
+## teamNhl.py ##################################################################
+## object representing a team playing in the NHL ###############################
 ################################################################################
 from team import *
-from gameWatMu import *
-from playerWatMu import *
+from gameNhl import *
 
 
 
+
+
+
+class nhlGame(Game):
+	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, opponentName):
+		super(nhlGame, self).__init__(dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName)
+			
 
 
 
@@ -76,6 +81,7 @@ class watMuTeam(Team):
 		
 		averageSOCGames = 0
 		for game in self.getSeasonGames():
+
 			##print game.Layers[0]
 			self.seasonTotalGoalsFor += game.getGoalsFor()
 			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()

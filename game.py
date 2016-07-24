@@ -4,8 +4,11 @@
 
 
 class Game(object):
+	##def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName):
 	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName):
 		self.Layers = []
+		## list of lists, with each list containing stats computed for that
+		## layer
 		self.addLayer([dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName])
 		self.layerCount = 1
 		
