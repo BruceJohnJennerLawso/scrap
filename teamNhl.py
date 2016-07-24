@@ -2,23 +2,13 @@
 ## object representing a team playing in the NHL ###############################
 ################################################################################
 from team import *
-from gameNhl import *
+from gameNhl import *		
 
 
 
-
-
-
-class nhlGame(Game):
-	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, opponentName):
-		super(nhlGame, self).__init__(dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName)
-			
-
-
-
-class watMuTeam(Team):
-	def __init__(self, leagueId, levelId, seasonId, teamId):
-		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
+class nhlTeam(Team):
+	def __init__(self, leagueId, seasonId, teamId):
+		super(nhlTeam, self).__init__(leagueId, '', seasonId, teamId)
 		
 		self.seasonId = seasonId
 		
@@ -40,27 +30,21 @@ class watMuTeam(Team):
 			## [[row 1...], [row 2...],...]
 		
 		self.teamName = rows[0][0]
-		print "%s: %s, Id: %s" % (self.teamName, rows[0][1], self.teamId)
-		##print rows[1][0]
-		self.seasonLength = int(rows[1][0])
+		print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
 		
 		
-		self.totalSeasonGames = 0
+		self.totalSeasonGames = int(rows[3][0])
+		
 		self.totalPlayoffGames = 0
-		if(self.seasonLength >= 6):
-			self.totalSeasonGames +=6
-		else:
-			self.totalSeasonGames = self.seasonLength
-			self.totalPlayoffGames = 0
-		if((self.seasonLength-self.totalSeasonGames) > 0):
-			self.totalPlayoffGames += (self.seasonLength-self.totalSeasonGames)
-		
-		## get the total number of games played by this team, which the
-		## scraper saves on the second line for us
-		scheduleData = rows[2:(self.seasonLength + 2)]
+		self.playoffSeriesLengths = rows[4]
+		for l in self.playoffSeriesLengths:
+			self.totalPlayoffGames += 1
+			
+
+		scheduleData = rows[5:(self.totalSeasonLength+5)]
 		## slice out only the rows that contain games data
 		for game in scheduleData:
-			self.Games.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			self.Games.append(nhlGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
 			## set up each game as an object in memory
 		
 		

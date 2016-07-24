@@ -55,21 +55,60 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
 	print "%s %s" % (seasonName, teamName)
 	print "Regular Season"
-	
+
+	headingRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % 21)
+	print 'headingRow ', headingRow
+		
 	for i in (range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)):
 		gameRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % i)
 		gameRow2 = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
+
+			## this should hopefully fix the issue with the game Time column
+			## messing up the offsets we were expecting
 		
 		if(len(gameRow) > 0):
-			if(gameRow[2] != '@'):
-				gameRow.insert(2, '')
-				## maybe 'H' here for host?
+			## so we basically have two problems here:
+			## one, games only have times available for 2013 and later. Not that
+			## big of a deal, but a bit of a headache because the column that it
+			## was stored in is now gone, and everything is offset slightly off
 			
-			if(gameRow[6] not in ['OT', 'SO']):
-				## a little bit weird, but I think it works
-				gameRow.insert(6, '')
-			gameRow.insert(1, gameRow2[0])
-			gameRow.insert(4, gameRow2[1])
+			## second problem, the game Dates are hyperlinked to the game box
+			## scores from 1988 onward, but its just plaintext for 1987 and
+			## earlier
+			
+			## Im thinking the best way of solving these problems is to tackle
+			## the overall problem in two steps.
+			
+			## first, I should save the header row at the start of the game data
+			## and use that to index the data instead of hoping for a hard
+			## layout across a century worth of data
+			
+			## and second, Im going to need to rewrite the section right after
+			## this so that it can handle the above issues with columns
+			## appearing and disappearing depending on the year
+			
+			if('Time' not in headingRow):
+				gameRow.insert(2, 'no time available')
+				if(gameRow[2] != '@'):
+					gameRow.insert(2, 'H')
+					## maybe 'H' here for host?
+			
+				if(gameRow[7] not in ['OT', 'SO']):
+					## a little bit weird, but I think it works
+					gameRow.insert(6, 'REG')
+				gameRow.insert(1, gameRow2[0])
+				gameRow.insert(4, gameRow2[1])
+			
+			else:
+				if(gameRow[2] != '@'):
+					gameRow.insert(2, 'H')
+					## maybe 'H' here for host?
+			
+				if(gameRow[6] not in ['OT', 'SO']):
+					## a little bit weird, but I think it works
+					gameRow.insert(6, 'REG')
+				gameRow.insert(1, gameRow2[0])
+				gameRow.insert(4, gameRow2[1])
 		
 		if(len(gameRow) > 0):
 			if(debugInfo):
@@ -202,4 +241,5 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
 
 if(__name__ == "__main__"):
-	scrapeTeamData('WPG', False, '2016', False, 'nhl')
+	scrapeTeamData('SJS', False, '2016', False, 'nhl')
+	scrapeTeamData('SJS', False, '2012', False, 'nhl')	

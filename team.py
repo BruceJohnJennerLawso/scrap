@@ -38,8 +38,10 @@ class Team(object):
 		
 		self.Games = []
 		## list of objects of type game
-		
-		self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
+		if(leagueId == 'nhl'):
+			self.loadPath = "./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId)
+		else:
+			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 		
 	## prototypes for the functions that load each tier of data ################
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############
