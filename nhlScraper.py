@@ -134,7 +134,28 @@ def scrapeTeamData():
 	page = requests.get('http://www.hockey-reference.com/teams/%s/%s.html' % (teamId, seasonString))
 	tree = html.fromstring(page.content)	
 	## lets try to reset this to get the roster info
-	
+
+	print "%s %s Roster" % (teamName, seasonName)
+
+	for i in range(0, 50):
+		playerRow = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/text()' % i)
+		playerRow2 = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/*/text()' % i)
+		if(len(playerRow) == 0):
+			continue
+		else:
+			if(playerRow2[1] == '(C)'):
+				playerRow = playerRow[0:1]+playerRow[2:len(playerRow)]
+				playerRow.insert(0, playerRow2[0])
+				playerRow.insert(9, playerRow2[2])
+			else:
+				playerRow.insert(0, playerRow2[0])
+				playerRow.insert(9, playerRow2[1])		
+			
+					
+		print i, ' ', playerRow, playerRow2, ' ', len(playerRow), '\n'
+		##if(len(playerRow) != 11):
+		##	print "irregular line"
+		
 	players = []
 	for i in range(6, len(content2)):
 		players.append(content2[i].encode('utf-8'))
