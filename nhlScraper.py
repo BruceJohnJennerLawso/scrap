@@ -149,6 +149,12 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 		if(len(playerRow) == 0):
 			continue
 		else:
+			if(len(playerRow2) < 2):
+				playerRow2.append('unknown')
+				## odd case where country of birth data is not available, so we
+				## are going to attach a default that can be added
+				
+				## thank you David Dziurzynski, wherever you come from
 			if(playerRow2[1] == '(C)'):
 				## the case where the player in this row is the team captain,
 				## which throws a small monkeywrench into the proceedings
@@ -156,14 +162,14 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 				## the first thing we need to do is get rid of this weird
 				## (C) character that gets placed in the row by splitting and
 				## reattaching the list
-				playerRow.insert(0, playerRow2[0])
+				playerRow.insert(0, playerRow2[0].encode('utf-8'))
 				## place the players name at the start of the list
 				playerRow.insert(9, playerRow2[2])
 				## put their country of birth right after their birthdate
 				playerRow.insert(1, '(C)')
 				## make a note of that captains C right after the name
 			else:
-				playerRow.insert(0, playerRow2[0])
+				playerRow.insert(0, playerRow2[0].encode('utf-8'))
 				## player name at start
 				playerRow.insert(9, playerRow2[1])
 				## player country after birthdate. Note the different offset
@@ -196,4 +202,4 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
 
 if(__name__ == "__main__"):
-	scrapeTeamData('TOR', False, '2016', False, 'nhl')
+	scrapeTeamData('WPG', False, '2016', False, 'nhl')
