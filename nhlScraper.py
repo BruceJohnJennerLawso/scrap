@@ -129,6 +129,16 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 					gameRow.insert(6, 'REG')
 				gameRow.insert(1, gameRow2[0])
 				gameRow.insert(4, gameRow2[1])
+			else:
+				if(debugInfo):
+					print "Season after 2015"
+				if(gameRow[2] != '@'):
+					gameRow.insert(2, 'H')
+				if(gameRow[6] not in ['OT', 'SO']):
+					## a little bit weird, but I think it works
+					gameRow.insert(6, 'REG')
+				gameRow.insert(1, gameRow2[0])
+				gameRow.insert(4, gameRow2[1])
 				##gameRow.insert(2, 'time unavailable')
 			##if('Time' not in headingRow):
 			
@@ -144,8 +154,10 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	print "Playoffs"
 
 	playoffGameLists = []
-
-	playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[1]/*/text()')
+	if(int(seasonId) >= 2016):
+		playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[2]/*/text()')		
+	else:
+		playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[1]/*/text()')
 	if(int(seasonId) <= 2012):
 		playoffHeaderRow.insert(2, 'Time')
 	playoffHeaderRow.insert(3, 'Location')
@@ -212,7 +224,17 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 						## a little bit weird, but I think it works
 						gameRow.insert(6, 'REG')
 					gameRow.insert(1, gameRow2[0])
-					gameRow.insert(4, gameRow2[1])			
+					gameRow.insert(4, gameRow2[1])	
+				else:
+					if(debugInfo):
+						print "Season after 2015"	
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+					if(gameRow[6] not in overtimeIds()):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(4, gameRow2[1])				
 			if(len(gameRow) > 0):
 				if(debugInfo):
 					print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
