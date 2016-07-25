@@ -122,38 +122,6 @@ def processGoalsAgainst(rawDataString):
 			return biggerOne(score1, score2)
 	
 
-
-def processIfTeamIsHomeTeam(rawDataString):
-	## take the raw score string that waterloo intramurals uses and then extract
-	## how many goals *this team* allowed, made harder because the system does
-	## things like 'won 0-6' for some stupid reason
-	gameResult = getGameResult(rawDataString)
-
-	data = rawDataString
-	if(gameResult == 'tie'):
-		data = rawDataString[4:len(rawDataString)]
-	else:
-		if(gameResult == 'won'):
-			data = rawDataString[4:len(rawDataString)]
-		elif(gameResult == 'lost'):
-			data = rawDataString[5:len(rawDataString)]
-	## depending on what the result of this game was, we start by snipping off
-	## the part of the string that listed the gameResult, ie
-	## 'tie 2 - 2' --> '2 - 2'
-	dashIndex = data.index('-')
-	## find where the dash is in this string so we can start properly placing
-	## the scores
-	score1 = int(data[0:(dashIndex-1)])
-	score2 = int(data[(dashIndex+1):len(data)])
-	if(gameResult == 'tie'):
-		return score1
-		## easy here cause both scores are the same here
-	else:
-		if(gameResult == 'won'):
-			return smallerOne(score1, score2)
-		elif(gameResult == 'lost'):
-			return biggerOne(score1, score2)
-
 		
 	
 def processSOC(rawDataString):

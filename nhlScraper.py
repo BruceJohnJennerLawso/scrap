@@ -57,9 +57,18 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	print "Regular Season"
 
 	headingRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % 21)
-	print 'headingRow ', headingRow
+	if(int(seasonId) <= 2012):
+		headingRow.insert(2, 'Time')
+	headingRow.insert(3, 'Location')
+	headingRow.insert(7, 'Result')
+	headingRow.insert(8, 'Game Ended In')		
+	if(debugInfo):
+		print 'headingRow ', headingRow, ' ', len(headingRow)
+	
+	gamesLists.append(headingRow)
 		
-	for i in (range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)):
+	seasonIndexes = range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)	
+	for i in seasonIndexes:
 		gameRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % i)
 		gameRow2 = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
 
@@ -86,83 +95,131 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 			## and second, Im going to need to rewrite the section right after
 			## this so that it can handle the above issues with columns
 			## appearing and disappearing depending on the year
-			
-			if('Time' not in headingRow):
-				gameRow.insert(2, 'no time available')
+			if(int(seasonId) <= 1987):
+				if(debugInfo):
+					print "Season before 1988"
 				if(gameRow[2] != '@'):
 					gameRow.insert(2, 'H')
-					## maybe 'H' here for host?
 			
-				if(gameRow[7] not in ['OT', 'SO']):
+				if(gameRow[6] not in ['OT', 'SO']):
 					## a little bit weird, but I think it works
 					gameRow.insert(6, 'REG')
-				gameRow.insert(1, gameRow2[0])
-				gameRow.insert(4, gameRow2[1])
+				gameRow.insert(3, gameRow2[0])
+				gameRow.insert(2, 'time unavailable')
+				##gameRow.insert(4, gameRow2[1])
+			elif((int(seasonId) >= 1988)and(int(seasonId) <= 2012)):
+				if(debugInfo):
+					print "Season between 1988 and 2012"
+				if(gameRow[1] != '@'):
+					gameRow.insert(1, 'H')
 			
-			else:
+				if(gameRow[5] not in ['OT', 'SO']):
+					## a little bit weird, but I think it works
+					gameRow.insert(5, 'REG')
+				gameRow.insert(1, gameRow2[0])
+				gameRow.insert(3, gameRow2[1])
+				gameRow.insert(2, 'time unavailable')
+			elif((int(seasonId) >= 2013)and(int(seasonId) <= 2015)):
+				if(debugInfo):
+					print "Season after 2013, before 2016"
 				if(gameRow[2] != '@'):
 					gameRow.insert(2, 'H')
-					## maybe 'H' here for host?
-			
 				if(gameRow[6] not in ['OT', 'SO']):
 					## a little bit weird, but I think it works
 					gameRow.insert(6, 'REG')
 				gameRow.insert(1, gameRow2[0])
 				gameRow.insert(4, gameRow2[1])
+				##gameRow.insert(2, 'time unavailable')
+			##if('Time' not in headingRow):
+			
 		
 		if(len(gameRow) > 0):
 			if(debugInfo):
 				print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
 			gamesLists.append(gameRow)
-	regularSeasonLength = len(gamesLists)
+	regularSeasonLength = len(gamesLists)-1
 	
 	print 'Season length: %i games' % regularSeasonLength, '\n'
 
 	print "Playoffs"
 
 	playoffGameLists = []
+
+	playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[1]/*/text()')
+	if(int(seasonId) <= 2012):
+		playoffHeaderRow.insert(2, 'Time')
+	playoffHeaderRow.insert(3, 'Location')
+	playoffHeaderRow.insert(7, 'Result')
+	playoffHeaderRow.insert(8, 'Game Ended In')		
+	
+	if(debugInfo):
+		print "playoff header row ", playoffHeaderRow, ' ', len(playoffHeaderRow)
 	
 	playoffRound = 0
 	## index of the current playoff round
 	playoffRoundLengths = [0]
 	## a list of the number of games in each playoff round
-	for i in (range(1, 33)):
-		gameRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/text()' % i)
-		if(len(gameRow) == 0):
-			print "No Playoff Games (assuming DNQ)"
-			break
-		
-		gameRow2 = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
-		
-		
-		
-		if(len(gameRow) == 0):
-			## we hit the end of the playoffs for this team, so the loop will
-			## just keep cycling and doing this until we hit 33
-			continue
+	
+	if(len(playoffHeaderRow) > 0):
+		playoffGameLists.append(playoffHeaderRow)
+	
+		for i in (range(1, 33)):
+			gameRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/text()' % i)
+			if(len(gameRow) == 0):
+				print "No Playoff Games (assuming DNQ)"
+				break
 			
-		if(gameRow[0] == 'GP'):
-			playoffRound += 1
-			playoffRoundLengths.append(0)
-			continue
-		if(len(gameRow) > 0):
-			if(gameRow[2] != '@'):
-				gameRow.insert(2, 'H')
-				## maybe 'H' here for host?
-			
-			if(gameRow[6] not in overtimeIds()):
-				## a little bit weird, but I think it works
-				gameRow.insert(6, '')
-			gameRow.insert(1, gameRow2[0])
-			gameRow.insert(4, gameRow2[1])
+			gameRow2 = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
 		
-		if(len(gameRow) > 0):
-			if(debugInfo):
-				print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
-			playoffGameLists.append(gameRow)
-			playoffRoundLengths[playoffRound] += 1
-	print 'playoffLength ', len(playoffGameLists), ' games'
-	print 'playoffRoundLengths: ', playoffRoundLengths, '\n'
+		
+		
+			if(len(gameRow) == 0):
+				## we hit the end of the playoffs for this team, so the loop will
+				## just keep cycling and doing this until we hit 33
+				continue
+			
+			if(gameRow[0] == 'GP'):
+				playoffRound += 1
+				playoffRoundLengths.append(0)
+				continue
+			if(len(gameRow) > 0):
+				if(int(seasonId) <= 1987):
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+			
+					if(gameRow[6] not in overtimeIds()):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(3, gameRow2[0])
+					gameRow.insert(2, 'time unavailable')
+					##gameRow.insert(4, gameRow2[1])
+				elif((int(seasonId) >= 1988)and(int(seasonId) <= 2012)):	
+					if(gameRow[1] != '@'):
+						gameRow.insert(1, 'H')
+			
+					if(gameRow[5] not in overtimeIds()):
+						## a little bit weird, but I think it works
+						gameRow.insert(5, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(3, gameRow2[1])
+					gameRow.insert(2, 'time unavailable')
+				elif((int(seasonId) >= 2013)and(int(seasonId) <= 2015)):
+					if(debugInfo):
+						print "Season after 2013, before 2016"	
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+					if(gameRow[6] not in overtimeIds()):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(4, gameRow2[1])			
+			if(len(gameRow) > 0):
+				if(debugInfo):
+					print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
+				playoffGameLists.append(gameRow)
+				playoffRoundLengths[playoffRound] += 1
+			print 'playoffLength ', len(playoffGameLists)-1, ' games'
+			print 'playoffRoundLengths: ', playoffRoundLengths, '\n'
 
 	##teamString = content1[0].encode('utf-8')
 	
@@ -182,6 +239,7 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 
 
 	playerRows = []
+
 	for i in range(0, 50):
 		playerRow = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/text()' % i)
 		playerRow2 = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/*/text()' % i)
