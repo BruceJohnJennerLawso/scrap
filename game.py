@@ -22,11 +22,11 @@ class Game(object):
 		return self.Layers[0][1]
 
 	def getGoalsFor(self):
-		return self.Layers[0][3]
+		return int(self.Layers[0][3])
 		## should hopefully already be in 
 		
 	def getGoalsAgainst(self):
-		return self.Layers[0][4]		
+		return int(self.Layers[0][4])		
 		
 	def getGoalDifferential(self):
 		diff = self.getGoalsFor()-self.getGoalsAgainst()

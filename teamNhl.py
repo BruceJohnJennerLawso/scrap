@@ -12,13 +12,13 @@ class nhlTeam(Team):
 		
 		self.seasonId = seasonId
 		
-		self.loadTierI()
+		self.loadTierI(True)
 		
 	
 		
 	## Tier I load call ########################################################	
 		
-	def loadTierI(self):
+	def loadTierI(self, debugInfo=False):
 		with open(self.loadPath, 'rb') as foo:
 			rows = []
 			reader = csv.reader(foo)
@@ -41,16 +41,25 @@ class nhlTeam(Team):
 			self.totalPlayoffGames += 1
 			
 		scheduleHeader = rows[5]
-		scheduleData = rows[6:(self.totalSeasonLength+6)]
+		scheduleData = rows[6:(self.totalSeasonGames+6)]
+		
+		if(debugInfo):
+			print scheduleHeader, '\n\n'
+			for i in scheduleData:
+				print i, '\n'
 		
 		playoffLength = 0
 		playoffSeriesLengths = rows[4]
 		for s in playoffSeriesLengths:
-			playoffLength += s
+			playoffLength += int(s)
 		
 		if(playoffLength > 0):
-			playoffDataHeader = rows[(self.totalSeasonLength+8)]
-			playoffData = rows[(self.totalSeasonLength+9):(self.totalSeasonLength+9+playoffLength)]
+			self.playoffDataHeader = rows[(self.totalSeasonGames+8)]
+			self.playoffData = rows[(self.totalSeasonLength+9):(self.totalSeasonLength+9+playoffLength)]
+		else:
+			self.playoffDataHeader = []
+			self.playoffData = []
+		
 		## ok, so now we need to construct a game object with the data that we
 		## loaded 
 		
@@ -59,18 +68,60 @@ class nhlTeam(Team):
 		## and ignore duplicates 
 		
 		## slice out only the rows that contain games data
+		
+		dateIndex = -1
+		locationIndex = -1
+		resultIndex = -1
+		goalsForIndex = -1
+		goalsAgainstIndex = -1
+		opponentNameIndex = -1
+		gameEndedInIndex = -1
+		
+		
+		for i in range(0, len(scheduleHeader)):
+			colStat = scheduleHeader[i]
+			if(colStat == 'Date'):
+				dateIndex = i
+				continue
+			elif(colStat == 'Location'):
+				locationIndex = i
+				continue
+			elif(colStat == 'Result'):
+				resultIndex = i
+				continue
+			elif(colStat == 'GF'):
+				goalsForIndex = i
+				continue
+			elif(colStat == 'GA'):
+				goalsAgainstIndex = i
+				continue
+			elif(colStat == 'Opponent'):
+				opponentNameIndex = i
+				continue
+			elif(colStat == 'Game Ended In'):
+				gameEndedInIndex = i
+				continue
+			
+		if(debugInfo):
+			print "dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (dateIndex, locationIndex, resultIndex, goalsForIndex, goalsAgainstIndex, opponentNameIndex, gameEndedInIndex)
+		
+		
 		for game in scheduleData:
 			## need to define who the home team was here based on whether there
 			## was an @ or an H
 			
-			self.Games.append(nhlGame(str(game[1]), str('@'+game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			self.Games.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
 			## set up each game as an object in memory
 		
-		rosterSize = rows[2][0]
+		rosterSize = int(rows[2][0])
 		## rosters...
-		self.Roster = rows[(self.totalSeasonLength+11+playoffLength):(self.totalSeasonLength+11+playoffLength+rosterSize)]
+		self.Roster = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
 		
-			
+		print 'Roster:\n'
+		if(debugInfo):
+			for p in self.Roster:
+				print p, '\n'
+
 		
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
@@ -78,10 +129,10 @@ class nhlTeam(Team):
 		self.seasonPointsTotal = 0	
 		self.seasonWins = 0
 		self.seasonTies = 0
-		self.seasonLosses = 0
+		self.seasonRegulationLosses = 0
+		self.seasonExtraTimeLosses = 0
 		self.averageGameClosenessIndex = 0
 		
-		averageSOCGames = 0
 		for game in self.getSeasonGames():
 
 			##print game.Layers[0]
@@ -94,43 +145,17 @@ class nhlTeam(Team):
 			elif(game.Tied()):
 				self.seasonTies += 1
 			elif(game.Lost()):
-				self.seasonLosses += 1
+				if(game.decidedInExtraTime()):
+					self.seasonExtraTimeLosses += 1
+				else:
+					self.seasonRegulationLosses += 1
 			
 			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
 				
-			try:
-				self.averageSOC += game.getSOC()
-				##print self.averageSOC
-			except ValueError:
-				averageSOCGames += 1	
-				print "Failed add due to ValueError"
-				print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
+
 		print "Total season games %i" % self.totalSeasonGames
-		self.averageGameClosenessIndex = self.averageGameClosenessIndex/float(self.totalSeasonGames)
-		## this is fixable, just need to save game totals for each type in teh
-		## csv and remember to load them
-		SOC = float(self.averageSOC)/float(self.totalSeasonGames-averageSOCGames) 
+		self.averageGameClosenessIndex /= float(self.totalSeasonGames)
 
-
-		if(averageSOCGames > 0):
-			## loop through the games again, if the value fails we overwrite it
-			## with the average of the games that were defined
-			for game in self.Games[0:self.totalSeasonGames]:
-				print game.Layers[0]
-				try:
-					game.getSOC()
-				except ValueError:
-					print "Failed int() cast due to ValueError"
-					game.setSOC(SOC)
-					print game.Layers[0]
-
-		
-		self.averageSOC = 0
-		for game in self.getSeasonGames():
-			## now that every game has a properly defined SOC, loop through
-			## and sum again before dividing to get the average
-			self.averageSOC += game.getSOC()
-		self.averageSOC /= float(self.totalSeasonGames)
 		
 		self.playoffWins = 0
 		self.playoffGames = 0
@@ -183,7 +208,7 @@ class nhlTeam(Team):
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
 					self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
-				elif(game.Tied()):
+				elif((game.Tied()) or ((game.Lost()) and (game.decidedInExtraTime()))):
 					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
 					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
@@ -236,8 +261,10 @@ class nhlTeam(Team):
 	def loadTierIV(self, teamsList, seasonsList):
 		self.Players = []
 		## list containing player objects 
-		for playerName in self.Roster:
-			self.Players.append(watMuPlayer(playerName, seasonsList))
+		##for playerName in self.Roster:
+		##	self.Players.append(watMuPlayer(playerName, seasonsList))
+
+		## gonna leave this offline for the moment
 	
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
@@ -264,7 +291,7 @@ class nhlTeam(Team):
 		
 	def getPlayoffGames(self):
 		if(self.qualifiedForPlayoffs() == True):
-			return self.Games[self.totalSeasonGames:self.seasonLength]
+			return self.playoffData
 		else:
 			print "Unable to return playoff games, %s did not qualify for playoffs"
 			
@@ -288,3 +315,11 @@ class nhlTeam(Team):
 				output = franchise[0].decode('utf-8')
 		return output
 
+	def getRecordString(self):
+		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonExtraTimeLosses)
+		## I dont have the patience for this right now, so this is only
+		## applicable for post 2005 lockout, with the shootout and loser point
+
+
+if(__name__ == "__main__"):
+	daBuds = nhlTeam('nhl', '2016', 'TOR')

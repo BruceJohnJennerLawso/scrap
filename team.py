@@ -78,9 +78,6 @@ class Team(object):
 		
 	def getSeasonAverageSOC(self):
 		return self.averageSOC
-	
-	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
 		
 	def getPointsPercentage(self):
 		return self.seasonPointsTotal/float(self.totalSeasonGames*2)			

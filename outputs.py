@@ -12,35 +12,64 @@ import sys
 
 
 
-def getAllSeasons(leagueId, levelId):
+def getAllSeasons(leagueId, levelId='null'):
 	## returns a list of every season
 	seasons = []
-	with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
-		## open the manifest csv file for this particular league & level
-		## (waterloo intramurals and beginner...)
-		reader = csv.reader(foo)
-		for row in reader:
-			## open the first season id in a row (formatted like termYYYY)
-			seasonId = row[0]
-			idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, levelId, seasonId)
-			## open the list of team ids stored for that particular season in
-			## another csv file
-			teamIdList = []
-			with open(idPath, 'rb') as bar:
-				reading = csv.reader(bar)
-				for teamId in reading:
-					## open up the list of teamIds for the season in question
-					teamIdList.append(teamId[0])
-					## stuff the ids into a list
+	
+	if(levelId == 'null'):
+		with open('./data/%s/seasons.csv' % (leagueId), 'rb') as foo:
+			## open the manifest csv file for this particular league
+			## (nhl)
+			reader = csv.reader(foo)
+			for row in reader:
+				## open the first season id in a row (formatted like termYYYY)
+				seasonId = row[0]
+				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
+				## open the list of team ids stored for that particular season in
+				## another csv file
+				teamIdList = []
+				with open(idPath, 'rb') as bar:
+					reading = csv.reader(bar)
+					for teamId in reading:
+						## open up the list of teamIds for the season in question
+						teamIdList.append(teamId[0])
+						## stuff the ids into a list
 					
-					## no idea why the ids are stored one deep
-			seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
-			## this should create a season from this data, and by extension
-			## constructs all of the teams that played in those seasons by
-			## extension
-	for season in seasons:
-		season.loadTierIV(seasons)
-	return seasons
+						## no idea why the ids are stored one deep
+				seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
+				## this should create a season from this data, and by extension
+				## constructs all of the teams that played in those seasons by
+				## extension
+		for season in seasons:
+			season.loadTierIV(seasons)
+		return seasons
+	else:
+		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+			## open the manifest csv file for this particular league & level
+			## (waterloo intramurals and beginner...)
+			reader = csv.reader(foo)
+			for row in reader:
+				## open the first season id in a row (formatted like termYYYY)
+				seasonId = row[0]
+				idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, levelId, seasonId)
+				## open the list of team ids stored for that particular season in
+				## another csv file
+				teamIdList = []
+				with open(idPath, 'rb') as bar:
+					reading = csv.reader(bar)
+					for teamId in reading:
+						## open up the list of teamIds for the season in question
+						teamIdList.append(teamId[0])
+						## stuff the ids into a list
+					
+						## no idea why the ids are stored one deep
+				seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
+				## this should create a season from this data, and by extension
+				## constructs all of the teams that played in those seasons by
+				## extension
+		for season in seasons:
+			season.loadTierIV(seasons)
+		return seasons
 
 
 def getFranchiseList(leagueId, levelId):
