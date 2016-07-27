@@ -16,6 +16,8 @@ if(__name__ == "__main__"):
 	## ie 'watMu'
 	levelId = argv[2]
 	## ie 'beginner'
+	seasonId = argv[3]
+	## ie 'winter2016'
 	
 	## ids needed to open the proper folders and csv files contained within
 	if(leagueId == 'nhl'):
@@ -24,9 +26,10 @@ if(__name__ == "__main__"):
 		seasons = getAllSeasons(leagueId, levelId)	
 	## retrieve list of seasons from the manifest for this level
 	##franchises = getFranchiseList(leagueId, levelId)
-	
-	for team in seasons.Teams:
-		print team.getDescriptionString()
+	for season in seasons:
+		if(season.getSeasonId() == seasonId):
+			for team in season.Teams:
+				print team.getDescriptionString(), '\n'
 	##plotAllTeams(seasons, leagueId, levelId)
 	##plotAllTopPlayoffTeams(seasons, leagueId, levelId)
 	##plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	

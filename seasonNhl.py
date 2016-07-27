@@ -10,12 +10,12 @@ from season import *
 
 class nhlSeason(Season):
 	def __init__(self, leagueId, seasonId, teamIdList, sortTeams):
-		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
+		super(nhlSeason, self).__init__(leagueId, 'null', seasonId, teamIdList)
 		
 		self.playoffBrackets = []
 		
 		for teamId in teamIdList:
-			self.Teams.append(watMuTeam(leagueId, levelId, seasonId, teamId))
+			self.Teams.append(nhlTeam(leagueId, seasonId, teamId))
 		
 		for team in self.Teams:
 			team.loadTierI()
@@ -23,47 +23,15 @@ class nhlSeason(Season):
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
 			## be calculated from first tier data
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonGoalsForAverage(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonAverageSOC(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getPointsPercentage(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPointsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonWinsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPlusMinus(), reverse=True)
 			## highest priority at the end
 			
 
 		for team in self.Teams:
 			team.loadTierII(self.Teams, self.Teams.index(team))
-		
-		self.topTeam = self.getTeamByPosition(1)
-		## next work through the teams this one played and add their position
-		## numbers to the top playoff bracket, then look through their
-		## opponents and so on
-		
-		## maybe a recursive function here that takes the teams list and the
-		## bracket list as arguments and returns lists of seeding positions
-		
-		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self, [])
-		lastPlayoffBracket = self.topPlayoffBracket
-		
-		print "top playoff bracket: ", self.topPlayoffBracket
-		
-		self.playoffBrackets.append(self.topPlayoffBracket)
-		
-		teamsSoFar = len(self.topPlayoffBracket)
-		while(True):
-			totalTeams = self.getTotalPlayoffTeams()
-			print "total teams for %s: %i" % (self.seasonId, totalTeams)
-			print "teams so far: %i" % teamsSoFar
-			if(totalTeams > teamsSoFar):
-				lastSeed = max(lastPlayoffBracket)
-				topOfNewBracket = self.getTeamByPosition(lastSeed+1)
-				lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
-				
-				self.playoffBrackets.append(lastPlayoffBracket)
-				teamsSoFar += len(lastPlayoffBracket)
-			else:
-				break
-				## we reached the bottom of the league, no more brackets to crawl
 			
-		
 		for team in self.Teams:
 			team.loadTierIII(self.Teams)
 	
@@ -71,17 +39,8 @@ class nhlSeason(Season):
 		for team in self.Teams:
 			team.loadTierIV(self.Teams, seasonsList)
 	
-	def printPlayoffBrackets(self):
-		for i in range(0, len(self.playoffBrackets)):
-			if(i == 0):
-				print "Top Playoff Bracket ", self.playoffBrackets[i]
-			elif(i==1):
-				print "Second Playoff Bracket ", self.playoffBrackets[i]
-			elif(i==2):
-				print "Third Playoff Bracket ", self.playoffBrackets[i]
-			else:
-				print "%th Playoff Bracket " % i, self.playoffBrackets[i]
-			print len(self.playoffBrackets[i])
+	##def printPlayoffBrackets(self):
+
 			
 	def getTotalPlayoffTeams(self):
 		output = 0

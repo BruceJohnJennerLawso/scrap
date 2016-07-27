@@ -5,6 +5,7 @@
 ################################################################################
 
 from seasonWatMu import *
+from seasonNhl import *
 from graphtools import *
 
 import sys  
@@ -36,7 +37,7 @@ def getAllSeasons(leagueId, levelId='null'):
 						## stuff the ids into a list
 					
 						## no idea why the ids are stored one deep
-				seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
+				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
 				## this should create a season from this data, and by extension
 				## constructs all of the teams that played in those seasons by
 				## extension

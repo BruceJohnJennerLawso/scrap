@@ -55,7 +55,7 @@ class nhlTeam(Team):
 		
 		if(playoffLength > 0):
 			self.playoffDataHeader = rows[(self.totalSeasonGames+8)]
-			self.playoffData = rows[(self.totalSeasonLength+9):(self.totalSeasonLength+9+playoffLength)]
+			self.playoffData = rows[(self.totalSeasonGames+9):(self.totalSeasonGames+9+playoffLength)]
 		else:
 			self.playoffDataHeader = []
 			self.playoffData = []
@@ -165,12 +165,12 @@ class nhlTeam(Team):
 		self.playoffGoalsAgainst = 0
 		if(self.qualifiedForPlayoffs() == True):
 			self.playoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
+		##	for game in self.getPlayoffGames():		
+		##		if(game.Won()):
+		##			self.playoffWins += 1
+		##		self.playoffGoalsFor += game.getGoalsFor()
+		##		self.playoffGoalsAgainst += game.getGoalsAgainst()				
+		##		self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
 		
 	## Tier II load call #######################################################	
 		
@@ -267,7 +267,7 @@ class nhlTeam(Team):
 		## gonna leave this offline for the moment
 	
 	def getDescriptionString(self):
-		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
 	
 	def getSeasonIndex(self):
 		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('watMu'))
@@ -316,7 +316,7 @@ class nhlTeam(Team):
 		return output
 
 	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonExtraTimeLosses)
+		return "(%s-%s-%s)" % (self.seasonWins, self.seasonRegulationLosses, self.seasonExtraTimeLosses)
 		## I dont have the patience for this right now, so this is only
 		## applicable for post 2005 lockout, with the shootout and loser point
 

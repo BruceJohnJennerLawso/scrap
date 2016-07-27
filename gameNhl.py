@@ -79,6 +79,7 @@ class nhlGame(Game):
 			## been played yet, no points are earned
 			
 					
-
+	def getOpponentName(self):
+		return self.Layers[0][6]
 
 
