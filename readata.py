@@ -22,8 +22,8 @@ if(__name__ == "__main__"):
 	franchises = getFranchiseList(leagueId, levelId)
 	
 	
-	##plotAllTeams(seasons, leagueId, levelId)
+	plotAllTeams(seasons, leagueId, levelId)
 	plotAllTopPlayoffTeams(seasons, leagueId, levelId)
-	##plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	
+	plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId)	
 	plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises)
 
