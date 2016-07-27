@@ -40,20 +40,38 @@ class nhlTeam(Team):
 		for l in self.playoffSeriesLengths:
 			self.totalPlayoffGames += 1
 			
-
-		scheduleData = rows[5:(self.totalSeasonLength+5)]
+		scheduleHeader = rows[5]
+		scheduleData = rows[6:(self.totalSeasonLength+6)]
+		
+		playoffLength = 0
+		playoffSeriesLengths = rows[4]
+		for s in playoffSeriesLengths:
+			playoffLength += s
+		
+		if(playoffLength > 0):
+			playoffDataHeader = rows[(self.totalSeasonLength+8)]
+			playoffData = rows[(self.totalSeasonLength+9):(self.totalSeasonLength+9+playoffLength)]
+		## ok, so now we need to construct a game object with the data that we
+		## loaded 
+		
+		## Im thinking that we just construct the objects in place here as usual
+		## then if we want summaries we can loop through everything
+		## and ignore duplicates 
+		
 		## slice out only the rows that contain games data
 		for game in scheduleData:
-			self.Games.append(nhlGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			## need to define who the home team was here based on whether there
+			## was an @ or an H
+			
+			self.Games.append(nhlGame(str(game[1]), str('@'+game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
 			## set up each game as an object in memory
 		
-		
+		rosterSize = rows[2][0]
 		## rosters...
-		self.Roster = rows[(self.seasonLength + 3)]
+		self.Roster = rows[(self.totalSeasonLength+11+playoffLength):(self.totalSeasonLength+11+playoffLength+rosterSize)]
 		
 			
 		
-		self.averageSOC = 0
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
 		self.seasonTotalGoalsAgainst = 0	

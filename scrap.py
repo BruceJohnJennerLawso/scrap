@@ -32,7 +32,7 @@ if(__name__=="__main__"):
 	
 	leagueId = argv[1]
 	if(leagueId == 'nhl'):
-		scrapeListedTeams(True, leagueId)
+		scrapeListedTeams(False, leagueId)
 	else:
 		levelId = argv[2]
 		scrapeListedTeams(False, leagueId, levelId)

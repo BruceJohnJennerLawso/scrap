@@ -53,7 +53,7 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	seasonName = teamInfo[0]
 	teamName = teamInfo[1]
 	
-	print "%s %s" % (seasonName, teamName)
+	print "\n\n%s %s" % (seasonName, teamName)
 	print "Regular Season"
 
 	headingRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % 21)
@@ -122,6 +122,31 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 			elif((int(seasonId) >= 2013)and(int(seasonId) <= 2015)):
 				if(debugInfo):
 					print "Season after 2013, before 2016"
+				
+				if((seasonId == '2014')and(teamId == 'OTT')and(i == 54)):
+					continue
+				## I cannot figure out why this one was rescheduled
+				## most of the rest are blizzards and a medical emergency
+				## in the jackets/stars game
+				if((seasonId == '2014')and(teamId == 'BUF')and(i == 45)):
+					continue
+				if((seasonId == '2014')and(teamId == 'CAR')and(i == 46)):
+					continue					
+				if((seasonId == '2014')and(teamId == 'CAR')and(i == 52)):
+					continue	
+				if((seasonId == '2014')and(teamId == 'CAR')and(i == 55)):
+					continue						
+				if((seasonId == '2014')and(teamId == 'PHI')and(i == 53)):
+					continue						
+				if((seasonId == '2014')and(teamId == 'CBJ')and(i == 68)):
+					continue						
+				if((seasonId == '2014')and(teamId == 'DAL')and(i == 68)):
+					continue						
+
+					## theres a rescheduled game left in the schedule here which
+					## throws a wrench into the scraper
+					## gonna try jumping over it and seeing how that goes
+				
 				if(gameRow[2] != '@'):
 					gameRow.insert(2, 'H')
 				if(gameRow[6] not in ['OT', 'SO']):
@@ -150,6 +175,18 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	regularSeasonLength = len(gamesLists)-1
 	
 	print 'Season length: %i games' % regularSeasonLength, '\n'
+
+
+
+
+
+
+
+
+
+
+
+
 
 	print "Playoffs"
 
@@ -240,8 +277,8 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 					print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
 				playoffGameLists.append(gameRow)
 				playoffRoundLengths[playoffRound] += 1
-			print 'playoffLength ', len(playoffGameLists)-1, ' games'
-			print 'playoffRoundLengths: ', playoffRoundLengths, '\n'
+		print 'playoffLength ', len(playoffGameLists)-1, ' games'
+		print 'playoffRoundLengths: ', playoffRoundLengths, '\n'
 
 	##teamString = content1[0].encode('utf-8')
 	
