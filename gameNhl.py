@@ -21,9 +21,10 @@ class nhlGame(Game):
 		self.addLayer([dateString, gameLocation, gameResult, goalsFor, goalsAgainst, thisTeamName, opponentName, gameEndedIn])
 		self.layerCount += 1
 	
-	
+	def getGameDescription(self):
+		return "%s %s %s %s %i-%i %s %s" % (self.Layers[0][0], self.Layers[0][1], self.getThisTeamName(), self.Layers[0][2], self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.Layers[0][7])
 
-	def getthisTeamName(self):
+	def getThisTeamName(self):
 		return self.Layers[0][5]
 	
 	def Won(self):

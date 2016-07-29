@@ -32,6 +32,9 @@ class nhlTeam(Team):
 		self.teamName = rows[0][0]
 		print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
 		
+		##if((debugInfo)and(rawDataView)):
+		##	print "\n\nraw file\n\n"
+		
 		
 		self.totalSeasonGames = int(rows[3][0])
 		
@@ -54,8 +57,10 @@ class nhlTeam(Team):
 			playoffLength += int(s)
 		
 		if(playoffLength > 0):
-			self.playoffDataHeader = rows[(self.totalSeasonGames+8)]
-			self.playoffData = rows[(self.totalSeasonGames+9):(self.totalSeasonGames+9+playoffLength)]
+			self.playoffDataHeader = rows[(self.totalSeasonGames+7)]
+			print 'playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader)
+			self.playoffData = rows[(self.totalSeasonGames+8):(self.totalSeasonGames+8+playoffLength)]
+			print 'playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0])
 		else:
 			self.playoffDataHeader = []
 			self.playoffData = []
@@ -113,6 +118,57 @@ class nhlTeam(Team):
 			self.Games.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
 			## set up each game as an object in memory
 		
+		self.playoffGames = []
+		
+		if(playoffLength > 0):
+			playoffDateIndex = -1
+			playoffLocationIndex = -1
+			playoffResultIndex = -1
+			playoffGoalsForIndex = -1
+			playoffGoalsAgainstIndex = -1
+			playoffOpponentNameIndex = -1
+			playoffGameEndedInIndex = -1
+		
+			if(debugInfo):
+				print self.playoffDataHeader
+		
+			for i in range(0, len(self.playoffDataHeader)):
+				colStat = self.playoffDataHeader[i]
+				if(colStat == 'Date'):
+					playoffDateIndex = i
+					continue
+				elif(colStat == 'Location'):
+					playoffLocationIndex = i
+					continue
+				elif(colStat == 'Result'):
+					playoffResultIndex = i
+					continue
+				elif(colStat == 'GF'):
+					playoffGoalsForIndex = i
+					continue
+				elif(colStat == 'GA'):
+					playoffGoalsAgainstIndex = i
+					continue
+				elif(colStat == 'Opponent'):
+					playoffOpponentNameIndex = i
+					continue
+				elif(colStat == 'Game Ended In'):
+					playoffGameEndedInIndex = i
+					continue
+			
+			if(debugInfo):
+				print "dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (playoffDateIndex, playoffLocationIndex, playoffResultIndex, playoffGoalsForIndex, playoffGoalsAgainstIndex, playoffOpponentNameIndex, playoffGameEndedInIndex)
+				for p in self.playoffData:
+					print p
+		
+			for game in self.playoffData:
+				## need to define who the home team was here based on whether there
+				## was an @ or an H
+			
+				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex]))
+				## set up each game as an object in memory
+		
+		
 		rosterSize = int(rows[2][0])
 		## rosters...
 		self.Roster = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
@@ -158,19 +214,19 @@ class nhlTeam(Team):
 
 		
 		self.playoffWins = 0
-		self.playoffGames = 0
+		self.totalPlayoffGames = 0
 		self.playoffWinPercentage = 0.000
 		
 		self.playoffGoalsFor = 0
 		self.playoffGoalsAgainst = 0
-		if(self.qualifiedForPlayoffs() == True):
-			self.playoffGames = len(self.getPlayoffGames())
-		##	for game in self.getPlayoffGames():		
-		##		if(game.Won()):
-		##			self.playoffWins += 1
-		##		self.playoffGoalsFor += game.getGoalsFor()
-		##		self.playoffGoalsAgainst += game.getGoalsAgainst()				
-		##		self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
+		if(self.qualifiedForPlayoffs()):
+			self.totalPlayoffGames = len(self.getPlayoffGames())
+			for game in self.getPlayoffGames():		
+				if(game.Won()):
+					self.playoffWins += 1
+				self.playoffGoalsFor += game.getGoalsFor()
+				self.playoffGoalsAgainst += game.getGoalsAgainst()				
+				self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
 		
 	## Tier II load call #######################################################	
 		
@@ -267,7 +323,7 @@ class nhlTeam(Team):
 		## gonna leave this offline for the moment
 	
 	def getDescriptionString(self):
-		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
 	
 	def getSeasonIndex(self):
 		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('watMu'))
@@ -281,7 +337,7 @@ class nhlTeam(Team):
 		
 		## the only team thats going to miss on this one is a team that got
 		## DQed from the playoffs
-		if(self.totalPlayoffGames > 0):
+		if(self.getTotalPlayoffGames() > 0):
 			return True
 		else:
 			return False
@@ -291,7 +347,7 @@ class nhlTeam(Team):
 		
 	def getPlayoffGames(self):
 		if(self.qualifiedForPlayoffs() == True):
-			return self.playoffData
+			return self.playoffGames
 		else:
 			print "Unable to return playoff games, %s did not qualify for playoffs"
 			

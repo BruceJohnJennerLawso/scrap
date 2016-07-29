@@ -121,13 +121,13 @@ def plotAllTeams(seasons, leagueId, levelId):
 			defquees.append(team.getDefenceQualityIndex())
 			## appending all of those values into one big list for each measure
 			## so we can make a histogram of all of the values and display it
-	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_Total_histogram.png')
-	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_Total_histogram.png')
+	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_Total_histogram.png', 0.0, 2.0)
+	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_Total_histogram.png', 0.0, 2.0)
 	plotHistogram('Points Percentage', 'Count', 'Histogram of Points Percentages', pointsPct, './results/%s/%s/histograms' % (leagueId, levelId), 'PtsPct', 'PtsPct_Total_histogram.png', 0.0, 1.0, 12)		
 	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, './results/%s/%s/histograms' % (leagueId, levelId), 'Offence', 'Offence_Total_histogram.png', 0.0, 8.0)
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, './results/%s/%s/histograms' % (leagueId, levelId), 'Defence', 'Defence_Total_histogram.png', 0.0, 8.0)	
 	plotHistogram('AGCI', 'Count', 'Histogram of AGCI', gci,'./results/%s/%s/histograms' % (leagueId, levelId), 'AGCI', 'AGCI_Total_histogram.png', 0.0, 1.0)	
-	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'./results/%s/%s/histograms' % (leagueId, levelId), 'PlusMinus', 'PlusMinus_Total_histogram.png', -40, 40)	
+	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'./results/%s/%s/histograms' % (leagueId, levelId), 'PlusMinus', 'PlusMinus_Total_histogram.png', -200, 200)	
 	
 	plotHistogram('Offence Quality Index', 'Count', 'Histogram of Offence Quality Index values', offquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'OQI', 'OQI_Total_histogram.png')	
 	plotHistogram('Defence Quality Index', 'Count', 'Histogram of Of Defence Quality Index values', defquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'DQI', 'DQI_Total_histogram.png')
@@ -161,25 +161,48 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 		## season
 		for team in season.Teams:
 			## loop through all of the teams that played in that season
-			if(team.getSeasonRank() in season.topPlayoffBracket):
-				print team.getDescriptionString(), "\n"
-				mawquees.append(team.getMaAWQI())
-				offence.append(team.getSeasonGoalsForAverage())
-				defence.append(team.getSeasonGoalsAgainstAverage())
-				gci.append(team.getAGCI())
-				mapquees.append(team.getMaAPQI())
-				pointsPct.append(team.getPointsPercentage())
-				plusMinuses.append(team.getSeasonPlusMinus())
-				playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
-				playoffOffence.append(team.getPlayoffGoalsForAverage())
+			if(leagueId == 'watMu'):
+			
+				if(team.getSeasonRank() in season.topPlayoffBracket):
+					print team.getDescriptionString(), "\n"
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
+					playoffOffence.append(team.getPlayoffGoalsForAverage())
 
-				offquees.append(team.getOffenceQualityIndex())
-				defquees.append(team.getDefenceQualityIndex())
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
 				
-				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it
+			else:
+				if(team.getTotalPlayoffGames() > 0):
+					print team.getDescriptionString(), "\n"
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getPlayoffWinPercentage())
+					playoffOffence.append(team.getPlayoffGoalsForAverage())
+
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
 				
-				## appending all of those values into one big list for each measure
-				## so we can make a histogram of all of the values and display it
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it
+	
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAWQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted AWQI values', mawquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffWinPct_by_MaAWQI.png')	
 	plotScatterplot('MaAWQI', 'Playoff Offence', 'Playoff Offence by Mean Adjusted AWQI values', mawquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffOffence_by_MaAWQI.png')		
@@ -230,24 +253,45 @@ def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 		## season
 		for team in season.Teams:
 			## loop through all of the teams that played in that season
-			if(team.getSeasonRank() in season.topPlayoffBracket):
-				print team.getDescriptionString(), "\n"
-				mawquees.append(team.getMaAWQI())
-				offence.append(team.getSeasonGoalsForAverage())
-				defence.append(team.getSeasonGoalsAgainstAverage())
-				gci.append(team.getAGCI())
-				mapquees.append(team.getMaAPQI())
-				pointsPct.append(team.getPointsPercentage())
-				plusMinuses.append(team.getSeasonPlusMinus())
-				playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
+			if(leagueId == 'watMu'):
+				if(team.getSeasonRank() in season.topPlayoffBracket):
+					print team.getDescriptionString(), "\n"
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
 
-				offquees.append(team.getOffenceQualityIndex())
-				defquees.append(team.getDefenceQualityIndex())
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
 				
-				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
 				
-				## appending all of those values into one big list for each measure
-				## so we can make a histogram of all of the values and display it
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it
+			else:
+				if(team.getTotalPlayoffGames() > 0):
+					print team.getDescriptionString(), "\n"
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getPlayoffWinPercentage())
+
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
+				
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+				
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it	
+	
 	mawqueeDeltas = getLinearModelDeltas(mawquees, playoffPercentages)
 	plotScatterplot('MaAWQI Model Deltas', 'AGCI', 'AGCI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, gci, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAWQI/modelDeltas', 'AGCI_by_MaAWQI_Deltas.png', -1.0, 1.0)
 	plotScatterplot('MaAWQI Model Deltas', 'MaAPQI', 'MaAPQI by Mean Adjusted AWQI Deltas from the model', mawqueeDeltas, mapquees, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAWQI/modelDeltas', 'MaAPQI_by_MaAWQI_Deltas.png', -1.0, 1.0)
@@ -295,7 +339,7 @@ def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 
 
 
-def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
+def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 	mawquees = []
 	mapquees = []
 	offence = []
@@ -326,37 +370,65 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId, franchises):
 		## season
 		for team in season.Teams:
 			## loop through all of the teams that played in that season
-			if(team.getSeasonRank() in season.topPlayoffBracket):
-				##print team.getDescriptionString(), "\n"
+			if(leagueId == 'watMu'):
+				if(team.getSeasonRank() in season.topPlayoffBracket):
+					##print team.getDescriptionString(), "\n"
+					
+					data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaOQI(), team.getMaDQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+					##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
+					##teamFran = str(team.getFranchise(franchises).decode('utf-8'))
+					##print teamFran
 				
-				data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaOQI(), team.getMaDQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
-				##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
-				teamFran = str(team.getFranchise(franchises).decode('utf-8'))
-				print teamFran
-				
-				daterd.append([teamFran.encode('utf-8'), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
-				mawquees.append(team.getMaAWQI())
-				offence.append(team.getSeasonGoalsForAverage())
-				defence.append(team.getSeasonGoalsAgainstAverage())
-				gci.append(team.getAGCI())
-				mapquees.append(team.getMaAPQI())
-				pointsPct.append(team.getPointsPercentage())
-				plusMinuses.append(team.getSeasonPlusMinus())
-				playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
+					daterd.append([team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getRealPlayoffWinPercentage(season))
 
-				offquees.append(team.getOffenceQualityIndex())
-				defquees.append(team.getDefenceQualityIndex())
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
+					
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					
+					mahoffquees.append(team.getMaOQI())
+					mahdefquees.append(team.getMaDQI())
 				
-				offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it
+			else:
+				if(team.getTotalPlayoffGames() > 0):
+					data.append([team.getPlayoffWinPercentage(), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaOQI(), team.getMaDQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+					##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
+					##teamFran = str(team.getFranchise(franchises).decode('utf-8'))
+					##print teamFran
 				
-				mahoffquees.append(team.getMaOQI())
-				mahdefquees.append(team.getMaDQI())
+					daterd.append([team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+					mawquees.append(team.getMaAWQI())
+					offence.append(team.getSeasonGoalsForAverage())
+					defence.append(team.getSeasonGoalsAgainstAverage())
+					gci.append(team.getAGCI())
+					mapquees.append(team.getMaAPQI())
+					pointsPct.append(team.getPointsPercentage())
+					plusMinuses.append(team.getSeasonPlusMinus())
+					playoffPercentages.append(team.getPlayoffWinPercentage())
+
+					offquees.append(team.getOffenceQualityIndex())
+					defquees.append(team.getDefenceQualityIndex())
+					
+					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
+					
+					mahoffquees.append(team.getMaOQI())
+					mahdefquees.append(team.getMaDQI())
 				
-				## appending all of those values into one big list for each measure
-				## so we can make a histogram of all of the values and display it
+					## appending all of those values into one big list for each measure
+					## so we can make a histogram of all of the values and display it					
 
 	dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence', 'MaOQI', 'MaDQI', 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
-	dataTruong = pd.DataFrame(daterd, columns=['Franchise' , 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
+	dataTruong = pd.DataFrame(daterd, columns=['GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
 	## Hi Ryan
 	
 	print "\n\nData means"
