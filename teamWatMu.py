@@ -280,3 +280,5 @@ class watMuTeam(Team):
 				output = franchise[0].decode('utf-8')
 		return output
 
+	def getRecordString(self):
+		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)

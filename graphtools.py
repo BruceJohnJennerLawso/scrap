@@ -49,6 +49,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	plt.close()
 
 def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39, plotMax=60.0):
+	
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
@@ -110,7 +111,8 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f" % (title, distMean, distMedian, distVar)
 	plt.title(title_)
 	## an' title it
-	plt.axis([minShow, maxShow, 0.0, plotMax])
+	print "Plot min %f, max %f" % (0.0, plotMax)
+	plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
 	## I need to figure out how to get a max from our plt.hist output

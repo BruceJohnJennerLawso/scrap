@@ -78,9 +78,6 @@ class Team(object):
 		
 	def getSeasonAverageSOC(self):
 		return self.averageSOC
-	
-	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
 		
 	def getPointsPercentage(self):
 		return self.seasonPointsTotal/float(self.totalSeasonGames*2)			
@@ -101,7 +98,7 @@ class Team(object):
 		return self.averageGameClosenessIndex
 		
 	def getTotalPlayoffGames(self):
-		return self.playoffGames
+		return len(self.playoffGames)
 
 	def getTotalPlayoffWins(self):
 		return self.playoffWins
@@ -117,14 +114,14 @@ class Team(object):
 			
 	def getPlayoffGoalsForAverage(self):
 		output = 0.000
-		if(self.playoffGames > 0):
-			output = float(self.playoffGoalsFor)/float(self.playoffGames)
+		if(self.getTotalPlayoffGames() > 0):
+			output = float(self.playoffGoalsFor)/float(self.getTotalPlayoffGames())
 		return output
 
 	def getPlayoffGoalsAgainstAverage(self):
 		output = 0.000
-		if(self.playoffGames > 0):
-			output = float(self.playoffGoalsAgainst)/float(self.playoffGames)
+		if(self.getTotalPlayoffGames() > 0):
+			output = float(self.playoffGoalsAgainst)/float(self.getTotalPlayoffGames())
 		return output
 		
 	def getRoster(self):

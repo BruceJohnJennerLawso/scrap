@@ -11,18 +11,6 @@ class watMuGame(Game):
 		self.addLayer([dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName])
 		self.layerCount += 1
 
-
-	def getGoalsFor(self):
-		return self.Layers[0][3]
-		## should hopefully already be in 
-		
-	def getGoalsAgainst(self):
-		return self.Layers[0][4]		
-		
-	def getGoalDifferential(self):
-		diff = self.getGoalsFor()-self.getGoalsAgainst()
-		return diff		
-		
 	def getSOC(self):
 		return float(self.Layers[0][5])
 		## must remember this can be float if the game is being listed as
@@ -30,18 +18,7 @@ class watMuGame(Game):
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue
-		
-	def getPointsEarned(self):
-		if(self.Won()):
-			return 2
-		elif(self.Tied()):
-			return 1
-		else:
-			return 0
-			## regardless of whether we lost or the game hasnt been played yet,
-			## no points are earned
-			
-	
+
 	def Won(self):
 		if(self.Layers[0][2] == 'won'):
 			return True
@@ -58,13 +35,20 @@ class watMuGame(Game):
 		if(self.Layers[0][2] == 'lost'):
 			return True
 		else:
-			return False						
-
-	def getGameClosenessIndex(self):
-		if(self.Tied() != True):
-			return 1/float(abs(self.getGoalDifferential()))
-		else:
-			return 1
+			return False
 		
+	def getPointsEarned(self):
+		## this needs to be defined on a league by league basis, since not all
+		## leagues actually score points the same way, ie Euro leagues with
+		## 3 point system
+		if(self.Won()):
+			return 2
+		elif(self.Tied()):
+			return 1
+		else:
+			return 0
+			## regardless of whether we lost or the game hasnt been played yet,
+			## no points are earned
+	
 	def getOpponentName(self):
 		return self.Layers[0][6]
