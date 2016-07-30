@@ -23,7 +23,7 @@ def scrapeListedTeams(debugInfo, leagueId, levelId=False):
 				with open(idPath, 'rb') as bar:
 					reading = csv.reader(bar)
 					for teamId in reading:
-						watMuScraper.scrapeTeamData(int(teamId[0]), debugInfo, row[0], False, leagueId, levelId)
+						watMuScraper.scrapeTeamData(int(teamId[0]), debugInfo, row[0], False, leagueId, levelId, True)
 
 
 if(__name__=="__main__"):

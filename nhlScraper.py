@@ -15,6 +15,9 @@ from gameProcessing import *
 
 
 def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, seasonGames, playoffRoundLengths, playoffGames, rosterSize, rosterRows):
+	## once we have the data about the team in question, usually in string form,
+	## we should save it in string format so its more convenient to access
+	## elsewhere without connecting to the internet
 	outputPath = ("./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId))
 	print "current output path: %s" % outputPath
 	with open(outputPath, 'wb') as foo:
