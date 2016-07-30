@@ -28,8 +28,12 @@ def getTeamName(teamString):
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
+	## ie 'The Mighty Dads' and 'The Mighty Dads '
+	## will not compare as the same thing
+	
 	
 def seasonLength(val):
+	## wtf does this actually do...?
 	if(val >= 37):
 		output = (val - 9.0)/4.0
 		## if the team made it to the playoffs, we need to step back one
@@ -41,6 +45,7 @@ def seasonLength(val):
 	return output
 	
 def getGameResult(rawDataString):
+	## pretty simple stuff
 	if('tie' in rawDataString):
 		return 'tie'
 	elif('won' in rawDataString):	
@@ -62,6 +67,7 @@ def smallerOne(val1, val2):
 	else:
 		return val2
 
+## ^ helpful functions for handling scores
 
 		
 def processGoalsFor(rawDataString):
@@ -133,17 +139,22 @@ def processGoalsAgainst(rawDataString):
 		
 	
 def processSOC(rawDataString):
+	## take whatever was in the SOC column and make sense of it as a value we
+	## can use later to calculate overall SOC average
 	if(rawDataString == 'avg.'):
 		return rawDataString
 		## nothing we can do about this at this step of the process
 		
-		## this is gonna be a clusterfuck to handle this at the end
+		## so we can handle this later when the team object is loading data, and
+		## it will make sure this counts as weighting the average a bit more
 	else:
 		return int(rawDataString)
-		## force it out as an integer so it can be summed a bit more easily
+		## force it out as an integer so it can be summed easily
 
 
 if(__name__ == "__main__"):
 	gf =  processGoalsFor('won 100 - 9', 'won')
 	ga = processGoalsAgainst('won 100 - 9', 'won')
 	print "gf %i, ga %i" % (gf, ga)
+	## quickly testing the goals processing function, which now can handle
+	## scores above 10 with ease!!! Such resiliency!!! <3<3<3
