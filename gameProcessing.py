@@ -6,17 +6,25 @@
 
 def getTeamName(teamString):
 	if('(Casual)' in teamString):
-		return teamString[12:len(teamString)-9]
+		return teamString[12:len(teamString)-(len('Casual') + 1)]		
 	elif('(Beginner)' in teamString):
-		return teamString[12:len(teamString)-11]		
+		return teamString[12:len(teamString)-(len('(Beginner)') + 1)]
+	elif('(Semi-Competitive)' in teamString):
+		return teamString[12:len(teamString)-(len('(Semi-Competitive)') + 1)]
+	elif('(Intermediate)' in teamString):
+		return teamString[12:len(teamString)-(len('(Intermediate)') + 1)]	
+	elif('(Competitive)' in teamString):
+		return teamString[12:len(teamString)-(len('(Competitive)') + 1)]		
+	elif('(Advanced)' in teamString):
+		return teamString[12:len(teamString)-(len('(Advanced)') + 1)]		
 	elif('(Elite)' in teamString):
-		return teamString[12:len(teamString)-8]	
+		return teamString[12:len(teamString)-(len('(Elite)') + 1)]
 	elif('(All Star)' in teamString):
-		return teamString[12:len(teamString)-11]	
+		return teamString[12:len(teamString)-(len('(All Star)') + 1)]
 	elif('(All Star Non-Contact)' in teamString):
-		return teamString[12:len(teamString)-23]
+		return teamString[12:len(teamString)-(len('(All Star Non-Contact)') + 1)]
 	elif('(All Star Contact)' in teamString):
-		return teamString[12:len(teamString)-19]							
+		return teamString[12:len(teamString)-(len('(All Star Contact)') + 1)]		
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
