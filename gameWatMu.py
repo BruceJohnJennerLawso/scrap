@@ -14,10 +14,18 @@ class watMuGame(Game):
 
 	def getSOC(self):
 		return float(self.Layers[0][5])
-		## Waterloo intramurals has basically a 'Plays Nice' rating
+		## Waterloo intramurals has basically a 'Plays Nice' rating, which
+		## measures how 'sportsmanlike' a team was. During the season, a teams
+		## SOC is part assigned by the refs and the other team, and playoffs is
+		## all assesed by the refs
+		
+		## typically a negative correlation between this and everything that
+		## shows a good team, because nobody usually hates on teams that suck
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue
+		## important to have this to reset values of avg games from
+		## 'avg.' -> 2.333 or whatever the teams overall average was
 
 	def Won(self):
 		if(self.Layers[0][2] == 'won'):

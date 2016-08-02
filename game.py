@@ -23,6 +23,9 @@ class Game(object):
 	def getLocation(self):
 		return self.Layers[0][1]
 		## same idea here
+		
+	def getGameResult(self):
+		return self.Layers[0][2]
 
 	def getGoalsFor(self):
 		return int(self.Layers[0][3])
