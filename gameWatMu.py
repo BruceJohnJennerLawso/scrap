@@ -1,6 +1,7 @@
 ## gameWatMu.py ################################################################
 ## game object specifically representing a waterloo intramurals ################
 ## game, since the nhl game will need to work a bit differently ################
+## (storing a couple of slightly different stats in each one) ##################
 ################################################################################
 
 from game import *
@@ -13,8 +14,7 @@ class watMuGame(Game):
 
 	def getSOC(self):
 		return float(self.Layers[0][5])
-		## must remember this can be float if the game is being listed as
-		## the team average SOC
+		## Waterloo intramurals has basically a 'Plays Nice' rating
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue

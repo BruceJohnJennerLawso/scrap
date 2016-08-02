@@ -1,4 +1,7 @@
 ################################################################################
+## python file that takes parameters describing the league/level that we want ##
+## to scrape and saves the teams in the seasons specified into csv files #######
+################################################################################
 from sys import argv
 import csv
 
@@ -7,11 +10,17 @@ import nhlScraper
 	
 def scrapeListedTeams(debugInfo, leagueId, levelId=False):
 	if(levelId == False):
+		## everything else besides watMu teams
 		with open('./data/%s/seasons.csv' % (leagueId), 'rb') as foo:
 			reader = csv.reader(foo)
+			## open up the seasons manifest file to get a list of all of the
+			## seasons that we will be scraping for this league
 			for row in reader:
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, row[0])
 				with open(idPath, 'rb') as bar:
+					## for each season that we will be scraping, open up the
+					## manifest file to get a list of teamIds that will need to
+					## be scraped
 					reading = csv.reader(bar)
 					for teamId in reading:
 						nhlScraper.scrapeTeamData(teamId[0], debugInfo, row[0], False, leagueId)		
@@ -28,16 +37,16 @@ def scrapeListedTeams(debugInfo, leagueId, levelId=False):
 
 if(__name__=="__main__"):
 	
-	print argv
+	
+	print 'Arguments:\n', argv
 	
 	leagueId = argv[1]
+	## ie 'nhl' or 'watMu'
 	if(leagueId == 'nhl'):
 		scrapeListedTeams(False, leagueId)
 	else:
 		levelId = argv[2]
 		scrapeListedTeams(False, leagueId, levelId)
-	##leagueId = 'watMu'
-	##levelId = 'beginner'
-	## ids needed to open the proper folders and csv files contained within
+
 	
 
