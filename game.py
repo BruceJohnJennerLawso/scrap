@@ -33,6 +33,9 @@ class Game(object):
 	def getGoalsAgainst(self):
 		return int(self.Layers[0][4])		
 		
+	def getOpponentName(self):
+		return self.Layers[0][6]		
+		
 	def getGoalDifferential(self):
 		diff = self.getGoalsFor()-self.getGoalsAgainst()
 		return diff					
@@ -58,3 +61,5 @@ class Game(object):
 		
 		## although now that I take a look at it, the dropoff is a little bit
 		## too steep early on between a 1 to 2 to 3 goal differential
+		
+	

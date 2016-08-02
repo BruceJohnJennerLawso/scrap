@@ -28,19 +28,19 @@ class watMuGame(Game):
 		## 'avg.' -> 2.333 or whatever the teams overall average was
 
 	def Won(self):
-		if(self.Layers[0][2] == 'won'):
+		if(self.getGameResult() == 'won'):
 			return True
 		else:
 			return False
 			
 	def Tied(self):
-		if(self.Layers[0][2] == 'tie'):
+		if(self.getGameResult() == 'tie'):
 			return True
 		else:
 			return False	
 			
 	def Lost(self):
-		if(self.Layers[0][2] == 'lost'):
+		if(self.getGameResult() == 'lost'):
 			return True
 		else:
 			return False
@@ -58,5 +58,3 @@ class watMuGame(Game):
 			## regardless of whether we lost or the game hasnt been played yet,
 			## no points are earned
 	
-	def getOpponentName(self):
-		return self.Layers[0][6]

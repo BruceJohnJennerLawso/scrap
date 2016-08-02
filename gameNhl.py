@@ -79,8 +79,6 @@ class nhlGame(Game):
 			## regardless of whether we lost in regulation or the game hasnt
 			## been played yet, no points are earned
 			
-					
-	def getOpponentName(self):
-		return self.Layers[0][6]
+
 
 
