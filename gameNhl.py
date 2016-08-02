@@ -22,25 +22,25 @@ class nhlGame(Game):
 		self.layerCount += 1
 	
 	def getGameDescription(self):
-		return "%s %s %s %s %i-%i %s %s" % (self.Layers[0][0], self.Layers[0][1], self.getThisTeamName(), self.Layers[0][2], self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.Layers[0][7])
+		return "%s %s %s %s %i-%i %s %s" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString)
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]
 	
 	def Won(self):
-		if(self.Layers[0][2] == 'W'):
+		if(self.getGameResult() == 'W'):
 			return True
 		else:
 			return False
 			
 	def Tied(self):
-		if(self.Layers[0][2] == 'T'):
+		if(self.getGameResult() == 'T'):
 			return True
 		else:
 			return False	
 			
 	def Lost(self):
-		if(self.Layers[0][2] == 'L'):
+		if(self.getGameResult() == 'L'):
 			return True
 		else:
 			return False	
