@@ -3,12 +3,15 @@
 ## hoping to define a specific stat type here instead of #######################
 ## redoing it for every different team type ####################################
 ################################################################################
-##from game import *
 from player import *
 import csv
 
+
 def getSeasonIndexList(leagueId):
-	## returns a list of every season
+	## opens up the file containing the names of every season in our data and
+	## assigns an  integer to each one so that we can keep the order straight,
+	## particularly with watMu seasons which run not necessarily every season,
+	## and more than once a year
 	output = []
 	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
 		reader = csv.reader(foo)
@@ -16,30 +19,58 @@ def getSeasonIndexList(leagueId):
 			output.append(row)
 			## append on the list of names, with the primary one first, ie
 			## [...['winter2010', 'winter2010Contact'],...]
+			
+			## or in NHL case,
+			## [...['2002', '2003', '2004', '2006', '2007', '2008', ...], ...]
+			## (notice the season skip at the lockout), so we go
+			## 2002 2003 2004 2006 2007
+			##   1    2    3    4    5
+			
+			## cause we dont care about seasons that didnt actually happen
 	return output
 	
 def getSeasonIndexById(seasonId, indexList):
+	## if we have the seasonId (ie '2016'), we can call this function to find
+	## out what seasonIndex that this season had
+	
+	## ie what was its place in the order of seasons throughout history
 	output = 0
 	## default error if we cant find the proper position for the season
 	for i in range(0, len(indexList)):
 		if(seasonId in indexList[i]):
 			output = i
+			break
 	return output	
 
 class Team(object):
-	## constructor
+	## base class constructor
 	def __init__(self, leagueId, levelId, seasonId, teamId):
 		self.seasonId = seasonId
+		## string that reliably identifies the current season, ie
+		## '2016' or
+		## 'fall2015'
 		self.teamId = teamId
+		## string that reliably identifies the team. ie
+		## '12348' (intramurals) or
+		## 'TOR'
 		self.leagueId = leagueId
+		## string that identifies the league that we currently play in, ie
+		## 'watMu' or
+		## 'nhl'
 		self.levelId = levelId
 		## the string describing the level of play 
 		## (ie beginner/casual in waterloo intramurals)
 		
+		## for nhl, ahl, etc level, just leave this as 'null' or whatever the
+		## output directory name under ./results/nhl is gonna be
+		
 		self.Games = []
-		## list of objects of type game
+		## init list of objects of type game, currently empty, to be filled by
+		## the first loadTier call which opens the csv file and loads in the
+		## base data as game objects
 		if(leagueId == 'nhl'):
 			self.loadPath = "./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId)
+			## shorter load path for nhl when we dont have to branch by levelId
 		else:
 			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 		
@@ -62,9 +93,11 @@ class Team(object):
 	## Tier I ##################################################################
 	
 	def getTeamName(self):
+		## ie 'Toronto Maple Leafs', or 'The Mighty Dads'
 		return self.teamName	
 	
 	def getSeasonId(self):
+		## ie '2016' or 'fall2015'
 		return self.seasonId	
 		
 	def getSeasonGoalsForAverage(self):
@@ -74,44 +107,80 @@ class Team(object):
 		return float(self.seasonTotalGoalsAgainst)/float(self.totalSeasonGames)
 		
 	def getSeasonPlusMinus(self):
+		## goal differential (for - against)
 		return self.seasonPlusMinus
 		
-	def getSeasonAverageSOC(self):
-		return self.averageSOC
+	def getSeasonPointsTotal(self):
+		## (points earned)
+		return self.seasonPointsTotal		
 		
 	def getPointsPercentage(self):
+		## (points earned/total points available)
 		return self.seasonPointsTotal/float(self.totalSeasonGames*2)			
-	
-	def getSeasonPointsTotal(self):
-		return self.seasonPointsTotal
 		
 	def getSeasonWinsTotal(self):
+		## games won, regarless of the situation
 		return self.seasonWins
 		
 	def getSeasonTiesTotal(self):
+		## games that were tied at the end of regulation and any extra
+		## overtime *and stayed that way*
+		
+		## no shootout games here, we only kicking things oldschool with true
+		## ties
 		return self.seasonTies	
 
 	def getSeasonLossTotal(self):
 		return self.seasonLosses		
 	
 	def getAGCI(self):
+		## stat that measures how close the games this team played were on
+		## average
+		
+		## ie
+		##
+		## 1-1 -> 1.000
+		## 2-1 -> 1.000
+		## 3-1 -> 0.500
+		## 4-1 -> 0.333
+		## 5-1 -> 0.250
+		## 6-1 -> 0.200
+		## 7-1 -> 0.166
 		return self.averageGameClosenessIndex
 		
 	def getTotalPlayoffGames(self):
+		## counts how many playoff games this team played in all (0, 4, 22, etc)
 		return len(self.playoffGames)
 
 	def getTotalPlayoffWins(self):
+		## total games won in the playoffs
 		return self.playoffWins
 		
 	def getPlayoffWinPercentage(self):
+		## what percentage of any playoff games played that the team won as a
+		## decimal, ie 0.782 
 		return self.playoffWinPercentage
 	
 	def getRealPlayoffWinPercentage(self, season):
-		if(self.getSeasonRank() not in season.topPlayoffBracket):
-			return 0.000
+		## the problem here is that for the watMu system, not all playoff wins
+		## are created equal, for a big bracket like the intermediate, a win in
+		## the second playoff bracket isnt really worth the same as one in the
+		## top bracket, since a team in the second bracket plays much worse
+		## teams than the team in the top bracket did
+		
+		## so for most analysis that we do, we only consider wins in the top
+		## playoff bracket to be 'real'
+		if(self.leagueId == 'watMu'):
+			if(self.getSeasonRank() not in season.topPlayoffBracket):
+				return 0.000
+			else:
+				return self.getPlayoffWinPercentage()	
 		else:
-			return self.getPlayoffWinPercentage()	
+			return self.getPlayoffWinPercentage()
+			## if we arent dealing with a weird watMu style league, just get the
+			## raw playoff win percentage
 			
+				
 	def getPlayoffGoalsForAverage(self):
 		output = 0.000
 		if(self.getTotalPlayoffGames() > 0):
