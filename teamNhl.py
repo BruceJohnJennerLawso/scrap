@@ -259,7 +259,7 @@ class nhlTeam(Team):
 					## maybe this would be better done as a truly unique string,
 					## ie as teamname appended to season
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
-			self.defenceQualityIndex += (game.getGoalsAgainst()-opponent.getSeasonGoalsForAverage())
+			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
 			if(game.Lost() != True):	
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 

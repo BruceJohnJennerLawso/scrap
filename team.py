@@ -117,6 +117,10 @@ class Team(object):
 	def getPointsPercentage(self):
 		## (points earned/total points available)
 		return self.seasonPointsTotal/float(self.totalSeasonGames*2)			
+	
+	def getSeasonGamesTotal(self):
+		## total games played in the regular season (up to this point)
+		return self.totalSeasonGames	
 		
 	def getSeasonWinsTotal(self):
 		## games won, regarless of the situation
@@ -194,6 +198,13 @@ class Team(object):
 		return output
 		
 	def getRoster(self):
+		## *very important definition*
+		## self.Roster is a list of strings of the full names of players on the
+		## roster, ie
+		
+		## [..., 'Wayne Gretzky', 'Dave Semenko', 'Andy Moog', ...]
+		
+		## NOT the list of player objects
 		return self.Roster
 		
 	## note that we try to squeeze down to shorter names here in order to make
@@ -203,33 +214,130 @@ class Team(object):
 	## Tier II #################################################################
 		
 	def getAWQI(self):
+		## Sum of the average of win quality indexes for each game in the
+		## schedule. The win quality index for a game is calculated as follows:
+		## if this (self) team lost, they get 0.000. If they won, they get
+		## the goal differential (always positive) * opponents points percentage
 		return self.averageWinQualityIndex
 		
 	def getAPQI(self):
+		## exact same calculation as AWQI, with one small change:
+		## the win quality index is the goal differential * opponent pts pct *
+		## the game closeness index of the game
 		return self.averagePlayQualityIndex
 		
 	def getSeasonRank(self):
+		## what position in the standings this team had after we sort by
+		## whatever the league considers to be the ranking criteria
+		
+		## ie a first place team gets integer 1, a second place team gets
+		## integer 2, and so on
 		return self.seasonRank
 		
+		
+	## very simple pair of stats, but a bit wordy to explain	
 	def getOffenceQualityIndex(self):
+		## basically the idea here is 'goals above expectations'.
+		## The expected number of goals is the average allowed by an opponent
+		## over the course of the season (total season completed up till now)
+		## if we score more goals in this game than the expectation, it would
+		## seem to indicate that this (self) team has a good (quality) offence
+		## that can "get it done" against a good defensive team
 		return self.offenceQualityIndex
+	
+	def getAOQI(self):
+		return self.getOffenceQualityIndex()/float(self.getSeasonGamesTotal())
+		## been meaning to do this, allows for comparison between teams that
+		## played seasons of different lengths
+		
+		## in other words, this is "Average goals above expectations per game"
 		
 	def getDefenceQualityIndex(self):
+		## converse to offence quality index, defence quality is the goals
+		## allowed by this (self) team, **below** the expectation, based on the
+		## opponents offence
+		
+		## this convention is changed from the original version, which had
+		## good qualities as negative values, we now want it to be positive for
+		## good defensive teams 
 		return self.defenceQualityIndex
+
+	def getADQI(self):
+		return self.getDefenceQualityIndex()/float(self.getSeasonGamesTotal())
+		## ie "Average goals below expectations per game"
+
+	def getNetAODQISum(self):
+		return (self.getAOQI()+self.getADQI())
+		## Im strongly guessing that this will exactly match an average diff
+		## qual index, but I dont know for sure
 
 	## Tier III ################################################################
 
+
+	def calculateMaValues(self, teamsList):
+		## take our values for awqi, apqi, aoqi, adqi, and adjust them relative
+		## to the mean of the league
+		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
+		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
+		
+		self.meanAdjustedAverageOffenceQualityIndex = self.getAOQI()
+		self.meanAdjustedAverageDefenceQualityIndex = self.getADQI()
+		
+		awqiMean = 0.000
+		apqiMean = 0.000
+		aoqiMean = 0.000
+		adqiMean = 0.000
+		
+		for team in teamsList:
+			awqiMean += team.getAWQI()
+			apqiMean += team.getAPQI()
+			aoqiMean += team.getAOQI()
+			adqiMean += team.getADQI()
+			
+		awqiMean /= float(len(teamsList))
+		apqiMean /= float(len(teamsList))
+		oqiMean /= float(len(teamsList))
+		dqiMean /= float(len(teamsList))		
+		
+		self.meanAdjustedAverageWinQualityIndex /= awqiMean
+		## this matches the spreadsheet perfectly
+		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
+		## cant find any mistakes in how this is calculated, but the values dont
+		## match what the spreadsheet had		
+		
+		## because these values are calculated differently
+		## PQI in the spreadsheet was just a product of the averages for AWQI
+		## and AGCI
+		
+		## thats why these values are different from what the spreadsheet had
+		## cause they get calculated for every game and then summed, instead of
+		## being calculated at the end
+		self.meanAdjustedOffenceQualityIndex -= oqiMean
+		self.meanAdjustedDefenceQualityIndex -= dqiMean
+
+
 	def getMaAWQI(self):
+		## once we have calculated AWQI for this team, we sometimes like to
+		## readjust it for the current seasons mean, to try and account for
+		## fluctuations in the distribution of AWQI across the league for each
+		## season
+		
+		## so basically this is just self.AQWI/leagueMean.AWQI
 		return self.meanAdjustedAverageWinQualityIndex	
 		
 	def getMaAPQI(self):
+		## self.APQI/leagueMean.AWQI
 		return self.meanAdjustedAveragePlayQualityIndex
+
+	def getMaAOQI(self):
 		
-	def getMaOQI(self):
-		return self.meanAdjustedOffenceQualityIndex
+		return self.meanAdjustedAverageOffenceQualityIndex
 		
-	def getMaDQI(self):
-		return self.meanAdjustedDefenceQualityIndex
+	def getMaADQI(self):
+		## dont corsi and drive kids
+		
+		
+		return self.meanAdjustedAverageDefenceQualityIndex
 
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 

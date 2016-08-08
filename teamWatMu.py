@@ -170,7 +170,7 @@ class watMuTeam(Team):
 					## maybe this would be better done as a truly unique string,
 					## ie as teamname appended to season
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
-			self.defenceQualityIndex += (game.getGoalsAgainst()-opponent.getSeasonGoalsForAverage())
+			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
 			if(game.Lost() != True):	
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
@@ -186,44 +186,8 @@ class watMuTeam(Team):
 
 	def loadTierIII(self, teamsList):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+		self.calculateMaValues(teamsList)
 
-		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
-		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
-		
-		self.meanAdjustedOffenceQualityIndex = self.getOffenceQualityIndex()
-		self.meanAdjustedDefenceQualityIndex = self.getDefenceQualityIndex()
-		
-		awqiMean = 0.00
-		apqiMean = 0.00
-		oqiMean = 0.00
-		dqiMean = 0.00
-		
-		for team in teamsList:
-			awqiMean += team.getAWQI()
-			apqiMean += team.getAPQI()
-			oqiMean += team.getOffenceQualityIndex()
-			dqiMean += team.getDefenceQualityIndex()
-			
-		awqiMean /= float(len(teamsList))
-		apqiMean /= float(len(teamsList))
-		oqiMean /= float(len(teamsList))
-		dqiMean /= float(len(teamsList))		
-		
-		self.meanAdjustedAverageWinQualityIndex /= awqiMean
-		## this matches the spreadsheet perfectly
-		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
-		## cant find any mistakes in how this is calculated, but the values dont
-		## match what the spreadsheet had		
-		
-		## because these values are calculated differently
-		## PQI in the spreadsheet was just a product of the averages for AWQI
-		## and AGCI
-		
-		## thats why these values are different from what the spreadsheet had
-		## cause they get calculated for every game and then summed, instead of
-		## being calculated at the end
-		self.meanAdjustedOffenceQualityIndex -= oqiMean
-		self.meanAdjustedDefenceQualityIndex -= dqiMean
 	
 	def loadTierIV(self, teamsList, seasonsList):
 		self.Players = []
