@@ -171,13 +171,17 @@ class nhlTeam(Team):
 		
 		rosterSize = int(rows[2][0])
 		## rosters...
-		self.Roster = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
+		self.RosterData = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
 		
+		self.Roster = []
+		for rostDat in self.RosterData:
+			self.Roster.append(rostDat[0])
+			
 		print 'Roster:\n'
 		if(debugInfo):
 			for p in self.Roster:
 				print p, '\n'
-
+		exit()
 		
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0

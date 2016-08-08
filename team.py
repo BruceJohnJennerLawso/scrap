@@ -296,24 +296,13 @@ class Team(object):
 			
 		awqiMean /= float(len(teamsList))
 		apqiMean /= float(len(teamsList))
-		oqiMean /= float(len(teamsList))
-		dqiMean /= float(len(teamsList))		
+		aoqiMean /= float(len(teamsList))
+		adqiMean /= float(len(teamsList))		
 		
-		self.meanAdjustedAverageWinQualityIndex /= awqiMean
-		## this matches the spreadsheet perfectly
-		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
-		## cant find any mistakes in how this is calculated, but the values dont
-		## match what the spreadsheet had		
-		
-		## because these values are calculated differently
-		## PQI in the spreadsheet was just a product of the averages for AWQI
-		## and AGCI
-		
-		## thats why these values are different from what the spreadsheet had
-		## cause they get calculated for every game and then summed, instead of
-		## being calculated at the end
-		self.meanAdjustedOffenceQualityIndex -= oqiMean
-		self.meanAdjustedDefenceQualityIndex -= dqiMean
+		self.meanAdjustedAverageWinQualityIndex -= awqiMean
+		self.meanAdjustedAveragePlayQualityIndex -= apqiMean
+		self.meanAdjustedAverageOffenceQualityIndex -= aoqiMean
+		self.meanAdjustedAverageDefenceQualityIndex -= adqiMean
 
 
 	def getMaAWQI(self):
@@ -322,21 +311,21 @@ class Team(object):
 		## fluctuations in the distribution of AWQI across the league for each
 		## season
 		
-		## so basically this is just self.AQWI/leagueMean.AWQI
+		## so basically this is just self.AQWI-leagueMean.AWQI
 		return self.meanAdjustedAverageWinQualityIndex	
 		
 	def getMaAPQI(self):
-		## self.APQI/leagueMean.AWQI
+		## self.APQI-leagueMean.AWQI
 		return self.meanAdjustedAveragePlayQualityIndex
 
 	def getMaAOQI(self):
-		
+		## self.AOQI-leagueMean.AOQI
 		return self.meanAdjustedAverageOffenceQualityIndex
 		
 	def getMaADQI(self):
 		## dont corsi and drive kids
 		
-		
+		## self.ADQI-leagueMean.ADQI
 		return self.meanAdjustedAverageDefenceQualityIndex
 
 	## our two indexes now adjusted for season mean in an attempt to make easier
@@ -353,4 +342,5 @@ class Team(object):
 	## Tier IV #################################################################
 	
 	def getPlayers(self):
+		## list of player objects		
 		return self.Players
