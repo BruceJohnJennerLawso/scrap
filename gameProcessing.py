@@ -6,25 +6,25 @@
 
 def getTeamName(teamString):
 	if('(Casual)' in teamString):
-		return teamString[12:len(teamString)-(len('Casual') + 1)]		
+		return teamString[12:len(teamString)-(len('Casual')+3)]		
 	elif('(Beginner)' in teamString):
-		return teamString[12:len(teamString)-(len('(Beginner)') + 1)]
+		return teamString[12:len(teamString)-(len('(Beginner)') + 3)]
 	elif('(Semi-Competitive)' in teamString):
-		return teamString[12:len(teamString)-(len('(Semi-Competitive)') + 1)]
+		return teamString[12:len(teamString)-(len('(Semi-Competitive)') + 3)]
 	elif('(Intermediate)' in teamString):
-		return teamString[12:len(teamString)-(len('(Intermediate)') + 1)]	
+		return teamString[12:len(teamString)-(len('(Intermediate)') + 3)]	
 	elif('(Competitive)' in teamString):
-		return teamString[12:len(teamString)-(len('(Competitive)') + 1)]		
+		return teamString[12:len(teamString)-(len('(Competitive)') + 3)]		
 	elif('(Advanced)' in teamString):
-		return teamString[12:len(teamString)-(len('(Advanced)') + 1)]		
+		return teamString[12:len(teamString)-(len('(Advanced)') + 3)]		
 	elif('(Elite)' in teamString):
-		return teamString[12:len(teamString)-(len('(Elite)') + 1)]
+		return teamString[12:len(teamString)-(len('(Elite)') + 3)]
 	elif('(All Star)' in teamString):
-		return teamString[12:len(teamString)-(len('(All Star)') + 1)]
+		return teamString[12:len(teamString)-(len('(All Star)') + 3)]
 	elif('(All Star Non-Contact)' in teamString):
-		return teamString[12:len(teamString)-(len('(All Star Non-Contact)') + 1)]
+		return teamString[12:len(teamString)-(len('(All Star Non-Contact)') + 3)]
 	elif('(All Star Contact)' in teamString):
-		return teamString[12:len(teamString)-(len('(All Star Contact)') + 1)]		
+		return teamString[12:len(teamString)-(len('(All Star Contact)') + 3)]		
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
@@ -153,8 +153,10 @@ def processSOC(rawDataString):
 
 
 if(__name__ == "__main__"):
-	gf =  processGoalsFor('won 100 - 9', 'won')
-	ga = processGoalsAgainst('won 100 - 9', 'won')
+	gf =  processGoalsFor('won 100 - 9')
+	ga = processGoalsAgainst('won 100 - 9')
 	print "gf %i, ga %i" % (gf, ga)
 	## quickly testing the goals processing function, which now can handle
 	## scores above 10 with ease!!! Such resiliency!!! <3<3<3
+
+	print getTeamName('Ice Hockey: The Mighty Dads (Casual)')

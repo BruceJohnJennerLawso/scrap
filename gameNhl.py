@@ -45,6 +45,12 @@ class nhlGame(Game):
 		else:
 			return False	
 
+	def notYetPlayed(self):
+		if(self.getGameResult() == '-'):
+			return True
+		else:
+			return False
+
 	def getExtraTimeString(self):
 		return self.Layers[0][7]
 		

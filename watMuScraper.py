@@ -15,7 +15,7 @@ from gameProcessing import *
 
 
 
-def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId):
+def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, totalSeasonGames, totalSeasonGamesPlayed, totalPlayoffGames, totalPlayoffGamesPlayed, schedule, leagueId, levelId):
 	## once we have the data about the team in question, usually in string form,
 	## we should save it in string format so its more convenient to access
 	## elsewhere without connecting to the internet
@@ -26,7 +26,7 @@ def saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, num
 	with open(outputPath, 'wb') as foo:
 		bar = csv.writer(foo)
 		## get set to write our csv to file
-		bar.writerows([[teamName, seasonString, teamString], [numberOfGames]])
+		bar.writerows([[teamName, seasonString, teamString], [numberOfGames, totalSeasonGames, totalSeasonGamesPlayed, totalPlayoffGames, totalPlayoffGamesPlayed]])
 		## write very general info about the team on line 1[0], the total number
 		## of games played that season (reg and playoffs) on line 2[1]
 		bar.writerows(schedule)
@@ -378,7 +378,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 	## now to save data in the csv
 	## TO BE CONTINUED DUN DUN DUN
 	if(saveMe == True):
-		saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, schedule, leagueId, levelId)
+		saveScrapedTeamData(teamId, teamString, seasonString, teamName, players, numberOfGames, (totalSeasonGames+totalSOCGames), (totalSeasonGames+totalSOCGames), totalPlayoffGames, totalPlayoffGames, schedule, leagueId, levelId)
 	else:
 		print "Not saving data for team %i" % (teamId)
 

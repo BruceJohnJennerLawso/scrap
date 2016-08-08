@@ -18,16 +18,8 @@ class nhlTeam(Team):
 		
 	## Tier I load call ########################################################	
 		
-	def loadTierI(self, debugInfo=False):
-		with open(self.loadPath, 'rb') as foo:
-			rows = []
-			reader = csv.reader(foo)
-			for row in reader:
-				rows.append(row)
-			## create a list called row, which will hold all of the data in the
-			## csv as a sublist for each row, ie
-			
-			## [[row 1...], [row 2...],...]
+	def loadTierI(self, debugInfo=False):		
+		rows = self.getCsvRowsList()
 		
 		self.teamName = rows[0][0]
 		print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
@@ -279,44 +271,7 @@ class nhlTeam(Team):
 
 	def loadTierIII(self, teamsList):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
-
-		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
-		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
-		
-		self.meanAdjustedOffenceQualityIndex = self.getOffenceQualityIndex()
-		self.meanAdjustedDefenceQualityIndex = self.getDefenceQualityIndex()
-		
-		awqiMean = 0.00
-		apqiMean = 0.00
-		oqiMean = 0.00
-		dqiMean = 0.00
-		
-		for team in teamsList:
-			awqiMean += team.getAWQI()
-			apqiMean += team.getAPQI()
-			oqiMean += team.getOffenceQualityIndex()
-			dqiMean += team.getDefenceQualityIndex()
-			
-		awqiMean /= float(len(teamsList))
-		apqiMean /= float(len(teamsList))
-		oqiMean /= float(len(teamsList))
-		dqiMean /= float(len(teamsList))		
-		
-		self.meanAdjustedAverageWinQualityIndex /= awqiMean
-		## this matches the spreadsheet perfectly
-		self.meanAdjustedAveragePlayQualityIndex /= apqiMean
-		## cant find any mistakes in how this is calculated, but the values dont
-		## match what the spreadsheet had		
-		
-		## because these values are calculated differently
-		## PQI in the spreadsheet was just a product of the averages for AWQI
-		## and AGCI
-		
-		## thats why these values are different from what the spreadsheet had
-		## cause they get calculated for every game and then summed, instead of
-		## being calculated at the end
-		self.meanAdjustedOffenceQualityIndex -= oqiMean
-		self.meanAdjustedDefenceQualityIndex -= dqiMean
+		self.calculateMaValues(teamsList)
 	
 	def loadTierIV(self, teamsList, seasonsList):
 		self.Players = []
@@ -324,7 +279,8 @@ class nhlTeam(Team):
 		##for playerName in self.Roster:
 		##	self.Players.append(watMuPlayer(playerName, seasonsList))
 
-		## gonna leave this offline for the moment
+		## gonna leave this offline for the moment, not too eager to dive into
+		## the fustercluck of writing an NHL player object just right now
 	
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		

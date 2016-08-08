@@ -73,6 +73,11 @@ class Team(object):
 			## shorter load path for nhl when we dont have to branch by levelId
 		else:
 			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
+
+		self.loadTierI()
+		
+		
+		
 		
 	## prototypes for the functions that load each tier of data ################
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############
@@ -91,6 +96,18 @@ class Team(object):
 	
 	
 	## Tier I ##################################################################
+	
+	def getCsvRowsList(self):
+		with open(self.loadPath, 'rb') as foo:
+			rows = []
+			reader = csv.reader(foo)
+			for row in reader:
+				rows.append(row)
+			## create a list called row, which will hold all of the data in the
+			## csv as a sublist for each row, ie
+			
+			## [[row 1...], [row 2...],...]
+		return rows
 	
 	def getTeamName(self):
 		## ie 'Toronto Maple Leafs', or 'The Mighty Dads'

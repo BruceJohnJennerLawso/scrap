@@ -44,6 +44,12 @@ class watMuGame(Game):
 			return True
 		else:
 			return False
+
+	def notYetPlayed(self):
+		if(self.getGameResult() == '-'):
+			return True
+		else:
+			return False
 		
 	def getPointsEarned(self):
 		## this needs to be defined on a league by league basis, since not all
