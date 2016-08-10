@@ -207,19 +207,26 @@ class watMuTeam(Team):
 			## loaded by the loadTierI(...) call and stored in objects
 			
 			opponentFound = False			
-			## start off by looking for our
+			## start off by looking for our opponents object in the list of
+			## teams that we were given to search
 			for team in teamsList:
 				if(team.getTeamName() == game.getOpponentName()):
 					opponent = team
 					opponentFound = True
+					break
+					## once we find our team, assign it, and break outa here
+					
 					## shouldnt ever be two teams with the same name... I hope
 					
 			if(opponentFound == False):
-				print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
-				for team in teamsList:
-					print team.getTeamName(),
-				print '\n'
-				raise NameError('Unable to find scheduled team as team object')
+				## we wanna blow everything up here so that we can start
+				## debugging the problem 
+				if(debugInfo):
+					print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
+					for team in teamsList:
+						print team.getTeamName(),
+					print '\n'
+				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
 			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
