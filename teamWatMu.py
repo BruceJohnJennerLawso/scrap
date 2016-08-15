@@ -229,8 +229,15 @@ class watMuTeam(Team):
 				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
+			## for each game the OQI is goals scored above expectations, so we
+			## add that value to the total OQI
 			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
+			## and for each game, the DQI is goals allowed below expectations,
+			## so we add that value to the total DQI
 			if(game.Lost() != True):	
+				## so long as we didnt lose the game, we will get a nonzero
+				## value for WQI and PQI, varying depending on the game stats
+				## and whether the game was a win or a tie
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
 					self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
@@ -239,7 +246,8 @@ class watMuTeam(Team):
 					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
 		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
-
+		## once we've calculated the total WQI & PQI, divy them over the total
+		## games played in that season to get an average
 
 	## Tier III load call ######################################################
 
