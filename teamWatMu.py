@@ -254,25 +254,41 @@ class watMuTeam(Team):
 	def loadTierIII(self, teamsList):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		self.calculateMaValues(teamsList)
-
+		## send the list of team objects for this season off so we can get our
+		## mean adjusted values
 	
 	def loadTierIV(self, teamsList, seasonsList):
 		self.Players = []
 		## list containing player objects 
 		for playerName in self.Roster:
 			self.Players.append(watMuPlayer(playerName, seasonsList))
-	
+			## roll through the names of all the players on the roster and set
+			## up their player type object based on all of the season objects
+			## available in this dataset
+		
 	def getSeasonAverageSOC(self):
 		return self.averageSOC	
-	
+		## the only value that needs to be defined here (instead of in the
+		## parent team type), since SOC only applies in waterloo intramurals
+		
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f Defence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		## I should really line break this so it fits into a terminal with less
+		## than 850 columns nicely
+	
 	
 	def getSeasonIndex(self):
 		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('watMu'))
+		## given that we know this team is a watMu team, we can retrieve a list
+		## of season indexes, which allow us to pin down the correct order that
+		## seasons should go in by assigning an integer to each season
+		
+		## its just a really complicated way of placing things in order right
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
+		## this actually isnt a great choice for this, the desc string is super
+		## long
 
 	def qualifiedForPlayoffs(self):
 		## note that this specifically refers to whether the team played any
@@ -286,21 +302,32 @@ class watMuTeam(Team):
 			return False
 
 	def getSeasonGames(self):
+		## all game objects for watMu are stored in a list that has reg season
+		## and playoffs inclusive
+		
+		## so we need to slice the list to get only season games
 		return self.Games[0:self.totalSeasonGames]
 		
 	def getPlayoffGames(self):
 		if(self.qualifiedForPlayoffs() == True):
+			## quick check that there are playoff games to be had
 			return self.Games[self.totalSeasonGames:self.seasonLength]
 		else:
+			## maybe we should throw something here?
+			## this pretty much always gets checked anyways
 			print "Unable to return playoff games, %s did not qualify for playoffs"
 			
+			
+			
 	def getPlayoffOpponentTeamNames(self):
+		## helper function for the code that retrieves playoff brackets
 		output = []
 		for playoffGame in self.getPlayoffGames():
 			output.append(playoffGame.getOpponentName())
 		return output
 		
 	def getPlayoffOpponentTeamSeeds(self, season):
+		## helper function for the code that retrieves playoff brackets
 		output = []
 		for playoffGame in self.getPlayoffGames():
 			opponentTeam = season.getTeamByTeamName(playoffGame.getOpponentName())
@@ -310,13 +337,22 @@ class watMuTeam(Team):
 	def getFranchise(self, franchiseList):
 		output = 'None'
 		for franchise in franchiseList:
+			## loop through the list of franchises that are available, ie
+			## ['Seekers', 'SEEKZERS']
 			if(self.getTeamName().decode('utf-8') in franchise):
 				output = franchise[0].decode('utf-8')
+				## if the name of this current team was found in the possible
+				## names for the team as listed in the franchises csv
+				## set the franchise name for this team as the first
+				## (most appropriate) name for this teams franchise, ie
+				## SEEKZERS.getFranchise(franchiseList) -> 'Seekers'
+				break
 		return output
 
 	def getRecordString(self):
 		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
-
+		## typical hockey stat used for decades
 
 if(__name__ == "__main__"):
 	daDads = watMuTeam('watMu', 'beginner', 'fall2015', 12348)
+	## quick test using the one and only Mighty Dads fall 2015
