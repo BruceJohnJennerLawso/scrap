@@ -64,7 +64,6 @@ class watMuTeam(Team):
 			for r in self.Roster:
 				print r
 		
-		exit()
 		
 		self.totalSeasonGames = 0
 		## this will be the total games that have been played up to this point
@@ -188,7 +187,10 @@ class watMuTeam(Team):
 		
 	## Tier II load call #######################################################	
 		
-	def loadTierII(self, teamsList, teamRank):	
+	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
+		debugInfo = True
+		
+		
 		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
 		

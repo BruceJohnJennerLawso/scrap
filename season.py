@@ -6,6 +6,7 @@ from team import *
 
 
 class Season(Team):
+	
 	def __init__(self, leagueId, levelId, seasonId, teamIdList):
 		self.Teams = []
 		self.seasonId = seasonId
@@ -14,6 +15,9 @@ class Season(Team):
 	
 	def getTotalNumberOfTeams(self):
 		return len(self.Teams)
+	
+	def getSeasonTeams(self):
+		return self.Teams
 	
 		
 	def getTeamByPosition(self, position):

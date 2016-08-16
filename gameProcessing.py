@@ -8,7 +8,7 @@ def getTeamName(teamString):
 	if('(Casual)' in teamString):
 		return teamString[12:len(teamString)-(len('Casual')+3)]		
 	elif('(Beginner)' in teamString):
-		return teamString[12:len(teamString)-(len('(Beginner)') + 3)]
+		return teamString[12:len(teamString)-(len('(Beginner)') + 1)]
 	elif('(Semi-Competitive)' in teamString):
 		return teamString[12:len(teamString)-(len('(Semi-Competitive)') + 3)]
 	elif('(Intermediate)' in teamString):
@@ -160,3 +160,4 @@ if(__name__ == "__main__"):
 	## scores above 10 with ease!!! Such resiliency!!! <3<3<3
 
 	print getTeamName('Ice Hockey: The Mighty Dads (Casual)')
+	print getTeamName('Ice Hockey: David R. Ceriton School of Super Friends (Beginner)')	
