@@ -49,4 +49,5 @@ class nhlSeason(Season):
 			if(team.qualifiedForPlayoffs() == True):
 				output += 1
 		return output
+		## I have no idea where this gets used... ?
 

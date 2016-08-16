@@ -320,7 +320,8 @@ class nhlTeam(Team):
 	## Tier II load call #######################################################	
 		
 	def loadTierII(self, teamsList, teamRank):	
-		print "Load call watMuTeam Tier II, team %s, Id %s" % (self.getTeamName(), self.teamId)
+		print "Load call nhlTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId)
+		
 		self.averageWinQualityIndex = 0
 		self.averagePlayQualityIndex = 0
 		
@@ -332,7 +333,7 @@ class nhlTeam(Team):
 		
 		for game in self.getSeasonGames():
 			## we dont need to reload the data, cause it was already loaded by
-			## the loadTierI(...) call
+			## the loadTierI(...) call as game objects
 			opponentFound = False			
 			for team in teamsList:
 				if(team.getTeamName() == game.getOpponentName()):
@@ -345,10 +346,11 @@ class nhlTeam(Team):
 				for team in teamsList:
 					print team.getTeamName(),
 				print '\n'
-					## maybe this would be better done as a truly unique string,
-					## ie as teamname appended to season
+				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
+
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
 			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
+			
 			if(game.Lost() != True):	
 				if(game.Won()):
 					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
@@ -356,6 +358,7 @@ class nhlTeam(Team):
 				elif((game.Tied()) or ((game.Lost()) and (game.decidedInExtraTime()))):
 					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
 					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
+		
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
 		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
 
@@ -377,32 +380,37 @@ class nhlTeam(Team):
 	
 	def getDescriptionString(self):
 		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		## I need to make a list of differences between this desc string and
+		## the watMu version
 	
 	def getSeasonIndex(self):
-		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('watMu'))
+		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('nhl'))
+		## not really that important for NHL, but the indexes might be kinda
+		## handy for graphing
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
 
 	def qualifiedForPlayoffs(self):
-		## note that this specifically refers to whether the team played any
-		## playoff games, not whether they made the top "real" playoff bracket
-		
-		## the only team thats going to miss on this one is a team that got
-		## DQed from the playoffs
+		## in the case of the NHL (and most leagues) it is totally possible to
+		## miss the playoffs, so
 		if(self.getTotalPlayoffGames() > 0):
 			return True
 		else:
 			return False
 
 	def getSeasonGames(self):
-		return self.Games[0:self.totalSeasonGames]
+		## old relic of copied hasty code here
+		## just want to test this first
+		##return self.Games[0:self.totalSeasonGames]
+		return self.Games
 		
 	def getPlayoffGames(self):
 		if(self.qualifiedForPlayoffs() == True):
 			return self.playoffGames
 		else:
 			print "Unable to return playoff games, %s did not qualify for playoffs"
+			return []
 			
 	def getPlayoffOpponentTeamNames(self):
 		output = []
@@ -420,8 +428,12 @@ class nhlTeam(Team):
 	def getFranchise(self, franchiseList):
 		output = 'None'
 		for franchise in franchiseList:
+			## loop through the franchises available, ie
+			## ['The Mighty Ducks of Anaheim', 'Anaheim Ducks']
 			if(self.getTeamName().decode('utf-8') in franchise):
 				output = franchise[0].decode('utf-8')
+				## if we had a match, output the first (most appropriate) name
+				## in that franchises list of names
 		return output
 
 	def getRecordString(self):
@@ -429,7 +441,13 @@ class nhlTeam(Team):
 		## I dont have the patience for this right now, so this is only
 		## applicable for post 2005 lockout, with the shootout and loser point
 
+		## have I mentioned all of the horrible things I would like to do to
+		## Gary???
 
 if(__name__ == "__main__"):
 	daBuds = nhlTeam('nhl', '2016', 'TOR')
 	daSharks = nhlTeam('nhl', '2016', 'SJS')
+	## quick test to make sure everything is loading correctly
+	
+	## San Jose 2015-16 used as an example here cause they made the playoffs
+	## and went to the finals, so there shouldnt be anything turned off
