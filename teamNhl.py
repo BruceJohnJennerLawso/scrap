@@ -6,56 +6,85 @@ from gameNhl import *
 
 
 
+
+
 class nhlTeam(Team):
-	def __init__(self, leagueId, seasonId, teamId):
-		super(nhlTeam, self).__init__(leagueId, '', seasonId, teamId)
+	def __init__(self, leagueId, seasonId, teamId, levelId = ''):
+		super(nhlTeam, self).__init__(leagueId, levelId, seasonId, teamId)
+		## call upstairs to set basic parameters
 		
-		self.seasonId = seasonId
-		
+		## note that the levelId is an optional parameter
+		## since the issue of nhl levelIds is kinda a mess
 		self.loadTierI(True)
-		
+		## and lets kick this thing off by starting the load process
+		## automatically
 	
+		
 		
 	## Tier I load call ########################################################	
 		
 	def loadTierI(self, debugInfo=False):		
 		rows = self.getCsvRowsList()
-		
+		## use our utility function to retrieve the csv file for this team
+		## as a rectangular list (2 deep)
 		self.teamName = rows[0][0]
-		print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
+		## set this teams name from the raw data
+		##print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
 		
+		self.seasonName = rows[1][0]
+		
+		print "Load call nhlTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId)
 		##if((debugInfo)and(rawDataView)):
 		##	print "\n\nraw file\n\n"
 		
 		
-		self.totalSeasonGames = int(rows[3][0])
 		
+		self.totalSeasonGames = int(rows[3][0])
+		print "Total season games %i" % self.totalSeasonGames
+		## set the length of the regular season from the csv data
 		self.totalPlayoffGames = 0
+		## by default we assume no playoff games
 		self.playoffSeriesLengths = rows[4]
 		for l in self.playoffSeriesLengths:
 			self.totalPlayoffGames += 1
+			## total up the length of all playoff series from the list that
+			## the scraper made sure to save
 			
 		scheduleHeader = rows[5]
-		scheduleData = rows[6:(self.totalSeasonGames+6)]
+		## our scheduleHeader looks something like
+		## [GP,Date,Time,Location,Opponent,GF,GA,Result,Game Ended In,W,L,OL,Streak,S,PIM,PPG,PPO,SHG,S,PIM,PPG,PPO,SHG,Att.,LOG,Notes]
 		
+		## which we then use to locate the right column for each stat in the
+		## rest of the data
+		scheduleData = rows[6:(self.totalSeasonGames+6)]
+		## next, we slice out the data for games played in the regular season
+		## and dump it into a temporary variable scheduleData
 		if(debugInfo):
 			print scheduleHeader, '\n\n'
 			for i in scheduleData:
 				print i, '\n'
 		
-		playoffLength = 0
-		playoffSeriesLengths = rows[4]
-		for s in playoffSeriesLengths:
-			playoffLength += int(s)
-		
-		if(playoffLength > 0):
+		if(self.totalPlayoffGames > 0):
 			self.playoffDataHeader = rows[(self.totalSeasonGames+7)]
-			print 'playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader)
+			## if we have playoff data, locate the playoff header in the csv
+			## (offsetting for different season lengths)
+			if(debugInfo):
+				print 'playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader)
+			
 			self.playoffData = rows[(self.totalSeasonGames+8):(self.totalSeasonGames+8+playoffLength)]
-			print 'playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0])
+			## and find the data of the playoff games themselves
+			if(debugInfo):
+				print 'playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0])
+		
 		else:
 			self.playoffDataHeader = []
 			self.playoffData = []
+			## if there wasnt any available data for the playoffs, just create
+			## empty lists
+		
+		
+		self.playoffGames = []
+		self.Games = []
 		
 		## ok, so now we need to construct a game object with the data that we
 		## loaded 
@@ -73,10 +102,15 @@ class nhlTeam(Team):
 		goalsAgainstIndex = -1
 		opponentNameIndex = -1
 		gameEndedInIndex = -1
-		
+		## define the column number for each of the basic stats we will be
+		## loading for each game in the regular season schedule
 		
 		for i in range(0, len(scheduleHeader)):
+			## roll through the header of the regular season data
+			
 			colStat = scheduleHeader[i]
+			## for each column, set a variable for what its heading is so we
+			## can try to match it
 			if(colStat == 'Date'):
 				dateIndex = i
 				continue
@@ -89,6 +123,12 @@ class nhlTeam(Team):
 			elif(colStat == 'GF'):
 				goalsForIndex = i
 				continue
+				## check if the current column is the stat we are looking for
+				## (goals for).
+				## If it is, set the goalsForIndex 
+				## (the column number of this stat) to the current column number
+				## then jump back to the next run of the loop so we dont waste 
+				## quite as much time checking for things we already found
 			elif(colStat == 'GA'):
 				goalsAgainstIndex = i
 				continue
@@ -104,15 +144,19 @@ class nhlTeam(Team):
 		
 		
 		for game in scheduleData:
-			## need to define who the home team was here based on whether there
-			## was an @ or an H
+			## once we have the index of the data columns that we want, we can
+			## now feed that data into a game object for each game in the
+			## regular season
+			
+			## this really should have some protection like raising a proper
+			## exception if one of the indexes is still -1 (we never found it)
+			## but it gonna crash hard in that case anyways
 			
 			self.Games.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
 			## set up each game as an object in memory
 		
-		self.playoffGames = []
 		
-		if(playoffLength > 0):
+		if(self.playoffGamesPlayed > 0):
 			playoffDateIndex = -1
 			playoffLocationIndex = -1
 			playoffResultIndex = -1
@@ -125,7 +169,10 @@ class nhlTeam(Team):
 				print self.playoffDataHeader
 		
 			for i in range(0, len(self.playoffDataHeader)):
+				## roll through the header of the playoffs data
 				colStat = self.playoffDataHeader[i]
+				## for each column, set a variable for what its heading is so we
+				## can try to match it
 				if(colStat == 'Date'):
 					playoffDateIndex = i
 					continue
@@ -138,6 +185,12 @@ class nhlTeam(Team):
 				elif(colStat == 'GF'):
 					playoffGoalsForIndex = i
 					continue
+					## check if the current column is the stat we are looking for
+					## (goals for).
+					## If it is, set the goalsForIndex 
+					## (the column number of this stat) to the current column number
+					## then jump back to the next run of the loop so we dont waste 
+					## quite as much time checking for things we already found
 				elif(colStat == 'GA'):
 					playoffGoalsAgainstIndex = i
 					continue
@@ -158,40 +211,65 @@ class nhlTeam(Team):
 				## was an @ or an H
 			
 				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex]))
-				## set up each game as an object in memory
+				## set up each game as a nhlGame object in memory
 		
 		
 		rosterSize = int(rows[2][0])
-		## rosters...
-		self.RosterData = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
+		## look up the number of players on the roster from the csv
 		
+		## future note: this really needs to account for how big the changes
+		## in roster composition can be over the course of an NHL season.
+		## At least a openingNight roster and a deadline roster would be a start
+		## if I can find the data
+		self.RosterData = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
+		## slice out the rows of data (one player per row) with our ever more
+		## complex system for determining the start and end indexes :s
+		
+		## note that RosterData is all of the data for the players that was
+		## available 
 		self.Roster = []
+		## JUST the names of players on the roster
 		for rostDat in self.RosterData:
 			self.Roster.append(rostDat[0])
-			
-		print 'Roster:\n'
-		if(debugInfo):
-			for p in self.Roster:
-				print p, '\n'
-		exit()
+			## hence the 0 index
+		
+		## this section is very rudimentary at the moment, but it will get more
+		## complex and useful eventually with column indexes and things like
+		## that
+		
+		if(debugInfo):	
+			print 'Roster:\n'
+			if(debugInfo):
+				for p in self.Roster:
+					print p, '\n'
 		
 		self.seasonPlusMinus = 0
+		## goal differential for the team overall
 		self.seasonTotalGoalsFor = 0
 		self.seasonTotalGoalsAgainst = 0	
-		self.seasonPointsTotal = 0	
+		## pretty self explanatory
+		self.seasonPointsTotal = 0
+		## 2 for a win, 1 for a tie/(ot/so) loss, 0 for a regulation loss
+		## (depending on whether the game was before or after 2002)
+		
+		## Thanks Bettman	
 		self.seasonWins = 0
 		self.seasonTies = 0
 		self.seasonRegulationLosses = 0
 		self.seasonExtraTimeLosses = 0
 		self.averageGameClosenessIndex = 0
 		
+		
+		## now that we have the season and playoff games loaded, we can make
+		## our totals/averages/what have you for tier I stats
 		for game in self.getSeasonGames():
-
-			##print game.Layers[0]
+			
 			self.seasonTotalGoalsFor += game.getGoalsFor()
 			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
+			
 			self.seasonPlusMinus += game.getGoalDifferential()
 			self.seasonPointsTotal += game.getPointsEarned()
+			
 			if(game.Won()):
 				self.seasonWins += 1
 			elif(game.Tied()):
@@ -201,28 +279,43 @@ class nhlTeam(Team):
 					self.seasonExtraTimeLosses += 1
 				else:
 					self.seasonRegulationLosses += 1
+			## this is such a mess, especially trying to print out a record
+			## string that makes sense across eras with this steaming pile of
+			## crap
 			
+			## again, really, thanks Bettman
 			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-				
+			## see game module for more on this	
 
-		print "Total season games %i" % self.totalSeasonGames
 		self.averageGameClosenessIndex /= float(self.totalSeasonGames)
+		## divy the GCI total over the games played for our average
 
 		
+		## now, we can quickly tally some stats for the playoffs, so we can
+		## do some graphing
 		self.playoffWins = 0
 		self.totalPlayoffGames = 0
+		
 		self.playoffWinPercentage = 0.000
+		## not nearly as useful as it is for watMu (you can at least lose one
+		## game in the NHL playoffs without going home right away), but why not
+		## hang on to it
 		
 		self.playoffGoalsFor = 0
 		self.playoffGoalsAgainst = 0
+		
 		if(self.qualifiedForPlayoffs()):
 			self.totalPlayoffGames = len(self.getPlayoffGames())
 			for game in self.getPlayoffGames():		
 				if(game.Won()):
 					self.playoffWins += 1
+				
 				self.playoffGoalsFor += game.getGoalsFor()
 				self.playoffGoalsAgainst += game.getGoalsAgainst()				
 				self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
+		
+		self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
+		self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
 		
 	## Tier II load call #######################################################	
 		
@@ -339,3 +432,4 @@ class nhlTeam(Team):
 
 if(__name__ == "__main__"):
 	daBuds = nhlTeam('nhl', '2016', 'TOR')
+	daSharks = nhlTeam('nhl', '2016', 'SJS')
