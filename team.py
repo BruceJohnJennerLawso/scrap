@@ -171,7 +171,7 @@ class Team(object):
 		
 	def getTotalPlayoffGames(self):
 		## counts how many playoff games this team played in all (0, 4, 22, etc)
-		return len(self.playoffGames)
+		return len(self.getPlayoffGames())
 
 	def getTotalPlayoffWins(self):
 		## total games won in the playoffs
