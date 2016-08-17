@@ -407,8 +407,8 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 					
 					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
 					
-					mahoffquees.append(team.getMaOQI())
-					mahdefquees.append(team.getMaDQI())
+					mahoffquees.append(team.getMaAOQI())
+					mahdefquees.append(team.getMaADQI())
 				
 					## appending all of those values into one big list for each measure
 					## so we can make a histogram of all of the values and display it
@@ -434,8 +434,8 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 					
 					offqual.append((team.getOffenceQualityIndex())/(team.getSeasonGoalsForAverage()+0.001))
 					
-					mahoffquees.append(team.getMaOQI())
-					mahdefquees.append(team.getMaDQI())
+					mahoffquees.append(team.getMaAOQI())
+					mahdefquees.append(team.getMaADQI())
 				
 					## appending all of those values into one big list for each measure
 					## so we can make a histogram of all of the values and display it					
