@@ -318,7 +318,7 @@ class watMuTeam(Team):
 			## maybe we should throw something here?
 			## this pretty much always gets checked anyways
 			print "Unable to return playoff games, %s did not qualify for playoffs"
-			
+			return []
 			
 			
 	def getPlayoffOpponentTeamNames(self):
