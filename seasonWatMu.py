@@ -6,6 +6,12 @@ from teamWatMu import *
 from season import *
 
 def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
+	## given an initial team that is in the playoff bracket we are
+	## looking for, crawl the full extent of the playoff bracket and
+	## output a list containing the standings positions (seeding nos)
+	## of every team in the playoff bracket
+	
+	## its just a really annoying issue due to watMu having
 	thisTeamSeed = currentTeam.getSeasonRank()
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):

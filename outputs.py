@@ -387,7 +387,7 @@ def plotAllTopPlayoffTeamsVariables(seasons, leagueId, levelId):
 				if(team.getSeasonRank() in season.topPlayoffBracket):
 					##print team.getDescriptionString(), "\n"
 					
-					data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaOQI(), team.getMaDQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
+					data.append([team.getRealPlayoffWinPercentage(season), team.getPlayoffGoalsForAverage(), team.getPlayoffGoalsAgainstAverage(), team.getMaAOQI(), team.getMaADQI(), team.getSeasonGoalsForAverage(), team.getSeasonGoalsAgainstAverage(), team.getMaAWQI(), team.getMaAPQI(), team.getAGCI(), team.getDefenceQualityIndex(), team.getOffenceQualityIndex(), team.getPointsPercentage()])
 					##teamFran = unicode(team.getFranchise(franchises)).replace("\r", " ").replace("\n", " ").replace("\t", '').replace("\"", "")
 					##teamFran = str(team.getFranchise(franchises).decode('utf-8'))
 					##print teamFran

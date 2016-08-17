@@ -42,7 +42,7 @@ class Season(Team):
 		## get the team object by its name in text,
 		## ie 'Toronto Maple Leafs'
 		
-		## again, where me exceptions at
+		## again, where those exceptions at
 		for team in self.Teams:
 			if(team.getTeamName() == teamName):
 				return team
