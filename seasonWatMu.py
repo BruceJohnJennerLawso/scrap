@@ -11,7 +11,12 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
 	## output a list containing the standings positions (seeding nos)
 	## of every team in the playoff bracket
 	
-	## its just a really annoying issue due to watMu having
+	## its just a really annoying issue due to watMu having multiple
+	## playoff brackets as we go down the standings, which makes not
+	## all playoff games as meaningful
+	
+	## so we just ignore anything that isnt in the topmost playoff
+	## bracket
 	thisTeamSeed = currentTeam.getSeasonRank()
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
@@ -49,7 +54,7 @@ class playoffBracket:
 class watMuSeason(Season):
 	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
 		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
-		
+		## call the parents constructor
 		self.playoffBrackets = []
 		
 		for teamId in teamIdList:

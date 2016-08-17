@@ -94,9 +94,9 @@ class watMuPlayer(Player):
 			seasonMawquees.append(team.getMaAWQI())
 			seasonOQI.append(team.getOffenceQualityIndex())
 			seasonDQI.append(team.getDefenceQualityIndex())
-		plt.plot(seasonIndexes, seasonMawquees, 'go--', label='MaAWQI')
-		plt.plot(seasonIndexes, seasonOQI, 'ro--', label='OQI')
-		plt.plot(seasonIndexes, seasonDQI, 'bo--', label='DQI')		
+		plt.plot(seasonIndexes, seasonMawquees, 'go', label='MaAWQI')
+		plt.plot(seasonIndexes, seasonOQI, 'ro', label='OQI')
+		plt.plot(seasonIndexes, seasonDQI, 'bo', label='DQI')		
 		
 		
 		plt.xlabel('Season Number')
