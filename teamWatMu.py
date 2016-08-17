@@ -176,7 +176,7 @@ class watMuTeam(Team):
 					self.playoffWins += 1
 				self.playoffGoalsFor += game.getGoalsFor()
 				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffWinPercentage = float(self.playoffWins)/float(self.playoffGames)
+				self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
 		
 		
 		
