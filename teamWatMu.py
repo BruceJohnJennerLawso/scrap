@@ -162,7 +162,7 @@ class watMuTeam(Team):
 		## now time to tally the stats we have available for the playoffs
 		
 		self.playoffWins = 0
-		self.totalPlayoffGames = 0
+		##self.totalPlayoffGames = 0
 		self.playoffWinPercentage = 0.000
 		
 		self.playoffGoalsFor = 0
