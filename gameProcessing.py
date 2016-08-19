@@ -18,13 +18,13 @@ def getTeamName(teamString):
 	elif('(Advanced)' in teamString):
 		return teamString[12: (len(teamString)-(len('(Advanced)'))) -3]	
 	elif('(Elite)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Elite)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Elite)'))) -1]	
 	elif('(All Star)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(All Star)'))) -1]	
 	elif('(All Star Non-Contact)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star Non-Contact)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(All Star Non-Contact)'))) -1]	
 	elif('(All Star Contact)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star Contact)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(All Star Contact)'))) -1]	
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
