@@ -46,7 +46,7 @@ class nhlTeam(Team):
 		## by default we assume no playoff games
 		self.playoffSeriesLengths = rows[4]
 		for l in self.playoffSeriesLengths:
-			self.totalPlayoffGames += 1
+			self.totalPlayoffGames += int(l)
 			## total up the length of all playoff series from the list that
 			## the scraper made sure to save
 			
@@ -71,7 +71,7 @@ class nhlTeam(Team):
 			if(debugInfo):
 				print 'playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader)
 			
-			self.playoffData = rows[(self.totalSeasonGames+8):(self.totalSeasonGames+8+playoffLength)]
+			self.playoffData = rows[(self.totalSeasonGames+8):(self.totalSeasonGames+8+self.totalPlayoffGames)]
 			## and find the data of the playoff games themselves
 			if(debugInfo):
 				print 'playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0])
@@ -156,7 +156,9 @@ class nhlTeam(Team):
 			## set up each game as an object in memory
 		
 		
-		if(self.playoffGamesPlayed > 0):
+		if(self.totalPlayoffGames > 0):
+			print "Total Playoff Games ", self.totalPlayoffGames
+			
 			playoffDateIndex = -1
 			playoffLocationIndex = -1
 			playoffResultIndex = -1
@@ -221,7 +223,7 @@ class nhlTeam(Team):
 		## in roster composition can be over the course of an NHL season.
 		## At least a openingNight roster and a deadline roster would be a start
 		## if I can find the data
-		self.RosterData = rows[(self.totalSeasonGames+11+playoffLength):(self.totalSeasonGames+11+playoffLength+rosterSize)]
+		self.RosterData = rows[(self.totalSeasonGames+11+self.totalPlayoffGames):(self.totalSeasonGames+11+self.totalPlayoffGames+rosterSize)]
 		## slice out the rows of data (one player per row) with our ever more
 		## complex system for determining the start and end indexes :s
 		
@@ -229,8 +231,8 @@ class nhlTeam(Team):
 		## available 
 		self.Roster = []
 		## JUST the names of players on the roster
-		for rostDat in self.RosterData:
-			self.Roster.append(rostDat[0])
+		##for rostDat in self.RosterData:
+		##	self.Roster.append(rostDat[0])
 			## hence the 0 index
 		
 		## this section is very rudimentary at the moment, but it will get more
@@ -314,8 +316,8 @@ class nhlTeam(Team):
 				self.playoffGoalsAgainst += game.getGoalsAgainst()				
 				self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
 		
-		self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
-		self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
+			self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
+			self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
 		
 	## Tier II load call #######################################################	
 		
@@ -394,7 +396,7 @@ class nhlTeam(Team):
 	def qualifiedForPlayoffs(self):
 		## in the case of the NHL (and most leagues) it is totally possible to
 		## miss the playoffs, so
-		if(self.getTotalPlayoffGames() > 0):
+		if(len(self.playoffGames) > 0):
 			return True
 		else:
 			return False
@@ -406,11 +408,7 @@ class nhlTeam(Team):
 		return self.Games
 		
 	def getPlayoffGames(self):
-		if(self.qualifiedForPlayoffs() == True):
 			return self.playoffGames
-		else:
-			print "Unable to return playoff games, %s did not qualify for playoffs"
-			return []
 			
 	def getPlayoffOpponentTeamNames(self):
 		output = []
