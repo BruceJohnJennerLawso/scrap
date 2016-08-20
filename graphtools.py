@@ -174,7 +174,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
 		minShow = float(int(min(x_values)))	
-		maxShow = float(int(max(x_values)))	
+		maxShow = float(int(max(x_values))+1)	
 		
 	print "minShow %f, maxShow %f" % (minShow, maxShow)			
 	##print "x values ", x_values, "End of x values\n\n"
