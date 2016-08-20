@@ -43,6 +43,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	corrmat.to_csv(_output)
 	
 	plt.xticks(rotation=20)
+	plt.yticks(rotation=20)	
 	plt.savefig(output_)
 	plt.tight_layout()
 	
@@ -176,7 +177,8 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		maxShow = float(int(max(x_values)))	
 		
 	print "minShow %f, maxShow %f" % (minShow, maxShow)			
-	
+	##print "x values ", x_values, "End of x values\n\n"
+	##print "y values", y_values, "End of y values"
 	modifiers =  [0.5, 1.0, 1.50]
 	
 	
@@ -209,9 +211,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	
 	agciFix = False
 	
-	##plt.axis([minShow, maxShow, 0.0, 1.2])
+	plt.axis([minShow, maxShow, 0.0, 1.2])
 	try:
-		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values)))*1.4])
+		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values))+1)*1.4])
 	except UserWarning:
 		agciFix = True
 	if(agciFix == True):

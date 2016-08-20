@@ -220,7 +220,7 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 					## appending all of those values into one big list for each measure
 					## so we can make a histogram of all of the values and display it
 			else:
-				if(team.qualifiedForPlayoffs()):
+				if(team.getTotalPlayoffGames() > 0):
 					print team.getDescriptionString(), "\n"
 					mawquees.append(team.getMaAWQI())
 					offence.append(team.getSeasonGoalsForAverage())
@@ -241,10 +241,12 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 					## so we can make a histogram of all of the values and display it
 				else:
 					print "Y U No Qualify???"
-	print "mawquee list ", mawquees, offence 
+	print "playoff percentages list ", playoffPercentages
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAWQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted AWQI values', mawquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffWinPct_by_MaAWQI.png')	
 	plotScatterplot('MaAWQI', 'Playoff Offence', 'Playoff Offence by Mean Adjusted AWQI values', mawquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'MaAWQI', 'PlayoffOffence_by_MaAWQI.png')		
+	##exit()
+	
 	
 	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted APQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_PlayoffTeam_histogram.png')
 	plotScatterplot('MaAPQI', 'Playoff Win %', 'Playoff Win % by Mean Adjusted APQI values', mapquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'MaAPQI', 'PlayoffWinPct_by_MaAPQI.png')
@@ -312,7 +314,8 @@ def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 					## appending all of those values into one big list for each measure
 					## so we can make a histogram of all of the values and display it
 			else:
-				if(team.getTotalPlayoffGames() > 0):
+				##if(team.getTotalPlayoffGames() > 0):
+				if(team.qualifiedForPlayoffs()):
 					print team.getDescriptionString(), "\n"
 					mawquees.append(team.getMaAWQI())
 					offence.append(team.getSeasonGoalsForAverage())
