@@ -113,7 +113,13 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.title(title_)
 	## an' title it
 	print "Plot min %f, max %f" % (0.0, plotMax)
-	plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
+	try:
+		plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
+	except UserWarning:
+		print "Histogram bounds identical, attempting to reset"
+		minShow = float(int(min(values)))	
+		maxShow = float(int(max(values))+1)
+		plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
 	## I need to figure out how to get a max from our plt.hist output
@@ -126,7 +132,10 @@ def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, 
 	## TLDR, takes a set of values and histograms them, whoop whop
 	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount, plotMax)
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except UserWarning:
+		print "Duh"
 	plt.close()
 	
 def trendline(x, gradient, intercept):

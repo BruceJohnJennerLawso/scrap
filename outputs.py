@@ -122,6 +122,10 @@ def plotAllTeams(seasons, leagueId, levelId):
 	## OQI Values
 	defquees = []
 	## DQI Values
+	maoffquees = []
+	## MaAOQI Values
+	madefquees = []
+	## MaADQI Values
 	
 	for season in seasons:
 		print "################################################################################"
@@ -144,6 +148,8 @@ def plotAllTeams(seasons, leagueId, levelId):
 			plusMinuses.append(team.getSeasonPlusMinus())			
 			offquees.append(team.getOffenceQualityIndex())
 			defquees.append(team.getDefenceQualityIndex())
+			maoffquees.append(team.getAOQI())
+			madefquees.append(team.getADQI())
 			## appending all of those values into one big list for each measure
 			## so we can make a histogram of all of the values and display it
 	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_Total_histogram.png', 0.0, 2.0)
@@ -155,6 +161,11 @@ def plotAllTeams(seasons, leagueId, levelId):
 	plotHistogram('+/-', 'Count', 'Histogram of +/-', plusMinuses,'./results/%s/%s/histograms' % (leagueId, levelId), 'PlusMinus', 'PlusMinus_Total_histogram.png', -200, 200)	
 	plotHistogram('Offence Quality Index', 'Count', 'Histogram of Offence Quality Index values', offquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'OQI', 'OQI_Total_histogram.png')	
 	plotHistogram('Defence Quality Index', 'Count', 'Histogram of Of Defence Quality Index values', defquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'DQI', 'DQI_Total_histogram.png')
+	plotHistogram('MaAOQI', 'Count', 'Histogram of Mean Adjusted Average Offence Quality Index values', maoffquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'MaAOQI', 'MaAOQI_Total_histogram.png')	
+	print madefquees
+	plotHistogram('MaADQI', 'Count', 'Histogram of Of Mean Adjusted Average Defence Quality Index values', madefquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'MaADQI', 'MaADQI_Total_histogram.png')
+	print "fuh"
+	exit()
 	## plot all of the measures that we wanted as histograms
 
 
