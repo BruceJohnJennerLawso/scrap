@@ -112,14 +112,16 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f" % (title, distMean, distMedian, distVar)
 	plt.title(title_)
 	## an' title it
-	print "Plot min %f, max %f" % (0.0, plotMax)
-	try:
-		plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
-	except UserWarning:
+	print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)
+	
+	if(minShow == maxShow):
 		print "Histogram bounds identical, attempting to reset"
-		minShow = float(int(min(values)))	
-		maxShow = float(int(max(values))+1)
-		plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
+		minShow = float(int(min(values))-1)	
+		maxShow = float(int(max(values))+1)		
+		print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)	
+
+	plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
+
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
 	## I need to figure out how to get a max from our plt.hist output

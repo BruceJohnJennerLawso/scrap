@@ -152,8 +152,8 @@ def plotAllTeams(seasons, leagueId, levelId):
 			madefquees.append(team.getADQI())
 			## appending all of those values into one big list for each measure
 			## so we can make a histogram of all of the values and display it
-	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_Total_histogram.png', 0.0, 2.0)
-	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_Total_histogram.png', 0.0, 2.0)
+	plotHistogram('MaAWQI', 'Count', 'Histogram of Mean Adjusted AWQI values', mawquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAWQI', 'MaAWQI_Total_histogram.png')
+	plotHistogram('MaAPQI', 'Count', 'Histogram of Mean Adjusted PWQI values', mapquees, './results/%s/%s/histograms' % (leagueId, levelId), 'MaAPQI', 'MaAPQI_Total_histogram.png')
 	plotHistogram('Points Percentage', 'Count', 'Histogram of Points Percentages', pointsPct, './results/%s/%s/histograms' % (leagueId, levelId), 'PtsPct', 'PtsPct_Total_histogram.png', 0.0, 1.0, 12)		
 	plotHistogram('Offence', 'Count', 'Histogram of Offence Averages', offence, './results/%s/%s/histograms' % (leagueId, levelId), 'Offence', 'Offence_Total_histogram.png', 0.0, 8.0)
 	plotHistogram('Defence', 'Count', 'Histogram of Defence Averages', defence, './results/%s/%s/histograms' % (leagueId, levelId), 'Defence', 'Defence_Total_histogram.png', 0.0, 8.0)	
@@ -162,10 +162,7 @@ def plotAllTeams(seasons, leagueId, levelId):
 	plotHistogram('Offence Quality Index', 'Count', 'Histogram of Offence Quality Index values', offquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'OQI', 'OQI_Total_histogram.png')	
 	plotHistogram('Defence Quality Index', 'Count', 'Histogram of Of Defence Quality Index values', defquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'DQI', 'DQI_Total_histogram.png')
 	plotHistogram('MaAOQI', 'Count', 'Histogram of Mean Adjusted Average Offence Quality Index values', maoffquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'MaAOQI', 'MaAOQI_Total_histogram.png')	
-	print madefquees
 	plotHistogram('MaADQI', 'Count', 'Histogram of Of Mean Adjusted Average Defence Quality Index values', madefquees,'./results/%s/%s/histograms' % (leagueId, levelId), 'MaADQI', 'MaADQI_Total_histogram.png')
-	print "fuh"
-	exit()
 	## plot all of the measures that we wanted as histograms
 
 
