@@ -43,6 +43,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	corrmat.to_csv(_output)
 	
 	plt.xticks(rotation=20)
+	plt.yticks(rotation=20)	
 	plt.savefig(output_)
 	plt.tight_layout()
 	
@@ -111,8 +112,16 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f" % (title, distMean, distMedian, distVar)
 	plt.title(title_)
 	## an' title it
-	print "Plot min %f, max %f" % (0.0, plotMax)
+	print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)
+	
+	if(minShow == maxShow):
+		print "Histogram bounds identical, attempting to reset"
+		minShow = float(int(min(values))-1)	
+		maxShow = float(int(max(values))+1)		
+		print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)	
+
 	plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
+
 	## 40 here was a working value for the range of possible bin values for this
 	## dataset
 	## I need to figure out how to get a max from our plt.hist output
@@ -125,7 +134,10 @@ def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, 
 	## TLDR, takes a set of values and histograms them, whoop whop
 	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount, plotMax)
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except UserWarning:
+		print "Duh"
 	plt.close()
 	
 def trendline(x, gradient, intercept):
@@ -173,10 +185,11 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
 		minShow = float(int(min(x_values)))	
-		maxShow = float(int(max(x_values)))	
+		maxShow = float(int(max(x_values))+1)	
 		
 	print "minShow %f, maxShow %f" % (minShow, maxShow)			
-	
+	##print "x values ", x_values, "End of x values\n\n"
+	##print "y values", y_values, "End of y values"
 	modifiers =  [0.5, 1.0, 1.50]
 	
 	
@@ -209,9 +222,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	
 	agciFix = False
 	
-	##plt.axis([minShow, maxShow, 0.0, 1.2])
+	plt.axis([minShow, maxShow, 0.0, 1.2])
 	try:
-		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values)))*1.4])
+		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values))+1)*1.4])
 	except UserWarning:
 		agciFix = True
 	if(agciFix == True):

@@ -6,6 +6,17 @@ from teamWatMu import *
 from season import *
 
 def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
+	## given an initial team that is in the playoff bracket we are
+	## looking for, crawl the full extent of the playoff bracket and
+	## output a list containing the standings positions (seeding nos)
+	## of every team in the playoff bracket
+	
+	## its just a really annoying issue due to watMu having multiple
+	## playoff brackets as we go down the standings, which makes not
+	## all playoff games as meaningful
+	
+	## so we just ignore anything that isnt in the topmost playoff
+	## bracket
 	thisTeamSeed = currentTeam.getSeasonRank()
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
@@ -41,16 +52,20 @@ class playoffBracket:
 
 
 class watMuSeason(Season):
-	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams):
+	def __init__(self, leagueId, levelId, seasonId, teamIdList, sortTeams, debugInfo=False):
 		super(watMuSeason, self).__init__(leagueId, levelId, seasonId, teamIdList)
-		
+		## call the parents constructor
 		self.playoffBrackets = []
+		## list of lists
+		## the lists contain the seeding numbers of teams in that
+		## playoff bracket
 		
 		for teamId in teamIdList:
+			## when the constructor was called, we got a list of the
+			## team ids for each team in this season
 			self.Teams.append(watMuTeam(leagueId, levelId, seasonId, teamId))
-		
-		for team in self.Teams:
-			team.loadTierI()
+			## construct a team from each teamId, running the tierI
+			## load call automatically
 
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
@@ -58,11 +73,16 @@ class watMuSeason(Season):
 			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonGoalsForAverage(), reverse=True)
 			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonAverageSOC(), reverse=True)
 			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getPointsPercentage(), reverse=True)
-			## highest priority at the end
+			## so we sort the list of objects just like they would be in
+			## the standings page
+			
+			## highest priority stat at the end
 			
 
 		for team in self.Teams:
 			team.loadTierII(self.Teams, self.Teams.index(team))
+			## calculate the stats for teams that depend on the stats of
+			## other teams in the league
 		
 		self.topTeam = self.getTeamByPosition(1)
 		## next work through the teams this one played and add their position
@@ -73,24 +93,56 @@ class watMuSeason(Season):
 		## bracket list as arguments and returns lists of seeding positions
 		
 		self.topPlayoffBracket = getSeedsInBracket(self.topTeam, self, [])
+		## call the function that crawls the playoff tree and gets the
+		## list of seeding numbers for the teams in the first playoff
+		## bracket (the one that we care about)
 		lastPlayoffBracket = self.topPlayoffBracket
+		## ie the most recent playoff bracket that we handled
 		
-		print "top playoff bracket: ", self.topPlayoffBracket
+		if(debugInfo):
+			print "top playoff bracket: ", self.topPlayoffBracket
+			
 		
 		self.playoffBrackets.append(self.topPlayoffBracket)
-		
+		## add the first (top) playoff bracket to the list of playoff
+		## brackets
 		teamsSoFar = len(self.topPlayoffBracket)
+		## the number of teams in the league that we have covered in the
+		## first playoff bracket
+		
 		while(True):
+			## cycle constantly until we have covered all of the playoff
+			## brackets in this league
 			totalTeams = self.getTotalPlayoffTeams()
-			print "total teams for %s: %i" % (self.seasonId, totalTeams)
-			print "teams so far: %i" % teamsSoFar
+			## get a list of the team objects that made the playoffs
+			## (excluding teams that got DNQs because of forfeits or
+			## poor behaviour or whatever)
+			if(debugInfo):
+				print "total teams for %s: %i" % (self.seasonId, totalTeams)
+				print "teams so far: %i" % teamsSoFar
 			if(totalTeams > teamsSoFar):
+				## if we havent run past the end of the playoff teams,
+				## we are going to keep finding more playoff brackets
 				lastSeed = max(lastPlayoffBracket)
-				topOfNewBracket = self.getTeamByPosition(lastSeed+1)
-				lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
+				## we need to find the seeding number thats at the top
+				## of the next playoff bracket, so we will base it off
+				## of the team that was at the bottom of the previous
+				## one
 				
+				topOfNewBracket = self.getTeamByPosition(lastSeed+1)
+				## use the last seed to get the top seed in the next
+				## bracket
+				lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
+				## crawl the bracket
 				self.playoffBrackets.append(lastPlayoffBracket)
+				## attach the bracket to the list of brackets
 				teamsSoFar += len(lastPlayoffBracket)
+				## increment the counter
+		## Im not terribly confident in the reliability of this code to
+		## handle 100% of cases, but its low enough priority that it
+		## can be ignored for now
+		
+		## the top playoff bracket is all that really matters anyways
 			else:
 				break
 				## we reached the bottom of the league, no more brackets to crawl
@@ -98,7 +150,15 @@ class watMuSeason(Season):
 		
 		for team in self.Teams:
 			team.loadTierIII(self.Teams)
-	
+			## load the stats that depend on the tier II stats of other
+			## teams (usually adjusting stats for the season mean)
+		##for team in self.Teams:
+		##	team.loadTierIV(self.Teams, seasonsList)
+			## load the players
+		
+		## this should be done after all seasons have been loaded, so
+		## we dont get things all screwy
+		
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:
 			team.loadTierIV(self.Teams, seasonsList)

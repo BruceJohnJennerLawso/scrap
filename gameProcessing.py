@@ -6,22 +6,34 @@
 
 def getTeamName(teamString):
 	if('(Casual)' in teamString):
-		return teamString[12:len(teamString)-9]
+		return teamString[12: (len(teamString)-(len('Casual'))) -3]		
 	elif('(Beginner)' in teamString):
-		return teamString[12:len(teamString)-11]		
+		return teamString[12: (len(teamString)-(len('Beginner'))) -3]
+	elif('(Semi-Competitive)' in teamString):
+		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -3]	
+	elif('(Intermediate)' in teamString):
+		return teamString[12: (len(teamString)-(len('(Intermediate)'))) -3]	
+	elif('(Competitive)' in teamString):
+		return teamString[12: (len(teamString)-(len('(Competitive)'))) -3]	
+	elif('(Advanced)' in teamString):
+		return teamString[12: (len(teamString)-(len('(Advanced)'))) -3]	
 	elif('(Elite)' in teamString):
-		return teamString[12:len(teamString)-8]	
+		return teamString[12: (len(teamString)-(len('(Elite)'))) -1]	
 	elif('(All Star)' in teamString):
-		return teamString[12:len(teamString)-11]	
+		return teamString[12: (len(teamString)-(len('(All Star)'))) -1]	
 	elif('(All Star Non-Contact)' in teamString):
-		return teamString[12:len(teamString)-23]
+		return teamString[12: (len(teamString)-(len('(All Star Non-Contact)'))) -1]	
 	elif('(All Star Contact)' in teamString):
-		return teamString[12:len(teamString)-19]							
+		return teamString[12: (len(teamString)-(len('(All Star Contact)'))) -1]	
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
+	## ie 'The Mighty Dads' and 'The Mighty Dads '
+	## will not compare as the same thing
+	
 	
 def seasonLength(val):
+	## wtf does this actually do...?
 	if(val >= 37):
 		output = (val - 9.0)/4.0
 		## if the team made it to the playoffs, we need to step back one
@@ -33,6 +45,7 @@ def seasonLength(val):
 	return output
 	
 def getGameResult(rawDataString):
+	## pretty simple stuff
 	if('tie' in rawDataString):
 		return 'tie'
 	elif('won' in rawDataString):	
@@ -54,6 +67,7 @@ def smallerOne(val1, val2):
 	else:
 		return val2
 
+## ^ helpful functions for handling scores
 
 		
 def processGoalsFor(rawDataString):
@@ -125,17 +139,25 @@ def processGoalsAgainst(rawDataString):
 		
 	
 def processSOC(rawDataString):
+	## take whatever was in the SOC column and make sense of it as a value we
+	## can use later to calculate overall SOC average
 	if(rawDataString == 'avg.'):
 		return rawDataString
 		## nothing we can do about this at this step of the process
 		
-		## this is gonna be a clusterfuck to handle this at the end
+		## so we can handle this later when the team object is loading data, and
+		## it will make sure this counts as weighting the average a bit more
 	else:
 		return int(rawDataString)
-		## force it out as an integer so it can be summed a bit more easily
+		## force it out as an integer so it can be summed easily
 
 
 if(__name__ == "__main__"):
-	gf =  processGoalsFor('won 100 - 9', 'won')
-	ga = processGoalsAgainst('won 100 - 9', 'won')
+	gf =  processGoalsFor('won 100 - 9')
+	ga = processGoalsAgainst('won 100 - 9')
 	print "gf %i, ga %i" % (gf, ga)
+	## quickly testing the goals processing function, which now can handle
+	## scores above 10 with ease!!! Such resiliency!!! <3<3<3
+
+	print getTeamName('Ice Hockey: The Mighty Dads (Casual)')
+	print getTeamName('Ice Hockey: David R. Ceriton School of Super Friends (Beginner)')	

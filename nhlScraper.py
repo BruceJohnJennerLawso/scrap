@@ -15,16 +15,43 @@ from gameProcessing import *
 
 
 def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, seasonGames, playoffRoundLengths, playoffGames, rosterSize, rosterRows):
+	## once we have the data about the team in question, usually in string form,
+	## we should save it in string format so its more convenient to access
+	## elsewhere without connecting to the internet
 	outputPath = ("./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId))
+	## in the case of nhl games, we can usually drop the level id, as it isnt
+	## really relevant
 	print "current output path: %s" % outputPath
+	## useful info to see when the scraper is running
 	with open(outputPath, 'wb') as foo:
 		bar = csv.writer(foo)
-		bar.writerows([[teamName, teamId, leagueId], [seasonName, seasonId], [rosterSize], [regularSeasonLength], playoffRoundLengths])
+		## get set up to write a csv file under the current output path
+		bar.writerows([[teamName, teamId, leagueId],\
+		 [seasonName, seasonId],\
+		  [rosterSize],\
+		  [regularSeasonLength], playoffRoundLengths])
+		## write the teams name, Id, then leagueId on the first line, ie
+		## ['Toronto Maple Leafs', 'TOR', 'nhl']
+		## next, write the season name and Id on the second line
+		## ['2015-16', '2016']
+		## next, the number of players on the roster, ie
+		## [46]
+		## and finally the number of games played in the regular season,
+		## followed by the number of games in each playoff round
+		## (we'll use San Jose here to demonstrate)
+		## [82]
+		## [5,7,6,6] 
 		bar.writerows(seasonGames)
+		## write out the regular season schedule, line by line for each game
 		bar.writerows([''])
+		## add in a blank row to separate the season from the playoffs
 		bar.writerows(playoffGames)
+		## write out playoff games (if any) just like we did with the regular
+		## season
 		bar.writerows([''])
+		## add in another blank row before the Roster
 		bar.writerows(rosterRows)		
+		## write out all of the player names and stats, one line per player
 
 
 
@@ -358,5 +385,6 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
 
 if(__name__ == "__main__"):
-	scrapeTeamData('SJS', False, '2016', False, 'nhl')
-	scrapeTeamData('SJS', False, '2012', False, 'nhl')	
+	##scrapeTeamData('SJS', False, '2016', False, 'nhl')
+	##scrapeTeamData('SJS', False, '2012', False, 'nhl')	
+	scrapeTeamData('TOR', False, '2016', False, 'nhl')	
