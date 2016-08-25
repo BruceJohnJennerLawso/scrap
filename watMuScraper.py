@@ -338,9 +338,14 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 				
 				rawScoreData = content3[access+2]
 				
-				outcome = getGameResult(rawScoreData)				
-				goalsFor = processGoalsFor(rawScoreData)
-				goalsAgainst = processGoalsAgainst(rawScoreData)
+				try:
+					outcome = getGameResult(rawScoreData)				
+					goalsFor = processGoalsFor(rawScoreData)
+					goalsAgainst = processGoalsAgainst(rawScoreData)
+				except ValueError:
+					## this is the shit way of dealing with this
+					totalPlayoffGames -= 1
+					continue
 
 				schedule.append([content3[access], content3[access+1], outcome, goalsFor, goalsAgainst, processSOC(content3[access+3])  , content4[gameVal].replace(',', '').encode('utf-8')])
 				## left to right, the game record reads ['date and time', 'Location', 'won', 'SOC Rating', 'opponent name', ]			
