@@ -10,9 +10,9 @@ def getTeamName(teamString):
 	elif('(Beginner)' in teamString):
 		return teamString[12: (len(teamString)-(len('Beginner'))) -3]
 	elif('(Semi-Competitive)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -1]	
 	elif('(Intermediate)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Intermediate)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Intermediate)'))) - 1]	
 	elif('(Competitive)' in teamString):
 		return teamString[12: (len(teamString)-(len('(Competitive)'))) -1]	
 	elif('(Advanced)' in teamString):
