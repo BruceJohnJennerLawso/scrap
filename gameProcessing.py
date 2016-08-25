@@ -10,13 +10,13 @@ def getTeamName(teamString):
 	elif('(Beginner)' in teamString):
 		return teamString[12: (len(teamString)-(len('Beginner'))) -3]
 	elif('(Semi-Competitive)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -1]	
 	elif('(Intermediate)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Intermediate)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Intermediate)'))) - 1]	
 	elif('(Competitive)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Competitive)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Competitive)'))) -1]	
 	elif('(Advanced)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Advanced)'))) -3]	
+		return teamString[12: (len(teamString)-(len('(Advanced)'))) -1]	
 	elif('(Elite)' in teamString):
 		return teamString[12: (len(teamString)-(len('(Elite)'))) -1]	
 	elif('(All Star)' in teamString):
