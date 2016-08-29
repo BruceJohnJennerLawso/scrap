@@ -113,6 +113,9 @@ class Team(object):
 		## ie 'Toronto Maple Leafs', or 'The Mighty Dads'
 		return self.teamName	
 	
+	def getTeamId(self):
+		return self.teamId
+	
 	def getSeasonId(self):
 		## ie '2016' or 'fall2015'
 		return self.seasonId	

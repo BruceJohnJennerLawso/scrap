@@ -8,7 +8,7 @@ from seasonWatMu import *
 from seasonNhl import *
 from graphtools import *
 
-from statContainer import *
+from statRetrieve import *
 
 import sys  
 
@@ -78,6 +78,10 @@ def getAllSeasons(leagueId, levelId='null'):
 
 
 
+if(__name__ == "__main__"):
+	seasons = getAllSeasons('watMu', 'beginner')
+	demoStatContainer(seasons, 'watMu', 'beginner') 
+
 
 def getFranchiseList(leagueId, levelId):
 	## returns a list of every season
@@ -107,16 +111,7 @@ def getFranchiseList(leagueId, levelId):
 				## [...['Pucked Up', 'Pucked UP'],...]
 	return output
 
-def getMawquees(seasons):
-	output = []
-	for season in seasons:
-		for team in season.Teams:
-			output.append(
 
-
-def demoStatContainer(seasons, leagueId, levelId):
-	mawquees = []
-	
 
 def plotAllTeams(seasons, leagueId, levelId):
 	## just generate histograms for all of the stats we want to look at

@@ -11,6 +11,12 @@ class statContainer:
 		for i in range(0, len(statList)):
 			self.dataPoints.append([statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]])
 		
+	def printContainer(self):
+		print "[",
+		for i in self.dataPoints:
+			print i
+		print "]"
+		
 	def getStat(self, onlyPlayoffTeams=False):
 		output = []
 		for pt in self.dataPoints:
