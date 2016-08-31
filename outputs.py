@@ -82,7 +82,6 @@ if(__name__ == "__main__"):
 	seasons = getAllSeasons('watMu', 'beginner')
 	demoStatContainer(seasons, 'watMu', 'beginner') 
 
-
 def getFranchiseList(leagueId, levelId):
 	## returns a list of every season
 	output = []

@@ -348,6 +348,7 @@ class Team(object):
 		## self.ADQI-leagueMean.ADQI
 		return self.meanAdjustedAverageDefenceQualityIndex
 
+
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 
 	## predictor of playoff success so far

@@ -78,8 +78,209 @@ def demoStatContainer(seasons, leagueId, levelId):
 			teamNames.append(team.getTeamName())
 			years.append(team.seasonId)
 			madePlayoffs.append(team.qualifiedForPlayoffs())
-	container = statContainer(mawquees, teamIds, teamNames, years, madePlayoffs)
+	container = statContainer('MaAWQI', 'Mean Adjusted Average Win Quality Index', mawquees, teamIds, teamNames, years, madePlayoffs)
 	container.printContainer() 
 	
 	
+def getStatContainer(statCall, seasons, leagueId, levelId):
+	print statCall
 	
+	statValues = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			statValues.append(team.statCall)
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer(statValues, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 	
+	
+	
+def getMawqueeStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getMaAWQI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('MaAWQI', 'Mean Adjusted Average Win Quality Index',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container
+	
+	
+def getMapqueeStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getMaAPQI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('MaAPQI', 'Mean Adjusted Average Play Quality Index',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+
+def getMapqueeStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getMaAPQI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('MaAPQI', 'Mean Adjusted Average Play Quality Index',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+def getOffenceStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getSeasonGoalsForAverage())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('AGF', 'Average Goals For',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+def getDefenceStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getSeasonGoalsAgainstAverage())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('GAA', 'Goals Against Average',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+def getPlusMinusStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getSeasonPlusMinus())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('+/-', 'Goal Differential (+/-)',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container		
+	
+def getPointsPercentageStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getPointsPercentage())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('Pts Pct', 'Points Percentage',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+def getWinsStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getSeasonWinsTotal())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('Wins', 'Wins',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container					
+		
+		
+def getLossesStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getSeasonLossTotal())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('Losses', 'Losses',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+def getAgciStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getAGCI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.qualifiedForPlayoffs())
+	container = statContainer('AGCI', 'Average Game Closeness Index', output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container				
+
