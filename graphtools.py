@@ -209,8 +209,9 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	minY = float(int(min(y_values)))*1.2
 	if(min(y_values) < 0):
 		minY = float(int(min(y_values))-1)*1.2
-	maxY = float(int(max(y_values)))*1.2	
-	
+	maxY = float(int(max(y_values)))*1.2
+	if(max(y_values) < 1):
+		maxY = float(int(max(y_values))+1)*1.2
 	
 		
 	print "minShow %f, maxShow %f, Y min %f, Y max %f" % (minShow, maxShow, minY, maxY)			
