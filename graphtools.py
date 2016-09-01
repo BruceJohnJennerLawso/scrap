@@ -17,11 +17,17 @@ import distStats
 import pandas as pd
 import seaborn as sns
 
+import os
+
 
 def plotScatterLabelled(data, x_param, y_param, huey, output_path, output_directory, output_filename):
 	sns.lmplot(x_param, y_param, data, hue=huey, fit_reg=False);
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)	
 	plt.close()
 
 def plotScatterMatrix(data, output_path, output_directory, output_filename):
@@ -138,6 +144,9 @@ def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, 
 		plt.savefig(output_)
 	except UserWarning:
 		print "Duh"
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)
 	plt.close()
 	
 def trendline(x, gradient, intercept):
@@ -239,7 +248,11 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	##plt.show()
 	## showit
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)
 	plt.close()	
 
 	for k in range(0, len(modifiers)):
@@ -261,6 +274,12 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		plt.subplots_adjust(left, bottom, right, top, 4*wspace, 4*hspace)
 
 		output_ = "%s/%s/modelDeltas_k_%f_%s" % (output_path, output_directory, modifiers[k], output_filename)
-		plt.savefig(output_)
+		
+		try:
+			plt.savefig(output_)
+		except IOError:
+			os.makedirs('%s/%s/' % (output_path, output_directory))
+			plt.savefig(output_)
+		
 		plt.close()	
 
