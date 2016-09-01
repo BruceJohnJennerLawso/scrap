@@ -266,6 +266,43 @@ def getLossesStatContainer(seasons, leagueId, levelId):
 	container.printContainer() 
 	return container	
 	
+def getMaADQIStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getMaADQI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.madeRealPlayoffs())
+	container = statContainer('MaADQI', 'Mean Adjusted Defence Quality Index',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container		
+
+def getMaAOQIStatContainer(seasons, leagueId, levelId):
+	output = []
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			output.append(team.getMaAOQI())
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.madeRealPlayoffs())
+	container = statContainer('MaAOQI', 'Mean Adjusted Offence Quality Index',output, teamIds, teamNames, years, madePlayoffs)
+	container.printContainer() 
+	return container	
+	
+	
 def getAgciStatContainer(seasons, leagueId, levelId):
 	output = []
 	teamIds = []

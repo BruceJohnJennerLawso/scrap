@@ -28,8 +28,11 @@ if(__name__ == "__main__"):
 	print getPlayoffSuccessStatContainer(seasons, leagueId, levelId).getStat(True)
 	print 'Bar'
 	
-	graphTeams(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId))
-	graphTeamsHistogram(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId))
+	graphTeams(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId), getAgciStatContainer(seasons, leagueId, levelId), getMaADQIStatContainer(seasons, leagueId, levelId), getMaAOQIStatContainer(seasons, leagueId, levelId), getMawqueeStatContainer(seasons, leagueId, levelId))
+	graphTeamsAgainstDeltas(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId), getAgciStatContainer(seasons, leagueId, levelId), getMaADQIStatContainer(seasons, leagueId, levelId), getMaAOQIStatContainer(seasons, leagueId, levelId), getMawqueeStatContainer(seasons, leagueId, levelId))	
+	graphTeamsHistogram(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId), getAgciStatContainer(seasons, leagueId, levelId), getMaADQIStatContainer(seasons, leagueId, levelId), getMaAOQIStatContainer(seasons, leagueId, levelId), getMawqueeStatContainer(seasons, leagueId, levelId))
+	graphTeamsHistogram(leagueId, levelId, False, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId), getAgciStatContainer(seasons, leagueId, levelId), getMaADQIStatContainer(seasons, leagueId, levelId), getMaAOQIStatContainer(seasons, leagueId, levelId), getMawqueeStatContainer(seasons, leagueId, levelId))
+
 	
 	exit()
 	
