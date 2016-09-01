@@ -28,9 +28,10 @@ if(__name__ == "__main__"):
 	print getPlayoffSuccessStatContainer(seasons, leagueId, levelId).getStat(True)
 	print 'Bar'
 	
-	graphPlayoffTeams(leagueId, levelId, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId))
+	graphTeams(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId))
+	graphTeamsHistogram(leagueId, levelId, True, getPlayoffSuccessStatContainer(seasons, leagueId, levelId), getOffenceStatContainer(seasons, leagueId, levelId), getDefenceStatContainer(seasons, leagueId, levelId))
 	
-	##exit()
+	exit()
 	
 	plotAllTeams(seasons, leagueId, levelId)
 	plotAllTopPlayoffTeams(seasons, leagueId, levelId)

@@ -24,7 +24,7 @@ class statContainer:
 		return self.statNameShort
 		
 	def getLongStatName(self):
-		return self.statNameShort
+		return self.statNameLong
 
 	def printContainer(self):
 		print "[",
