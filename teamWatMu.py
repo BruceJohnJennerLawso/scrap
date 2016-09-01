@@ -191,6 +191,7 @@ class watMuTeam(Team):
 		debugInfo = True
 		
 		
+		
 		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
 		
@@ -253,8 +254,11 @@ class watMuTeam(Team):
 
 	## Tier III load call ######################################################
 
-	def loadTierIII(self, teamsList):	
+	def loadTierIII(self, teamsList, madeRealPlayoffs):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+		
+		self.realPlayoffs = madeRealPlayoffs
+		
 		self.calculateMaValues(teamsList)
 		## send the list of team objects for this season off so we can get our
 		## mean adjusted values
@@ -354,6 +358,17 @@ class watMuTeam(Team):
 	def getRecordString(self):
 		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
 		## typical hockey stat used for decades
+
+	def getPlayoffSuccessRating(self):
+		if(self.realPlayoffs):
+			return self.getPlayoffWinPercentage()
+		else:
+			return 0.000
+			## if its not the top playoff bracket, it doesnt count as the 'real'
+			## playoffs
+
+	def madeRealPlayoffs(self):
+		return self.realPlayoffs
 
 if(__name__ == "__main__"):
 	daDads = watMuTeam('watMu', 'beginner', 'fall2015', 12348)

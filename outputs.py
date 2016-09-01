@@ -290,7 +290,13 @@ def plotAllTopPlayoffTeams(seasons, leagueId, levelId):
 	plotScatterplot('Offence Quality Index', 'Playoff Offence', 'Playoff Offence by Offence Quality Index', offquees, playoffOffence, './results/%s/%s/playoffOffenceBy' % (leagueId, levelId), 'OQI', 'PlayoffOffence_by_OQI.png', -30, 30)
 		
 	plotScatterplot('Defence Quality Index', 'Playoff Win %', 'Playoff Win % by Defence Quality Index', defquees, playoffPercentages, './results/%s/%s/playoffWinBy' % (leagueId, levelId), 'DQI', 'PlayoffWinPct_by_DQI.png', -30, 30)	
-	
+
+def graphPlayoffTeams(leagueId, levelId, dependent, *independents):
+	for indie in independents:
+		plotScatterplot(indie.getShortStatName(), dependent.getShortStatName(), '%s by %s' % (dependent.getLongStatName(), indie.getLongStatName()), indie.getStat(True), dependent.getStat(True), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), indie.getShortStatName()))		
+		## wow, that was quick
+		## *if* it works...
+		
 def plotAllTopPlayoffTeamsDeltas(seasons, leagueId, levelId):
 	mawquees = []
 	mapquees = []

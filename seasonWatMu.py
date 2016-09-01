@@ -149,7 +149,11 @@ class watMuSeason(Season):
 			
 		
 		for team in self.Teams:
-			team.loadTierIII(self.Teams)
+			
+			if(team.getSeasonRank() in self.topPlayoffBracket):
+				team.loadTierIII(self.Teams, True)
+			else:
+				team.loadTierIII(self.Teams, False)
 			## load the stats that depend on the tier II stats of other
 			## teams (usually adjusting stats for the season mean)
 		##for team in self.Teams:

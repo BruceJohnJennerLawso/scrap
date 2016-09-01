@@ -46,7 +46,7 @@ class nhlSeason(Season):
 			team.loadTierII(self.Teams, self.Teams.index(team))
 			
 		for team in self.Teams:
-			team.loadTierIII(self.Teams)
+			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs())
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:

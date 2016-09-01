@@ -88,7 +88,7 @@ class Team(object):
 	def loadTierII(self, teamsList):
 		print "Bad call to Team.loadTierII"
 		
-	def loadTierIII(self, teamsList):
+	def loadTierIII(self, teamsList, madeRealPlayoffs):
 		print "Bad call to Team.loadTierIII"
 		
 	def loadTierIV(self, teamsList, seasonsList):
