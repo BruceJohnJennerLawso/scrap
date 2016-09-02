@@ -88,7 +88,7 @@ class Team(object):
 	def loadTierII(self, teamsList):
 		print "Bad call to Team.loadTierII"
 		
-	def loadTierIII(self, teamsList):
+	def loadTierIII(self, teamsList, madeRealPlayoffs):
 		print "Bad call to Team.loadTierIII"
 		
 	def loadTierIV(self, teamsList, seasonsList):
@@ -112,6 +112,9 @@ class Team(object):
 	def getTeamName(self):
 		## ie 'Toronto Maple Leafs', or 'The Mighty Dads'
 		return self.teamName	
+	
+	def getTeamId(self):
+		return self.teamId
 	
 	def getSeasonId(self):
 		## ie '2016' or 'fall2015'
@@ -201,6 +204,8 @@ class Team(object):
 			## if we arent dealing with a weird watMu style league, just get the
 			## raw playoff win percentage
 			
+	def getPlayoffSuccessRating(self):
+		return self.calculatePlayoffSuccessRating()	
 				
 	def getPlayoffGoalsForAverage(self):
 		output = 0.000
@@ -344,6 +349,7 @@ class Team(object):
 		
 		## self.ADQI-leagueMean.ADQI
 		return self.meanAdjustedAverageDefenceQualityIndex
+
 
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 

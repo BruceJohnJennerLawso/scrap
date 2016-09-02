@@ -17,11 +17,17 @@ import distStats
 import pandas as pd
 import seaborn as sns
 
+import os
+
 
 def plotScatterLabelled(data, x_param, y_param, huey, output_path, output_directory, output_filename):
 	sns.lmplot(x_param, y_param, data, hue=huey, fit_reg=False);
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)	
 	plt.close()
 
 def plotScatterMatrix(data, output_path, output_directory, output_filename):
@@ -29,7 +35,11 @@ def plotScatterMatrix(data, output_path, output_directory, output_filename):
 	plt.tight_layout()
 	
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)		
 	plt.close()
 	
 	
@@ -44,7 +54,11 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	
 	plt.xticks(rotation=20)
 	plt.yticks(rotation=20)	
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)		
 	plt.tight_layout()
 	
 	plt.close()
@@ -138,6 +152,9 @@ def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, 
 		plt.savefig(output_)
 	except UserWarning:
 		print "Duh"
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)
 	plt.close()
 	
 def trendline(x, gradient, intercept):
@@ -187,7 +204,17 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		minShow = float(int(min(x_values)))	
 		maxShow = float(int(max(x_values))+1)	
 		
-	print "minShow %f, maxShow %f" % (minShow, maxShow)			
+		
+		
+	minY = float(int(min(y_values)))*1.2
+	if(min(y_values) < 0):
+		minY = float(int(min(y_values))-1)*1.2
+	maxY = float(int(max(y_values)))*1.2
+	if(max(y_values) < 1):
+		maxY = float(int(max(y_values))+1)*1.2
+	
+		
+	print "minShow %f, maxShow %f, Y min %f, Y max %f" % (minShow, maxShow, minY, maxY)			
 	##print "x values ", x_values, "End of x values\n\n"
 	##print "y values", y_values, "End of y values"
 	modifiers =  [0.5, 1.0, 1.50]
@@ -222,13 +249,13 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	
 	agciFix = False
 	
-	plt.axis([minShow, maxShow, 0.0, 1.2])
-	try:
-		plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values))+1)*1.4])
-	except UserWarning:
-		agciFix = True
-	if(agciFix == True):
-		plt.axis([minShow, maxShow, 0.0, 1.2])	
+	plt.axis([minShow, maxShow, minY, maxY])
+	##try:
+	##	plt.axis([minShow, maxShow, float(int(min(y_values)))*1.4, float(int(max(y_values))+1)*1.4])
+	##except UserWarning:
+	##	agciFix = True
+	##if(agciFix == True):
+	##	plt.axis([minShow, maxShow, minY, maxY])	
 	## win percentages between 0.000 and 1.000, so we put our top limit a bit
 	## higher, so we can see the 1.000 datapoints without them going off the
 	## graph
@@ -239,7 +266,11 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	##plt.show()
 	## showit
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
-	plt.savefig(output_)
+	try:
+		plt.savefig(output_)
+	except IOError:
+		os.makedirs('%s/%s/' % (output_path, output_directory))
+		plt.savefig(output_)
 	plt.close()	
 
 	for k in range(0, len(modifiers)):
@@ -261,6 +292,12 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		plt.subplots_adjust(left, bottom, right, top, 4*wspace, 4*hspace)
 
 		output_ = "%s/%s/modelDeltas_k_%f_%s" % (output_path, output_directory, modifiers[k], output_filename)
-		plt.savefig(output_)
+		
+		try:
+			plt.savefig(output_)
+		except IOError:
+			os.makedirs('%s/%s/' % (output_path, output_directory))
+			plt.savefig(output_)
+		
 		plt.close()	
 

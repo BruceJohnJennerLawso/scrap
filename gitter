@@ -1,6 +1,6 @@
 #!/bin/bash
 
-geany gameProcessing.py watMuScraper.py scrap.py game.py gameWatMu.py gameNhl.py player.py playerWatMu.py team.py teamWatMu.py teamNhl.py season.py seasonWatMu.py seasonNhl.py distStats.py graphtools.py outputs.py readata.py teamSummary.py playerData.py get go dependencies.txt &
+geany gameProcessing.py watMuScraper.py scrap.py game.py gameWatMu.py gameNhl.py player.py playerWatMu.py team.py teamWatMu.py teamNhl.py season.py seasonWatMu.py seasonNhl.py distStats.py graphtools.py statContainer.py outputs.py readata.py teamSummary.py playerData.py get go gitter dependencies.txt &
 ## got tired of doing this manually every time with geany
 
 exit 0

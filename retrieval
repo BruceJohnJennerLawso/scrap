@@ -1,0 +1,10 @@
+#!/bin/bash
+
+python scrap.py 'watMu' 'beginner'
+python scrap.py 'watMu' 'intermediate'
+python scrap.py 'watMu' 'advanced'
+python scrap.py 'watMu' 'allstar'
+
+python scrap.py 'nhl'
+
+exit 0

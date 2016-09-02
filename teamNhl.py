@@ -367,7 +367,7 @@ class nhlTeam(Team):
 
 	## Tier III load call ######################################################
 
-	def loadTierIII(self, teamsList):	
+	def loadTierIII(self, teamsList, madeRealPlayoffs):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		self.calculateMaValues(teamsList)
 	
@@ -428,6 +428,8 @@ class nhlTeam(Team):
 		for franchise in franchiseList:
 			## loop through the franchises available, ie
 			## ['The Mighty Ducks of Anaheim', 'Anaheim Ducks']
+			
+			## screw you Burkie
 			if(self.getTeamName().decode('utf-8') in franchise):
 				output = franchise[0].decode('utf-8')
 				## if we had a match, output the first (most appropriate) name
@@ -436,11 +438,18 @@ class nhlTeam(Team):
 
 	def getRecordString(self):
 		return "(%s-%s-%s)" % (self.seasonWins, self.seasonRegulationLosses, self.seasonExtraTimeLosses)
-		## I dont have the patience for this right now, so this is only
+		## I dont have the patience to do this right now, so this is only
 		## applicable for post 2005 lockout, with the shootout and loser point
 
 		## have I mentioned all of the horrible things I would like to do to
-		## Gary???
+		## our friend Gary???
+
+	def calculatePlayoffSuccessRating(self):
+		return self.playoffWins
+		
+	def madeRealPlayoffs(self):	
+		return self.qualifiedForPlayoffs()
+
 
 if(__name__ == "__main__"):
 	daBuds = nhlTeam('nhl', '2016', 'TOR')
