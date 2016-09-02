@@ -12,8 +12,6 @@ python-scipy
 ## probably going to be used elsewhere a lot with scipy.stats and other
 ## things
 python-requests
-## this might just be python-request?
-##
 ## used by the web scraper to acquire our data from the web
 python-pandas
 python-seaborn
@@ -30,3 +28,5 @@ python-seaborn
 ## IMPORTANT NOTE:
 ## Seaborn needs to be installed via pip now to get the right version that can
 ## create a heatmap
+##
+## the apt version is behind by a version or 4
