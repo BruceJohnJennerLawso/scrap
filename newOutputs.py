@@ -168,6 +168,13 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 	
 	##pd.printMeanAndSdByGroup(dataTruong, 'Franchise') 
 
+<<<<<<< HEAD
 	plotScatterMatrix(dataPanda,  './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_MatrixScatterplot.png')
 	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap.png')
 
+=======
+	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
+	##plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
+
+	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap_%s_%s.png' % (leagueId, levelId))
+>>>>>>> master

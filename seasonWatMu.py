@@ -110,41 +110,41 @@ class watMuSeason(Season):
 		## the number of teams in the league that we have covered in the
 		## first playoff bracket
 		
-		while(True):
+		##while(True):
 			## cycle constantly until we have covered all of the playoff
 			## brackets in this league
-			totalTeams = self.getTotalPlayoffTeams()
+		##	totalTeams = self.getTotalPlayoffTeams()
 			## get a list of the team objects that made the playoffs
 			## (excluding teams that got DNQs because of forfeits or
 			## poor behaviour or whatever)
-			if(debugInfo):
-				print "total teams for %s: %i" % (self.seasonId, totalTeams)
-				print "teams so far: %i" % teamsSoFar
-			if(totalTeams > teamsSoFar):
+		##	if(debugInfo):
+		##		print "total teams for %s: %i" % (self.seasonId, totalTeams)
+		##		print "teams so far: %i" % teamsSoFar
+		##	if(totalTeams > teamsSoFar):
 				## if we havent run past the end of the playoff teams,
 				## we are going to keep finding more playoff brackets
-				lastSeed = max(lastPlayoffBracket)
+		##		lastSeed = max(lastPlayoffBracket)
 				## we need to find the seeding number thats at the top
 				## of the next playoff bracket, so we will base it off
 				## of the team that was at the bottom of the previous
 				## one
 				
-				topOfNewBracket = self.getTeamByPosition(lastSeed+1)
+		##		topOfNewBracket = self.getTeamByPosition(lastSeed+1)
 				## use the last seed to get the top seed in the next
 				## bracket
-				lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
+		##		lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
 				## crawl the bracket
-				self.playoffBrackets.append(lastPlayoffBracket)
+		##		self.playoffBrackets.append(lastPlayoffBracket)
 				## attach the bracket to the list of brackets
-				teamsSoFar += len(lastPlayoffBracket)
+		##		teamsSoFar += len(lastPlayoffBracket)
 				## increment the counter
 		## Im not terribly confident in the reliability of this code to
 		## handle 100% of cases, but its low enough priority that it
 		## can be ignored for now
 		
 		## the top playoff bracket is all that really matters anyways
-			else:
-				break
+		##	else:
+		##		break
 				## we reached the bottom of the league, no more brackets to crawl
 			
 		
