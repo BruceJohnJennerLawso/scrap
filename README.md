@@ -11,6 +11,7 @@ in layers (I, II, III, ...) in order to allow for stats that rely on one another
 (AWQI (Tier II) relying on points and goals (Tier I), and MaAWQI (Tier III) relying on AWQI (Tier II))
 
 
+
 Care and Feeding Instructions:
 
 To get started, you'll need python installed along with pip. Take a look at
@@ -24,9 +25,9 @@ https://strobe.uwaterloo.ca/athletics/intramurals/
 
 for the waterloo intramurals data, and
 
-hockey-reference.com
+http://hockey-reference.com
 
-for the nhl data (** please note this part is very much still WIP)
+for the nhl data
 
 to scrape all beginner data out of the waterloo intramurals system, run the
 following command:
@@ -36,16 +37,29 @@ python scrap.py 'watMu' 'beginner'
 which will then save every team listed under the ./data/watMu/beginner/YEARNAME
 manifest files as a csv file will all of the available data for that team
 
+nhl data can be scraped by running
+
+python scrap.py 'nhl'
+
+
+
 Once the team data has been saved to hard disk, we can easily reload it and
-start manipulating it with more python code. This section isnt too clean at
-the moment, but a good example can be seen by running
+start manipulating it with more python code. Running
 
 python readata.py 'watMu' 'beginner'
 
-which will load that data and graph it using matplotlib. To see these
+or
+
+python readata.py 'nhl' 'default'
+
+will load that data and graph it using matplotlib. To see these
 results, take a look at the images saved under ./results/watMu/beginner
 which contains a variety of histograms and scatterplots of the results of
-this data. Most of them are well labelled, and not too terribly difficult
-to understand, so I wont go into much detail about that here
+this data.
 
+
+python teamSummary.py 'watMu' 'beginner'
+
+will print out a text readout of stats for each team in the league
+to the console
 
