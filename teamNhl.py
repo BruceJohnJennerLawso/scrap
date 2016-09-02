@@ -444,7 +444,7 @@ class nhlTeam(Team):
 		## have I mentioned all of the horrible things I would like to do to
 		## our friend Gary???
 
-	def getPlayoffSuccessRating(self):
+	def calculatePlayoffSuccessRating(self):
 		return self.playoffWins
 		
 	def madeRealPlayoffs(self):	

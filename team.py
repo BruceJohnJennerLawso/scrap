@@ -204,6 +204,8 @@ class Team(object):
 			## if we arent dealing with a weird watMu style league, just get the
 			## raw playoff win percentage
 			
+	def getPlayoffSuccessRating(self):
+		return self.calculatePlayoffSuccessRating()	
 				
 	def getPlayoffGoalsForAverage(self):
 		output = 0.000

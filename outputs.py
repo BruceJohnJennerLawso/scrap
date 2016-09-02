@@ -83,6 +83,7 @@ def getAllSeasons(leagueId, levelId='null'):
 if(__name__ == "__main__"):
 	seasons = getAllSeasons('watMu', 'beginner')
 	demoStatContainer(seasons, 'watMu', 'beginner') 
+	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')
 
 def getFranchiseList(leagueId, levelId):
 	## returns a list of every season
@@ -153,14 +154,12 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 		headings.append(var.getShortStatName())
 		
 	data = map(list, zip(*data))
-	
+	## converts the data from rows of individual stat data to columns
+	## of individual teams, where each list contains a list of stats
+	## about that team
 
 	
 	dataPanda = pd.DataFrame(data, columns=headings)
-		
-	##dataPanda = pd.DataFrame(data, columns=['Playoff Win Pct', 'Playoff Offence', 'Playoff Defence', 'MaOQI', 'MaDQI', 'GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
-	##dataTruong = pd.DataFrame(daterd, columns=['GFA', 'GAA', 'MaAWQI', 'MaAPQI', 'AGCI', 'DQI', 'OQI', 'Points Pct'])
-	## Hi Ryan
 	
 	print "\n\nData means"
 	print dataPanda.apply(np.mean), '\n'
@@ -170,7 +169,5 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 	##pd.printMeanAndSdByGroup(dataTruong, 'Franchise') 
 
 	plotScatterMatrix(dataPanda,  './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_MatrixScatterplot.png')
-	##plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
-
 	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap.png')
 

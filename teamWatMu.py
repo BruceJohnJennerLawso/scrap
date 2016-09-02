@@ -359,7 +359,7 @@ class watMuTeam(Team):
 		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
 		## typical hockey stat used for decades
 
-	def getPlayoffSuccessRating(self):
+	def calculatePlayoffSuccessRating(self):
 		if(self.realPlayoffs):
 			return self.getPlayoffWinPercentage()
 		else:
