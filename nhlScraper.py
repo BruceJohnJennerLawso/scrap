@@ -50,10 +50,12 @@ def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regula
 		## season
 		bar.writerows([''])
 		## add in another blank row before the Roster
-		bar.writerows(rosterRows)		
-		## write out all of the player names and stats, one line per player
-
-
+		try:
+			bar.writerows(rosterRows)		
+			## write out all of the player names and stats, one line per player
+		except UnicodeEncodeError:
+			print rosterRows
+			bar.writerows(rosterRows)
 
 
 def overtimeIds():
@@ -329,6 +331,12 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	for i in range(0, 50):
 		playerRow = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/text()' % i)
 		playerRow2 = tree.xpath('//table[@id="roster"]/tbody/tr[%i]/*/*/text()' % i)
+		
+		if(debugInfo):
+			print "Preprocessed"
+			print "playerRow ", playerRow, " %i\n" % len(playerRow)
+			print "playerRow2 ", playerRow2, " %i\n" % len(playerRow2)			
+		
 		if(len(playerRow) == 0):
 			continue
 		else:
@@ -338,31 +346,75 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 				## are going to attach a default that can be added
 				
 				## thank you David Dziurzynski, wherever you come from
-			if(playerRow2[1] == '(C)'):
-				## the case where the player in this row is the team captain,
-				## which throws a small monkeywrench into the proceedings
-				playerRow = playerRow[0:1]+playerRow[2:len(playerRow)]
-				## the first thing we need to do is get rid of this weird
-				## (C) character that gets placed in the row by splitting and
-				## reattaching the list
-				playerRow.insert(0, playerRow2[0].encode('utf-8'))
-				## place the players name at the start of the list
-				playerRow.insert(9, playerRow2[2])
-				## put their country of birth right after their birthdate
-				playerRow.insert(1, '(C)')
-				## make a note of that captains C right after the name
+			if(len(playerRow) < 9):
+				playerRow.insert(0, 'n/a')
+				
+				if(playerRow2[1] == '(C)'):
+					## the case where the player in this row is the team captain,
+					## which throws a small monkeywrench into the proceedings
+					playerRow = playerRow[0:1]+playerRow[2:len(playerRow)]
+					## the first thing we need to do is get rid of this weird
+					## (C) character that gets placed in the row by splitting and
+					## reattaching the list around it
+					playerRow.insert(0, playerRow2[0].encode('utf-8'))
+					## place the players name at the start of the list
+					playerRow.insert(9, playerRow2[2])
+					## put their country of birth right after their birthdate
+					playerRow.insert(1, '(C)')
+					## make a note of that captains C right after the name
+				else:
+					playerRow.insert(0, playerRow2[0].encode('utf-8'))
+					## player name at start
+					playerRow.insert(9, playerRow2[1])
+					## player country after birthdate. Note the different offset
+					## in playerRow2 here		
+					playerRow.insert(1, '')
+					## put a blank where the captains C would go, since this player
+					## is not a captain
+
 			else:
-				playerRow.insert(0, playerRow2[0].encode('utf-8'))
-				## player name at start
-				playerRow.insert(9, playerRow2[1])
-				## player country after birthdate. Note the different offset
-				## in playerRow2 here		
-				playerRow.insert(1, '')
-				## put a blank where the captains C would go, since this player
-				## is not a captain
+				if(playerRow2[1] == '(C)'):
+					if(playerRow[2] == '(C)'):
+						## the case where the player in this row is the team captain,
+						## which throws a small monkeywrench into the proceedings
+						playerRow = playerRow[0:1]+playerRow[2:len(playerRow)]
+						## the first thing we need to do is get rid of this weird
+						## (C) character that gets placed in the row by splitting and
+						## reattaching the list around it
+						playerRow.insert(0, playerRow2[0].encode('utf-8'))
+						## place the players name at the start of the list
+						playerRow.insert(9, playerRow2[2])
+						## put their country of birth right after their birthdate
+						playerRow.insert(1, '(C)')
+						## make a note of that captains C right after the name
+					elif(playerRow[0] == u'\xa0'):
+						## case where an old team before 1951 has a team captain
+						## without his jersey number listed
+						playerRow = ['n/a']+playerRow[1:len(playerRow)]
+						## the first thing we need to do is get rid of this weird
+						## (C) character that gets placed in the row by splitting and
+						## reattaching the list around it
+						playerRow.insert(0, playerRow2[0].encode('utf-8'))
+						## place the players name at the start of the list
+						playerRow.insert(9, playerRow2[2])
+						## put their country of birth right after their birthdate
+						playerRow.insert(1, '(C)')
+						## make a note of that captains C right after the name						
+					
+				else:
+					playerRow.insert(0, playerRow2[0].encode('utf-8'))
+					## player name at start
+					playerRow.insert(9, playerRow2[1])
+					## player country after birthdate. Note the different offset
+					## in playerRow2 here		
+					playerRow.insert(1, '')
+					## put a blank where the captains C would go, since this player
+					## is not a captain
 			playerRows.append(playerRow)
+			
 					
 		if(debugInfo):
+			print "Post-Processed"
 			print i, ' ', playerRow, playerRow2, ' ', len(playerRow), '\n'
 		## an important note about this, most of the recent data is in good
 		## shape, but at least one old team (TRA 1918) has missing player height
