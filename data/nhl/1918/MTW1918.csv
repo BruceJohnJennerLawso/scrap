@@ -11,7 +11,7 @@ GP,Date,Time,Location,Opponent,GF,GA,Result,Game Ended In
 5,1918-01-02,time unavailable,@,Montreal Canadiens,0,1,L,REG,1,4,0,L 4,forfeit to Montreal Canadiens
 6,1918-01-05,time unavailable,@,Toronto Arenas,0,1,L,REG,1,5,0,L 5,forfeit to Toronto
 
-GP,Date,Time,Location,Opponent,GF,GA,Result,Game Ended In
+Time,Location,Result,Game Ended In
 
 Billy Bell,,n/a,F,26,5-10,180,R/-,R,"June 10, 1891",ca,"1 G, 0 A, 1 P"
 Gerry Geran,,n/a,F,21,5-9,180,R/-,R,"August 3, 1896",us,"0 G, 0 A, 0 P"

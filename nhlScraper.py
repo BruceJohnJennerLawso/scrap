@@ -12,6 +12,7 @@ import csv
 
 from gameProcessing import *
 
+from multiprocessing import Process
 
 
 def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, seasonGames, playoffRoundLengths, playoffGames, rosterSize, rosterRows):
@@ -433,7 +434,12 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
 	## TO BE CONTINUED DUN DUN DUN
 	
-	saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, gamesLists, playoffRoundLengths, playoffGameLists, numberOfPlayers, playerRows)
+	
+	p1 = Process(target = saveScrapedTeamData, args=(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, gamesLists, playoffRoundLengths, playoffGameLists, numberOfPlayers, playerRows))
+	p1.start()
+	
+	
+	##saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, gamesLists, playoffRoundLengths, playoffGameLists, numberOfPlayers, playerRows)
 	
 
 if(__name__ == "__main__"):

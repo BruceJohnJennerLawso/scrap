@@ -1,0 +1,43 @@
+Ottawa Senators,OTS,nhl
+1918-19,1919
+11
+18
+5
+GP,Date,Time,Location,Opponent,GF,GA,Result,Game Ended In
+1,1918-12-21,time unavailable,@,Montreal Canadiens,5,2,W,REG,1,0,0,W 1
+2,1918-12-26,time unavailable,H,Toronto Arenas,5,2,W,REG,2,0,0,W 2
+3,1918-12-31,time unavailable,@,Toronto Arenas,2,4,L,REG,2,1,0,L 1
+4,1919-01-02,time unavailable,H,Montreal Canadiens,7,2,W,REG,3,1,0,W 1
+5,1919-01-04,time unavailable,@,Montreal Canadiens,2,5,L,REG,3,2,0,L 1
+6,1919-01-09,time unavailable,H,Toronto Arenas,4,2,W,REG,4,2,0,W 1
+7,1919-01-14,time unavailable,@,Toronto Arenas,2,5,L,REG,4,3,0,L 1
+8,1919-01-16,time unavailable,H,Montreal Canadiens,6,10,L,REG,4,4,0,L 2
+9,1919-01-18,time unavailable,@,Montreal Canadiens,3,5,L,REG,4,5,0,L 3
+10,1919-01-23,time unavailable,H,Toronto Arenas,3,2,W,REG,5,5,0,W 1
+11,1919-01-25,time unavailable,@,Montreal Canadiens,1,0,W,REG,6,5,0,W 2
+12,1919-01-28,time unavailable,@,Toronto Arenas,2,1,W,OT,7,5,0,W 3
+13,1919-01-30,time unavailable,H,Montreal Canadiens,3,2,W,OT,8,5,0,W 4
+14,1919-02-06,time unavailable,H,Toronto Arenas,3,1,W,REG,9,5,0,W 5
+15,1919-02-08,time unavailable,@,Montreal Canadiens,3,4,L,REG,9,6,0,L 1
+16,1919-02-13,time unavailable,H,Montreal Canadiens,7,0,W,REG,10,6,0,W 1
+17,1919-02-18,time unavailable,@,Toronto Arenas,4,3,W,OT,11,6,0,W 2
+18,1919-02-20,time unavailable,H,Toronto Arenas,9,3,W,REG,12,6,0,W 3
+
+GP,Date,Time,Location,Opponent,GF,GA,Result,Game Ended In,W,L,T,Streak,Notes
+1,1919-02-23,time unavailable,@,Montreal Canadiens,4,8,L,REG,0,1,0,L 1
+2,1919-02-27,time unavailable,H,Montreal Canadiens,3,5,L,REG,0,2,0,L 2
+3,1919-03-02,time unavailable,@,Montreal Canadiens,3,6,L,REG,0,3,0,L 3
+4,1919-03-03,time unavailable,H,Montreal Canadiens,6,3,W,REG,1,3,0,W 1
+5,1919-03-06,time unavailable,@,Montreal Canadiens,2,4,L,REG,1,4,0,L 1
+
+Clint Benedict,,n/a,G,26,-/L,1,"September 26, 1892","12-6-0, 2.76 GAA",ca
+Georges Boucher,,n/a,D,22,5-9,169,L/-,1,"August 17, 1896",ca,"3 G, 2 A, 5 P"
+Punch Broadbent,,n/a,RW,26,5-7,183,R/-,R,"July 13, 1892",ca,"4 G, 3 A, 7 P"
+Harry Cameron,,n/a,D,28,5-10,155,R/-,1,"February 6, 1890",ca,"5 G, 1 A, 6 P"
+Sprague Cleghorn,,n/a,D,28,5-10,190,L/-,R,"March 11, 1890",ca,"7 G, 6 A, 13 P"
+Jack Darragh,,n/a,RW/LW,28,5-10,168,R/-,1,"December 4, 1890",ca,"11 G, 3 A, 14 P"
+Cy Denneny,,n/a,LW,27,5-7,168,L/-,1,"December 23, 1891",ca,"18 G, 4 A, 22 P"
+Eddie Gerard,,n/a,D,28,5-9,168,L/-,1,"February 22, 1890",ca,"4 G, 6 A, 10 P"
+Ed Lowrey,,n/a,F,27,5-6,160,R/-,1,"August 13, 1891",ca,"0 G, 1 A, 1 P"
+Frank Nighbor,,n/a,C,26,5-9,160,R/-,1,"January 26, 1893",ca,"19 G, 9 A, 28 P"
+Skene Ronan,,n/a,C,29,5-6,150,L/-,R,"February 9, 1889",ca,"0 G, 0 A, 0 P"
