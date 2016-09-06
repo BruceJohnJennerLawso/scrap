@@ -23,7 +23,7 @@ class nhlTeam(Team):
 		
 	## Tier I load call ########################################################	
 		
-	def loadTierI(self, debugInfo=False):		
+	def loadTierI(self, debugInfo=True):		
 		rows = self.getCsvRowsList()
 		## use our utility function to retrieve the csv file for this team
 		## as a rectangular list (2 deep)
