@@ -374,7 +374,7 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 
 			else:
 				if(playerRow2[1] == '(C)'):
-					if(playerRow[2] == '(C)'):
+					if(playerRow[1] == u'\xa0'):
 						## the case where the player in this row is the team captain,
 						## which throws a small monkeywrench into the proceedings
 						playerRow = playerRow[0:1]+playerRow[2:len(playerRow)]
