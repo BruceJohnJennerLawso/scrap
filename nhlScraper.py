@@ -245,7 +245,6 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 		for i in (range(1, 33)):
 			gameRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/text()' % i)
 			if(len(gameRow) == 0):
-				print "No Playoff Games (assuming DNQ)"
 				break
 			
 			gameRow2 = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
