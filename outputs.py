@@ -24,7 +24,7 @@ def getAllSeasons(leagueId, levelId='null'):
 	seasons = []
 	
 	if(leagueId != 'watMu'):
-		with open('./data/%s/seasons.csv' % (leagueId), 'rb') as foo:
+		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 			## open the manifest csv file for this particular league
 			## (nhl)
 			reader = csv.reader(foo)
