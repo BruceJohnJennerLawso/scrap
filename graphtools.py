@@ -92,7 +92,7 @@ def snapToNearestTen(value):
 			nearestPlus = float(int(output/10.0) + 1)*10
 		else:
 			nearestPlus = float(int(output/10.0) - 1)*10			
-		print nearest, '   ', nearestPlus, 'farthestFrom zero ', farthestFromZero(nearest, nearestPlus)
+		##print nearest, '   ', nearestPlus, 'farthestFrom zero ', farthestFromZero(nearest, nearestPlus)
 			
 				
 		if(farthestFromZero(nearest, nearestPlus)):
@@ -169,20 +169,25 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	
 	ableToFit = True
 	
+	paramsString = 'Unable to Fit Curve to Data'
 	try:
-		popt,pcov = curve_fit(gaus,bins[:-1],n,p0=[1,distMean,sigma])
-		plt.plot(bins[:-1],gaus(bins[:-1],*popt),'c-',label='gaussian fit', alpha=0.5)
-		print "Fitted gaussian curve to data"
+		popt,pcov = curve_fit(gaus,bins[:-1], n, p0=[1,distMean,sigma])
+		plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
+		print "Fitted gaussian curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2])
+		paramsString = "Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2])
 	except RuntimeError:
 		try:
 			popt,pcov = curve_fit(expDist,bins[:-1],n,p0=[1,distMean,sigma])
-			plt.plot(bins[:-1],expDist(bins[:-1],*popt),'c-',label='exponential fit', alpha=0.5)		
+			plt.plot(bins[:-1],expDist(bins[:-1],*popt),'c-',label="Fitted exponential curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2]), alpha=0.5)		
 			print "Fitted exponential curve to data"
+			print "Fitted exponential curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2])
+			paramsString = "Exponential Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2])
 		except RuntimeError:	
 			print "Unable to fit curve"
 			ableToFit = False
-	if(ableToFit == True):
-		plt.legend()
+	if(ableToFit == False):
+		plt.plot([], [], 'c-', label=paramsString)
+	plt.legend()
 	
 	## histogram construction step
 	## I forget, I think this was copy paste
