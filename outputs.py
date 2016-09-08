@@ -116,19 +116,24 @@ def getFranchiseList(leagueId, levelId):
 
 def graphTeams(leagueId, levelId, playoffTeamsOnly, dependent, *independents):
 	for indie in independents:
-		plotScatterplot(indie.getShortStatName(), dependent.getShortStatName(), '%s by %s for %s %s' % (dependent.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), indie.getShortStatName()))		
+		plotScatterplot(indie.getShortStatName(), dependent.getShortStatName(), '%s by %s for %s, %s' % (dependent.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), indie.getShortStatName()))		
 		## wow, that was quick
 
 def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependent, *independents):
+	
 	for indie in independents:
 		
 		thisIndieDeltas = getLinearModelDeltas(indie.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly))
 		
+
+		thisDeltasContainer = statContainer("%s_ModelDeltaFor_%s" % (indie.getShortStatName(), dependent.getShortStatName()), "Model Deltas for the %s model for %s" % (indie.getLongStatName(), dependent.getLongStatName()),  thisIndieDeltas, indie.getTeamIds(playoffTeamsOnly), indie.getTeamNames(playoffTeamsOnly), indie.getYears(playoffTeamsOnly), indie.getMadePlayoffsList(playoffTeamsOnly))
+		plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *[thisDeltasContainer]+[ind for ind in independents])
+		
 		print dependent.getShortStatName(), " ", indie.getShortStatName(), " Model Deltas min ", min(thisIndieDeltas), " max ", max(thisIndieDeltas)
 		for indiana in independents:
-			plotScatterplot(indiana.getShortStatName(), "%s_ModelDeltas" % indie.getShortStatName(), 'Deltas from the %s Model for %s by %s for %s %s' % (indie.getLongStatName(), dependent.getLongStatName(), indiana.getLongStatName(), leagueId, levelId), indiana.getStat(playoffTeamsOnly), thisIndieDeltas, './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s/ModelDeltas/%s' % (indie.getShortStatName(), indiana.getShortStatName()), '%s_ModelDeltas_by_%s.png' % (indie.getShortStatName(), indiana.getShortStatName()))		
-		## wow, that was quick
+			plotScatterplot(indiana.getShortStatName(), "%s_ModelDeltas" % indie.getShortStatName(), 'Deltas from the %s Model for %s\nby %s\nfor %s %s' % (indie.getLongStatName(), dependent.getLongStatName(), indiana.getLongStatName(), leagueId, levelId), indiana.getStat(playoffTeamsOnly), thisIndieDeltas, './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s/ModelDeltas/%s' % (indie.getShortStatName(), indiana.getShortStatName()), '%s_ModelDeltas_by_%s.png' % (indie.getShortStatName(), indiana.getShortStatName()))		
 
+		## wow, that was quick
 
 
 def graphTeamsHistogram(leagueId, levelId, playoffTeamsOnly, *variables):

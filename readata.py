@@ -104,11 +104,11 @@ if(__name__ == "__main__"):
 	
 	
 	p1 = Process(target = graphPlayoffSuccessRelations, args=(seasons, leagueId, levelId))
-	##p1.start()
+	p1.start()
 	p2 = Process(target = graphPlayoffOffenceRelations, args=(seasons, leagueId, levelId))
-	##p2.start()
+	p2.start()
 	p3 = Process(target = graphPlayoffDefenceRelations, args=(seasons, leagueId, levelId))
-	##p3.start()    	
+	p3.start()    	
 	
 	##graphPlayoffSuccessRelations(seasons, leagueId, levelId)
 	##graphPlayoffOffenceRelations(seasons, leagueId, levelId)

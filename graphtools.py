@@ -314,8 +314,8 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	plt.ylabel(ylabel)
 	## label our axes like good students
 	
-	title = "%s,\n r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
-	plt.title(title)
+	title = "%s, r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
+	plt.title(title, size=10)
 	## an' title it
 	
 	agciFix = False
@@ -356,7 +356,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		left  = 0.125  # the left side of the subplots of the figure
 		right = 0.9    # the right side of the subplots of the figure
 		bottom = 0.1   # the bottom of the subplots of the figure
-		top = 0.85      # the top of the subplots of the figure
+		top = 0.80      # the top of the subplots of the figure
 		wspace = 0.2   # the amount of width reserved for blank space between subplots
 		hspace = 0.25   # the amount of height reserved for white space between subplots
 
