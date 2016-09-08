@@ -63,7 +63,69 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	
 	plt.close()
 
-def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39, plotMax=60.0):
+
+def snapToNearestTen(value):
+	output = int(value)
+	
+	def farthestFromZero(thisValue, otherValue):
+		diffThis = abs(thisValue)
+		diffOther = abs(otherValue)
+		if(diffThis >= diffOther):
+			return True
+		else:
+			return False	
+	
+	
+	
+	if(output == 0):
+		## if our max rounded down to zero, we'll take it up or down to
+		## the nearest ten
+		if(value < 0):
+			output = -10.0
+		else:
+			output = 10.0
+	elif( (output%10.0) != 0.0):
+		## if the output wasnt gonna be zero, but it still wasnt a
+		## multiple of 10, we need to adjust it
+		nearest = float(int(output/10.0))*10
+		if(value > 0):
+			nearestPlus = float(int(output/10.0) + 1)*10
+		else:
+			nearestPlus = float(int(output/10.0) - 1)*10			
+		print nearest, '   ', nearestPlus, 'farthestFrom zero ', farthestFromZero(nearest, nearestPlus)
+			
+				
+		if(farthestFromZero(nearest, nearestPlus)):
+			
+			output = nearest
+		else:
+			output = nearestPlus
+	else:
+		if(abs(output) < abs(value)):
+			if(output < 0):
+				output -= 10.0
+			else:
+				output += 10.0
+	
+	return output
+
+if(__name__ == "__main__"):
+	import random
+	
+	for i in range(0, 50):
+		val = random.random()*100.0
+		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'
+	for i in range(0, 50):
+		val = random.random()*-100.0
+		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'	
+	
+	print "Value %f, rounded to nearest ten, %f" % (89.99, snapToNearestTen(89.99)), '\n'		
+	
+		
+
+def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
+	
+	plotMax = 60.0
 	
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
@@ -87,6 +149,10 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	## bins are the endpoints of bins
 	
 	## n are the respective counts for those bins
+	
+	plotMax = snapToNearestTen(max(n))
+	
+	
 	print output_filename
 	##print "n ", n, 'len %i\n bins ' % len(n) ,  bins, 'len %i\npatches ' % len(bins) , patches
 	
@@ -144,9 +210,9 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	##plt.show()
 	## showit
 
-def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39, plotMax=60.0):
+def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
-	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount, plotMax)
+	generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, 1, 1, 1, minShow, maxShow, binCount)
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
 	try:
 		plt.savefig(output_)
