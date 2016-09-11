@@ -8,10 +8,10 @@ import csv
 import watMuScraper
 import nhlScraper
 	
-def scrapeListedTeams(debugInfo, leagueId, levelId=False):
-	if(levelId == False):
+def scrapeListedTeams(debugInfo, leagueId, levelId):
+	if(leagueId == 'nhl'):
 		## everything else besides watMu teams
-		with open('./data/%s/seasons.csv' % (leagueId), 'rb') as foo:
+		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 			reader = csv.reader(foo)
 			## open up the seasons manifest file to get a list of all of the
 			## seasons that we will be scraping for this league
@@ -23,7 +23,15 @@ def scrapeListedTeams(debugInfo, leagueId, levelId=False):
 					## be scraped
 					reading = csv.reader(bar)
 					for teamId in reading:
-						nhlScraper.scrapeTeamData(teamId[0], debugInfo, row[0], False, leagueId)		
+						if(len(teamId) == 1):
+							nhlScraper.scrapeTeamData(teamId[0], debugInfo, row[0], False, leagueId)		
+						else:
+							if(teamId[1] == 'NoScrape'):
+								print "Skipping %s team %s %s" % (leagueId, teamId[0], row[0])
+								##exit() 
+								continue
+							
+						
 	else:
 		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 			reader = csv.reader(foo)
@@ -42,11 +50,9 @@ if(__name__=="__main__"):
 	
 	leagueId = argv[1]
 	## ie 'nhl' or 'watMu'
-	if(leagueId == 'nhl'):
-		scrapeListedTeams(False, leagueId)
-	else:
-		levelId = argv[2]
-		scrapeListedTeams(False, leagueId, levelId)
+
+	levelId = argv[2]
+	scrapeListedTeams(False, leagueId, levelId)
 
 	
 

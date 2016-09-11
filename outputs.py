@@ -24,7 +24,7 @@ def getAllSeasons(leagueId, levelId='null'):
 	seasons = []
 	
 	if(leagueId != 'watMu'):
-		with open('./data/%s/seasons.csv' % (leagueId), 'rb') as foo:
+		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 			## open the manifest csv file for this particular league
 			## (nhl)
 			reader = csv.reader(foo)
@@ -169,8 +169,6 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 	##pd.printMeanAndSdByGroup(dataTruong, 'Franchise') 
 
 	plotScatterMatrix(dataPanda,  './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_MatrixScatterplot.png')
-	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap.png')
-
 	plotScatterMatrix(dataPanda, './results/%s/%s' % (leagueId, levelId), 'matrixScatterplot', 'AllPlayoffTeams_MatrixScatterplot.png')
 	##plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
 

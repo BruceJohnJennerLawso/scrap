@@ -104,11 +104,11 @@ if(__name__ == "__main__"):
 	
 	
 	p1 = Process(target = graphPlayoffSuccessRelations, args=(seasons, leagueId, levelId))
-	p1.start()
+	##p1.start()
 	p2 = Process(target = graphPlayoffOffenceRelations, args=(seasons, leagueId, levelId))
-	p2.start()
+	##p2.start()
 	p3 = Process(target = graphPlayoffDefenceRelations, args=(seasons, leagueId, levelId))
-	p3.start()    	
+	##p3.start()    	
 	
 	##graphPlayoffSuccessRelations(seasons, leagueId, levelId)
 	##graphPlayoffOffenceRelations(seasons, leagueId, levelId)
@@ -153,7 +153,7 @@ if(__name__ == "__main__"):
 
 	plotVariablesHeatmap(leagueId, levelId, False,\
 	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
