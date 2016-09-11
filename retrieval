@@ -5,6 +5,6 @@ python scrap.py 'watMu' 'intermediate'
 python scrap.py 'watMu' 'advanced'
 python scrap.py 'watMu' 'allstar'
 
-python scrap.py 'nhl'
+python scrap.py 'nhl' 'everything'
 
 exit 0
