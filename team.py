@@ -287,6 +287,12 @@ class Team(object):
 	def getADQI(self):
 		return self.getDefenceQualityIndex()/float(self.getSeasonGamesTotal())
 		## ie "Average goals below expectations per game"
+		
+	def getDiffQualityIndex(self):
+		return self.diffQualityIndex
+		
+	def getADiffQI(self):
+		return self.getDiffQualityIndex()/float(self.getSeasonGamesTotal())
 
 	def getNetAODQISum(self):
 		return (self.getAOQI()+self.getADQI())
@@ -305,26 +311,32 @@ class Team(object):
 		self.meanAdjustedAverageOffenceQualityIndex = self.getAOQI()
 		self.meanAdjustedAverageDefenceQualityIndex = self.getADQI()
 		
+		self.meanAdjustedAverageDiffQualityIndex = self.getADiffQI()
+		
 		awqiMean = 0.000
 		apqiMean = 0.000
 		aoqiMean = 0.000
 		adqiMean = 0.000
+		adiffqiMean = 0.000
 		
 		for team in teamsList:
 			awqiMean += team.getAWQI()
 			apqiMean += team.getAPQI()
 			aoqiMean += team.getAOQI()
 			adqiMean += team.getADQI()
+			adiffqiMean += team.getADiffQI()
 			
 		awqiMean /= float(len(teamsList))
 		apqiMean /= float(len(teamsList))
 		aoqiMean /= float(len(teamsList))
-		adqiMean /= float(len(teamsList))		
+		adqiMean /= float(len(teamsList))
+		adiffqiMean /= float(len(teamsList))		
 		
 		self.meanAdjustedAverageWinQualityIndex -= awqiMean
 		self.meanAdjustedAveragePlayQualityIndex -= apqiMean
 		self.meanAdjustedAverageOffenceQualityIndex -= aoqiMean
 		self.meanAdjustedAverageDefenceQualityIndex -= adqiMean
+		self.meanAdjustedAverageDiffQualityIndex -= adiffqiMean
 
 
 	def getMaAWQI(self):
@@ -350,6 +362,8 @@ class Team(object):
 		## self.ADQI-leagueMean.ADQI
 		return self.meanAdjustedAverageDefenceQualityIndex
 
+	def getMaADiffQI(self):
+		return self.meanAdjustedAverageDiffQualityIndex
 
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 
