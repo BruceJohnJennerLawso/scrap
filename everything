@@ -1,0 +1,25 @@
+#!/bin/bash
+
+## do all the things...
+
+python readata.py watMu beginner
+python readata.py watMu intermediate
+python readata.py watMu advanced
+python readata.py watMu allstar
+
+python readata.py nhl everything
+python readata.py nhl originalSix
+python readata.py nhl earlyNhl
+python readata.py nhl postLockout
+python readata.py nhl the40s
+python readata.py nhl the50s
+python readata.py nhl the60s
+python readata.py nhl the70s
+python readata.py nhl the80s
+python readata.py nhl the90s
+python readata.py nhl beforeTheLoserPoint
+python readata.py nhl withTheLoserPoint
+
+## this should take about a month on a dual core machine...
+
+exit 0
