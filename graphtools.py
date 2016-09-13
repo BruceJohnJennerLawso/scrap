@@ -2,12 +2,9 @@
 ## graphing functions used by the analysis script(s) ###########################
 ################################################################################
 import numpy as np
+
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
-
-import matplotlib
-matplotlib.use('Agg')
-## begone ye horrible display environment errors
 
 from scipy import stats
 
