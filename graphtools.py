@@ -4,6 +4,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
+
+import matplotlib
+matplotlib.use('Agg')
+## begone ye horrible display environment errors
+
 from scipy import stats
 
 from scipy.optimize import curve_fit
