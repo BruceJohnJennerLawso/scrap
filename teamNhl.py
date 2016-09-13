@@ -354,7 +354,7 @@ class nhlTeam(Team):
 
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
 			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
-			self.diffQualityIndex += (game.getGoalDifferential()-opponent.getSeasonPlusMinus())
+			self.diffQualityIndex += (game.getGoalDifferential()-opponent.getSeasonGoalDifferentialAverage())
 			
 			if(game.Lost() != True):	
 				if(game.Won()):

@@ -129,6 +129,9 @@ class Team(object):
 	def getSeasonPlusMinus(self):
 		## goal differential (for - against)
 		return self.seasonPlusMinus
+	
+	def getSeasonGoalDifferentialAverage(self):
+		return self.getSeasonPlusMinus()/float(self.getSeasonGamesTotal())
 		
 	def getSeasonPointsTotal(self):
 		## (points earned)
