@@ -3,6 +3,10 @@
 ## and make sure everything is there and comprehensible ########################
 ################################################################################
 
+import matplotlib
+matplotlib.use('Agg')
+## begone ye horrible display environment errors
+
 from sys import argv
 from outputs import *
 from multiprocessing import Process
