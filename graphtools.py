@@ -49,8 +49,8 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	corrmat = data.corr()
 	
 	##ax = plt.subplots(figsize=(800,550))
-	ax = plt.subplots()
-	sns.heatmap(corrmat, vmax=1., square=False,ax=ax)
+	##ax = plt.subplots()
+	ax = sns.heatmap(corrmat, vmax=1., square=False)
 	ax.xaxis.tick_top()
 	##ax.figure(figsize=(800,550))
 	
