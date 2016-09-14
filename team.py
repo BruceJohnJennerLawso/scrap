@@ -221,6 +221,9 @@ class Team(object):
 		if(self.getTotalPlayoffGames() > 0):
 			output = float(self.playoffGoalsAgainst)/float(self.getTotalPlayoffGames())
 		return output
+	
+	def getPlayoffAverageGoalDifferential(self):
+		return self.playoffAverageGoalDifferential
 		
 	def getRoster(self):
 		## *very important definition*

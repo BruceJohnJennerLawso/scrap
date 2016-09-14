@@ -167,7 +167,8 @@ class watMuTeam(Team):
 		
 		self.playoffGoalsFor = 0
 		self.playoffGoalsAgainst = 0
-		
+		self.playoffPlusMinus = 0
+		self.playoffAverageGoalDifferential = 0.000
 		
 		if(self.qualifiedForPlayoffs() == True):
 			self.totalPlayoffGames = len(self.getPlayoffGames())
@@ -175,8 +176,10 @@ class watMuTeam(Team):
 				if(game.Won()):
 					self.playoffWins += 1
 				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
+				self.playoffGoalsAgainst += game.getGoalsAgainst()	
+				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())			
+			self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
+			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.totalPlayoffGames)
 		
 		
 		
@@ -281,7 +284,7 @@ class watMuTeam(Team):
 		## parent team type), since SOC only applies in waterloo intramurals
 		
 	def getDescriptionString(self):
-		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\nMaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex(), self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\nMaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\nPlayoff Win %% of %.3f, Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex(), self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC(), self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())		
 		## I should really line break this so it fits into a terminal with less
 		## than 850 columns nicely
 	
