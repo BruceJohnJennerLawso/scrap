@@ -45,22 +45,29 @@ def plotScatterMatrix(data, output_path, output_directory, output_filename):
 	
 def seabornHeatmap(data, output_path, output_directory, output_filename):
 	corrmat = data.corr()
-	ax = sns.heatmap(corrmat, vmax=1., square=False)
+	
+	##ax = plt.subplots(figsize=(800,550))
+	ax = plt.subplots()
+	sns.heatmap(corrmat, vmax=1., square=False,ax=ax)
 	ax.xaxis.tick_top()
+	##ax.figure(figsize=(800,550))
+	
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
 	_output = "%s/%s/corrs.csv" % (output_path, output_directory)	
 	
-	corrmat.to_csv(_output)
+	try:
+		corrmat.to_csv(_output)
+	except IOError:
+		print "Oh Well"
 	
 	plt.xticks(rotation=20)
-	plt.yticks(rotation=20)	
+	plt.yticks(rotation=20)		
 	try:
 		plt.savefig(output_)
 	except IOError:
 		os.makedirs('%s/%s/' % (output_path, output_directory))
 		plt.savefig(output_)		
 	plt.tight_layout()
-	
 	plt.close()
 
 

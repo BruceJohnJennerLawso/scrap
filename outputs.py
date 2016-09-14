@@ -127,7 +127,7 @@ def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependent, *ind
 		
 
 		thisDeltasContainer = statContainer("%s_ModelDeltaFor_%s" % (indie.getShortStatName(), dependent.getShortStatName()), "Model Deltas for the %s model for %s" % (indie.getLongStatName(), dependent.getLongStatName()),  thisIndieDeltas, indie.getTeamIds(playoffTeamsOnly), indie.getTeamNames(playoffTeamsOnly), indie.getYears(playoffTeamsOnly), indie.getMadePlayoffsList(playoffTeamsOnly))
-		plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *[thisDeltasContainer]+[ind for ind in independents])
+		plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, dependent.getShortStatName(), *[thisDeltasContainer]+[ind for ind in independents])
 		
 		print dependent.getShortStatName(), " ", indie.getShortStatName(), " Model Deltas min ", min(thisIndieDeltas), " max ", max(thisIndieDeltas)
 		for indiana in independents:
@@ -178,3 +178,29 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 	##plotScatterLabelled(dataTruong, 'GAA', 'GFA', 'Franchise', './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_LabelledScatterplot_GAA_GFA.png')
 
 	seabornHeatmap(dataPanda, './results', '/%s/%s' % (leagueId, levelId), 'AllPlayoffTeams_Heatmap_%s_%s.png' % (leagueId, levelId))
+
+
+def plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, variableToPredict, *variables):				
+	
+	data = []
+	headings = []
+	
+	for var in variables:
+		data.append(var.getStat(playoffTeamsOnly))
+		headings.append(var.getShortStatName())
+		
+	data = map(list, zip(*data))
+	## converts the data from rows of individual stat data to columns
+	## of individual teams, where each list contains a list of stats
+	## about that team
+
+	
+	dataPanda = pd.DataFrame(data, columns=headings)
+	
+	print "\n\nData means"
+	print dataPanda.apply(np.mean), '\n'
+	print "Data standard deviations"
+	print dataPanda.apply(np.std)
+	
+	seabornHeatmap(dataPanda, './results', '%s/%s/%sBy' % (leagueId, levelId, variableToPredict), 'AllPlayoffTeams_%s_ModelDelta_Heatmap_%s_%s.png' % (variables[0].getShortStatName(), leagueId, levelId))
+
