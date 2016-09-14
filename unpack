@@ -1,5 +1,5 @@
 #!/bin/bash
 
-unzip dataBackup.zip
+unzip -o dataBackup.zip
 
 exit 0

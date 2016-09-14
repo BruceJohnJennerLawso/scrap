@@ -46,7 +46,7 @@ class statContainer:
 					## doesnt get included in the output data
 		return output
 
-	def getTeamIds(self):
+	def getTeamIds(self, onlyPlayoffTeams=False):
 		output = []
 		for pt in self.dataPoints:
 			if(onlyPlayoffTeams == False):
@@ -60,7 +60,7 @@ class statContainer:
 					## doesnt get included in the output data
 		return output
 
-	def getTeamNames(self):
+	def getTeamNames(self, onlyPlayoffTeams=False):
 		output = []
 		for pt in self.dataPoints:
 			if(onlyPlayoffTeams == False):
@@ -74,7 +74,7 @@ class statContainer:
 					## doesnt get included in the output data
 		return output	
 
-	def getYears(self):
+	def getYears(self, onlyPlayoffTeams=False):
 		output = []
 		for pt in self.dataPoints:
 			if(onlyPlayoffTeams == False):
@@ -82,6 +82,20 @@ class statContainer:
 			else:
 				if(pt[4] == True):
 					output.append(pt[3])
+				else:
+					continue
+					## the team we were on didnt make the playoffs, so it
+					## doesnt get included in the output data
+		return output
+		
+	def getMadePlayoffsList(self, onlyPlayoffTeams=False):
+		output = []
+		for pt in self.dataPoints:
+			if(onlyPlayoffTeams == False):
+				output.append(pt[4])
+			else:
+				if(pt[4] == True):
+					output.append(pt[4])
 				else:
 					continue
 					## the team we were on didnt make the playoffs, so it

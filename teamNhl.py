@@ -305,6 +305,8 @@ class nhlTeam(Team):
 		
 		self.playoffGoalsFor = 0
 		self.playoffGoalsAgainst = 0
+		self.playoffPlusMinus = 0
+		self.playoffAverageGoalDifferential = 0.000		
 		
 		if(self.qualifiedForPlayoffs()):
 			self.totalPlayoffGames = len(self.getPlayoffGames())
@@ -314,8 +316,11 @@ class nhlTeam(Team):
 				
 				self.playoffGoalsFor += game.getGoalsFor()
 				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
-		
+				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())
+			
+			self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
+			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.getTotalPlayoffGames())
+			
 			self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
 			self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
 		
@@ -329,6 +334,8 @@ class nhlTeam(Team):
 		
 		self.defenceQualityIndex = 0.0
 		self.offenceQualityIndex = 0.0		
+		
+		self.diffQualityIndex = 0.000
 		
 		self.seasonRank = teamRank+1
 		## team rank is the index of this team after sorting
@@ -352,6 +359,7 @@ class nhlTeam(Team):
 
 			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
 			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
+			self.diffQualityIndex += (game.getGoalDifferential()-opponent.getSeasonGoalDifferentialAverage())
 			
 			if(game.Lost() != True):	
 				if(game.Won()):
@@ -363,7 +371,6 @@ class nhlTeam(Team):
 		
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
 		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
-
 
 	## Tier III load call ######################################################
 
@@ -381,7 +388,7 @@ class nhlTeam(Team):
 		## the fustercluck of writing an NHL player object just right now
 	
 	def getDescriptionString(self):
-		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win percentage of %.3f, Playoff Offence %.3f, Playoff Defence %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage())		
+		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f, Diff Quality Index %.3f\nMaADQI %.3f, MaAOQI %.3f MaADiffQI %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win %% of %.3f, Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex(), self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())		
 		## I need to make a list of differences between this desc string and
 		## the watMu version
 	

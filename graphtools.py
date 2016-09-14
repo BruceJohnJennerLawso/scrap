@@ -47,22 +47,29 @@ def plotScatterMatrix(data, output_path, output_directory, output_filename):
 	
 def seabornHeatmap(data, output_path, output_directory, output_filename):
 	corrmat = data.corr()
+	
+	##ax = plt.subplots(figsize=(800,550))
+	##ax = plt.subplots()
 	ax = sns.heatmap(corrmat, vmax=1., square=False)
 	ax.xaxis.tick_top()
+	##ax.figure(figsize=(800,550))
+	
 	output_ = "%s/%s/%s" % (output_path, output_directory, output_filename)
 	_output = "%s/%s/corrs.csv" % (output_path, output_directory)	
 	
-	corrmat.to_csv(_output)
+	try:
+		corrmat.to_csv(_output)
+	except IOError:
+		print "Oh Well"
 	
 	plt.xticks(rotation=20)
-	plt.yticks(rotation=20)	
+	plt.yticks(rotation=20)		
 	try:
 		plt.savefig(output_)
 	except IOError:
 		os.makedirs('%s/%s/' % (output_path, output_directory))
 		plt.savefig(output_)		
 	plt.tight_layout()
-	
 	plt.close()
 
 
@@ -316,8 +323,8 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	plt.ylabel(ylabel)
 	## label our axes like good students
 	
-	title = "%s,\n r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
-	plt.title(title)
+	title = "%s, r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
+	plt.title(title, size=10)
 	## an' title it
 	
 	agciFix = False
@@ -358,7 +365,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 		left  = 0.125  # the left side of the subplots of the figure
 		right = 0.9    # the right side of the subplots of the figure
 		bottom = 0.1   # the bottom of the subplots of the figure
-		top = 0.85      # the top of the subplots of the figure
+		top = 0.80      # the top of the subplots of the figure
 		wspace = 0.2   # the amount of width reserved for blank space between subplots
 		hspace = 0.25   # the amount of height reserved for white space between subplots
 
