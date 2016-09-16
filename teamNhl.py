@@ -270,7 +270,7 @@ class nhlTeam(Team):
 			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
 			
 			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned()
+			self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
 			
 			if(game.Won()):
 				self.seasonWins += 1
@@ -393,6 +393,7 @@ class nhlTeam(Team):
 		## the watMu version
 	
 	def getSeasonIndex(self):
+		
 		return getSeasonIndexById(self.getSeasonId(), getSeasonIndexList('nhl'))
 		## not really that important for NHL, but the indexes might be kinda
 		## handy for graphing
@@ -459,9 +460,11 @@ class nhlTeam(Team):
 
 
 if(__name__ == "__main__"):
+	
 	daBuds = nhlTeam('nhl', '2016', 'TOR')
 	daSharks = nhlTeam('nhl', '2016', 'SJS')
 	## quick test to make sure everything is loading correctly
 	
 	## San Jose 2015-16 used as an example here cause they made the playoffs
 	## and went to the finals, so there shouldnt be anything turned off
+	print getSeasonIndexList('nhl')

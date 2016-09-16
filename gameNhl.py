@@ -73,17 +73,29 @@ class nhlGame(Game):
 			return False
 
 		
-	def getPointsEarned(self):
+	def getPointsEarned(self, seasonIndex):
 		if(self.Won()):
 			return 2
-		elif(self.Tied()):
-			return 1
-		elif((self.Lost())and(self.decidedInExtraTime())):
-			return 1
 		else:
-			return 0
-			## regardless of whether we lost in regulation or the game hasnt
-			## been played yet, no points are earned
+			if(seasonIndex <= 82):
+				## season 82 here is 1998-99, the last year before the
+				## loser point era
+				if(self.Tied()):
+					return 1
+				else:
+					return 0
+					## simple, straight to the point, no bullshit
+					
+					## life must have been great before Bettman
+			else:
+				if(self.Tied()):
+					return 1
+				elif((self.Lost())and(self.decidedInExtraTime())):
+					return 1
+				else:
+					return 0
+					## regardless of whether we lost in regulation or the game hasnt
+					## been played yet, no points are earned
 			
 
 

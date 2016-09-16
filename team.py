@@ -13,10 +13,11 @@ def getSeasonIndexList(leagueId):
 	## particularly with watMu seasons which run not necessarily every season,
 	## and more than once a year
 	output = []
+	print './data/%s/seasonIndex.csv' % (leagueId)
 	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
-			output.append(row)
+			output.append(row[0])
 			## append on the list of names, with the primary one first, ie
 			## [...['winter2010', 'winter2010Contact'],...]
 			
@@ -38,7 +39,7 @@ def getSeasonIndexById(seasonId, indexList):
 	## default error if we cant find the proper position for the season
 	for i in range(0, len(indexList)):
 		if(seasonId in indexList[i]):
-			output = i
+			output = i+1
 			break
 	return output	
 
