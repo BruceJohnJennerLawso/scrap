@@ -7,13 +7,14 @@ from player import *
 import csv
 
 
-def getSeasonIndexList(leagueId):
+def getSeasonIndexList(leagueId, debugInfo=False):
 	## opens up the file containing the names of every season in our data and
 	## assigns an  integer to each one so that we can keep the order straight,
 	## particularly with watMu seasons which run not necessarily every season,
 	## and more than once a year
 	output = []
-	print './data/%s/seasonIndex.csv' % (leagueId)
+	if(debugInfo):
+		print './data/%s/seasonIndex.csv' % (leagueId)
 	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
