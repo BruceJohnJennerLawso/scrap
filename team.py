@@ -301,6 +301,9 @@ class Team(object):
 	def getADiffQI(self):
 		return self.getDiffQualityIndex()/float(self.getSeasonGamesTotal())
 
+	def getMaAQualAboveDiff(self):
+		return (self.getADiffQI()-(self.getSeasonPlusMinus()/float(self.getSeasonGamesTotal())))
+
 	def getNetAODQISum(self):
 		return (self.getAOQI()+self.getADQI())
 		## Im strongly guessing that this will exactly match an average diff
