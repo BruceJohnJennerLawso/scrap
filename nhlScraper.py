@@ -223,8 +223,10 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	playoffGameLists = []
 	if(int(seasonId) >= 2016):
 		playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[2]/*/text()')		
-	else:
+	elif(int(seasonId) <= 1987):
 		playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[1]/*/text()')
+	else:
+		playoffHeaderRow = tree.xpath('//div[@id="all_games_playoffs"]/*/*/table/thead/tr[2]/*/text()')
 	if(int(seasonId) <= 2012):
 		playoffHeaderRow.insert(2, 'Time')
 	playoffHeaderRow.insert(3, 'Location')
@@ -444,4 +446,5 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 if(__name__ == "__main__"):
 	##scrapeTeamData('SJS', False, '2016', False, 'nhl')
 	##scrapeTeamData('SJS', False, '2012', False, 'nhl')	
-	scrapeTeamData('TOR', False, '2016', False, 'nhl')	
+	##scrapeTeamData('TOR', False, '2016', False, 'nhl')	
+	scrapeTeamData('TBL', True, '2015', False, 'nhl')		
