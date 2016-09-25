@@ -461,10 +461,17 @@ class nhlTeam(Team):
 
 if(__name__ == "__main__"):
 	
-	daBuds = nhlTeam('nhl', '2016', 'TOR')
-	daSharks = nhlTeam('nhl', '2016', 'SJS')
+	##daBuds = nhlTeam('nhl', '2016', 'TOR')
+	##daSharks = nhlTeam('nhl', '2016', 'SJS')
+	
+	fuckTampa = nhlTeam('nhl', '2015', 'TBL')
 	## quick test to make sure everything is loading correctly
+	print fuckTampa.getTotalPlayoffGames()
+	print fuckTampa.getTotalPlayoffWins()
+	
+	for game in fuckTampa.getPlayoffGames():
+		print game.getGameDescription()
 	
 	## San Jose 2015-16 used as an example here cause they made the playoffs
 	## and went to the finals, so there shouldnt be anything turned off
-	print getSeasonIndexList('nhl')
+	##print getSeasonIndexList('nhl')

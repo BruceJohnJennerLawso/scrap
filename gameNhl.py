@@ -22,7 +22,7 @@ class nhlGame(Game):
 		self.layerCount += 1
 	
 	def getGameDescription(self):
-		return "%s %s %s %s %i-%i %s %s" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString)
+		return "%s %s %s %s %i-%i %s %s" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]
