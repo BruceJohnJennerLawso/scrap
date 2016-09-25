@@ -18,7 +18,7 @@ class watMuPlayer(Player):
 			for team in season.Teams:
 				if(self.getName() in team.getRoster()):
 					self.playedFor.append(team)
-		self.playedFor.sort(key=lambda x: x.getSeasonIndex, reverse=True)
+		self.playedFor.sort(key=lambda x: x.getSeasonIndex(), reverse=True)
 		## sort the list in place by season index to get a proper chronological
 		## order
 		
