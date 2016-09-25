@@ -141,7 +141,7 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 	players = []
 	## in this context, this is just a list of names in string format of all of
 	## the players that were on the roster of the team
-	for i in range(6, len(content2)):
+	for i in range(5, len(content2)):
 		## roll through the second layer after we pass some column headings that
 		## ended up in here, and add the names into our players list
 		players.append(content2[i].encode('utf-8'))
@@ -388,4 +388,4 @@ def scrapeTeamData(teamId, debugInfo, seasonString, inProgressSeason, leagueId, 
 		print "Not saving data for team %i" % (teamId)
 
 if(__name__ == "__main__"):
-	scrapeTeamData(8936, True, 'fall2015', False, 'watMu', 'beginner', False)
+	scrapeTeamData(8317, True, 'fall2012', False, 'watMu', 'advanced', True)
