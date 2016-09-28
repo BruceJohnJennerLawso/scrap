@@ -231,8 +231,8 @@ class nhlTeam(Team):
 		## available 
 		self.Roster = []
 		## JUST the names of players on the roster
-		##for rostDat in self.RosterData:
-		##	self.Roster.append(rostDat[0])
+		for rostDat in self.RosterData:
+			self.Roster.append(rostDat[0])
 			## hence the 0 index
 		
 		## this section is very rudimentary at the moment, but it will get more
