@@ -29,7 +29,7 @@ if(__name__ == "__main__"):
 	seasonIndexList = getSeasonIndexList(leagueId)
 	
 	playah = watMuPlayer(playerName, seasons)
-	playah.getStatsLine()
+	print playah.getStatsLine(), '\n\n'
 	
 	for team in reversed(playah.playedFor):
 		print team.getDescriptionString(), '\n'
