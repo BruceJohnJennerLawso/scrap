@@ -223,7 +223,7 @@ class nhlTeam(Team):
 		## in roster composition can be over the course of an NHL season.
 		## At least a openingNight roster and a deadline roster would be a start
 		## if I can find the data
-		self.RosterData = rows[(self.totalSeasonGames+11+self.totalPlayoffGames):(self.totalSeasonGames+11+self.totalPlayoffGames+rosterSize)]
+		self.RosterData = rows[(self.totalSeasonGames+9+self.totalPlayoffGames):(self.totalSeasonGames+11+self.totalPlayoffGames+rosterSize)]
 		## slice out the rows of data (one player per row) with our ever more
 		## complex system for determining the start and end indexes :s
 		
