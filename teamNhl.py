@@ -3,7 +3,7 @@
 ################################################################################
 from team import *
 from gameNhl import *		
-
+from playerNhl import *
 
 
 
