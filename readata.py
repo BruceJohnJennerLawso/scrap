@@ -138,7 +138,8 @@ def graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId):
 	return 0
 
 def plotHistograms(seasons, leagueId, levelId):
-		graphTeamsHistogram(leagueId, levelId, True,\
+	
+	graphTeamsHistogram(leagueId, levelId, True,\
 	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
