@@ -116,7 +116,7 @@ def getFranchiseList(leagueId, levelId):
 
 def graphTeams(leagueId, levelId, playoffTeamsOnly, dependent, *independents):
 	for indie in independents:
-		plotScatterplot(indie.getShortStatName(), dependent.getShortStatName(), '%s by %s for %s, %s' % (dependent.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), indie.getShortStatName()))		
+		plotScatterplot(indie.getShortStatName(), dependent.getShortStatName(), '%s\nby %s\nfor %s, %s' % (dependent.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), indie.getShortStatName()))		
 		## wow, that was quick
 
 def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependent, *independents):

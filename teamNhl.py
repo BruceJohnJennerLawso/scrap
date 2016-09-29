@@ -3,7 +3,7 @@
 ################################################################################
 from team import *
 from gameNhl import *		
-
+from playerNhl import *
 
 
 
@@ -223,7 +223,7 @@ class nhlTeam(Team):
 		## in roster composition can be over the course of an NHL season.
 		## At least a openingNight roster and a deadline roster would be a start
 		## if I can find the data
-		self.RosterData = rows[(self.totalSeasonGames+11+self.totalPlayoffGames):(self.totalSeasonGames+11+self.totalPlayoffGames+rosterSize)]
+		self.RosterData = rows[(self.totalSeasonGames+9+self.totalPlayoffGames):(self.totalSeasonGames+11+self.totalPlayoffGames+rosterSize)]
 		## slice out the rows of data (one player per row) with our ever more
 		## complex system for determining the start and end indexes :s
 		
@@ -231,8 +231,8 @@ class nhlTeam(Team):
 		## available 
 		self.Roster = []
 		## JUST the names of players on the roster
-		##for rostDat in self.RosterData:
-		##	self.Roster.append(rostDat[0])
+		for rostDat in self.RosterData:
+			self.Roster.append(rostDat[0])
 			## hence the 0 index
 		
 		## this section is very rudimentary at the moment, but it will get more

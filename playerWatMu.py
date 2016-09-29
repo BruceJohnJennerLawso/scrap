@@ -4,7 +4,7 @@
 ## (ie very limited information) ###############################################
 ################################################################################
 from player import *
-
+import team
 
 class watMuPlayer(Player):
 	def __init__(self, name, seasons):
@@ -28,7 +28,7 @@ class watMuPlayer(Player):
 		## note the currentSeasonIndex here, which is meant to cap the players
 		## stats at a specific season, instead of the entire career
 		## (if we wanted to do forecasts on a specific season)
-		print "\n\nPlayer: %s, %i seasons played, average MaAWQI of %.3f\n" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerMaAWQI(currentSeasonIndex))
+		return "Player: %s, %i seasons played\nTeam Averages:\nAGCI %.3f, MaAWQI %.3f, MaAPQI %.3f\nDQI %.3f, OQI %.3f, DiffQI %.3f\nMaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f\nOffense %.3f, Defence %.3f, +/- %.3f" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerCareerMeanStatValue(team.Team.getAGCI), self.getPlayerCareerMeanStatValue(team.Team.getMaAWQI), self.getPlayerCareerMeanStatValue(team.Team.getMaAPQI), self.getPlayerCareerMeanStatValue(team.Team.getDefenceQualityIndex), self.getPlayerCareerMeanStatValue(team.Team.getOffenceQualityIndex), self.getPlayerCareerMeanStatValue(team.Team.getDiffQualityIndex), self.getPlayerCareerMeanStatValue(team.Team.getMaADQI), self.getPlayerCareerMeanStatValue(team.Team.getMaAOQI), self.getPlayerCareerMeanStatValue(team.Team.getMaADiffQI), self.getPlayerCareerMeanStatValue(team.Team.getSeasonGoalsForAverage), self.getPlayerCareerMeanStatValue(team.Team.getSeasonGoalsAgainstAverage), self.getPlayerCareerMeanStatValue(team.Team.getSeasonPlusMinus))
 		
 		##for team in self.playedFor:
 		##	print team.getDescriptionString(), '\n'
@@ -37,7 +37,25 @@ class watMuPlayer(Player):
 	def getNumberOfSeasonsPlayed(self):
 		return len(self.playedFor)
 
-	def getPlayerMaAWQI(self, currentSeasonIndex=-1):
+	def getPlayerCareerTotalStatValue(self, statCall, currentSeasonIndex=-1):
+		## step through every season up to the current one (if specified)
+		## add up the MaAWQIs of the team the player played for each season
+		## and average them over the total seasons played
+		
+		## yes I know its hilariously vague, but its something
+		output = 0.000
+		if(self.getNumberOfSeasonsPlayed() > 0):
+			## not sure how its here otherwise, but whatever
+			for team in self.playedFor:
+				if(currentSeasonIndex != -1):
+					## if a season cutoff was specified, we only
+					if(team.getSeasonIndex() < currentSeasonIndex):
+						output += statCall(team)
+				else:
+					output += statCall(team)
+		return output
+
+	def getPlayerCareerMeanStatValue(self, statCall, currentSeasonIndex=-1):
 		## step through every season up to the current one (if specified)
 		## add up the MaAWQIs of the team the player played for each season
 		## and average them over the total seasons played
@@ -51,34 +69,15 @@ class watMuPlayer(Player):
 				if(currentSeasonIndex != -1):
 					## if a season cutoff was specified, we only
 					if(team.getSeasonIndex() < currentSeasonIndex):
-						output += team.getMaAWQI()
+						output += statCall(team)
 						seasonCount += 1
 				else:
-					output += team.getMaAWQI()
+					output += statCall(team)
 					seasonCount += 1
 			if(seasonCount > 0):
 				output /= float(seasonCount)
-			return output
-
+		return output
 	
-	def getPlayerMaAPQI(self, currentSeasonIndex=-1):
-		## same idea, now for MaPQWI
-		output = 0.000
-		if(self.getNumberOfSeasonsPlayed() > 0):
-			seasonCount = 0
-			for team in self.playedFor:
-				if(currentSeasonIndex != -1):
-					if(team.getSeasonIndex() < currentSeasonIndex):
-						output += team.getMaAPQI()
-						seasonCount += 1
-				else:
-					output += team.getMaAPQI()
-					seasonCount += 1
-			if(seasonCount > 0):
-				output /= float(seasonCount)
-			return output
-						
-		
 	def plotSeasonBySeasonStats(self, output_path, output_directory, output_filename):
 		## quick & dirty function to save the big picture view of a players
 		## career team numbers to file

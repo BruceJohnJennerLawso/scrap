@@ -1,0 +1,5 @@
+#!/bin/bash
+
+chromium-browser https://github.com/BruceJohnJennerLawso/scrap https://github.com/BruceJohnJennerLawso/scrap/issues https://github.com/BruceJohnJennerLawso/scrap/network &
+
+exit 0
