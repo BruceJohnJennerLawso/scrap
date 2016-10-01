@@ -31,6 +31,18 @@ class statContainer:
 		for i in self.dataPoints:
 			print i
 		print "]"
+
+	def printSortedContainer(self):
+		print "[",
+		for i in sorted(self.dataPoints, key=lambda list: list[0]):
+			print i
+		print "]"	
+		
+	def printReverseSortedContainer(self):
+		print "[",
+		for i in sorted(self.dataPoints, key=lambda list: list[0]).reverse():
+			print i
+		print "]"				
 		
 	def getStat(self, onlyPlayoffTeams=False):
 		output = []
