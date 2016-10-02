@@ -24,6 +24,10 @@ python-seaborn
 ## check out
 ## http://python-for-multivariate-analysis.readthedocs.io/a_little_book_of_python_for_multivariate_analysis.html
 ## for more info
+lm-sensors
+## (through apt)
+pysensors
+## (through pip)
 
 ## IMPORTANT NOTE:
 ## Seaborn needs to be installed via pip now to get the right version that can

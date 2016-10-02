@@ -235,6 +235,7 @@ if(__name__ == "__main__"):
 			if(p.exitcode == 0):
 				finishedProcesses += 1
 		if(finishedProcesses == len(procs)):
+			print "Finished all processes for readata.py, %s, %s" % (leagueId, levelId)
 			break
 		
 		print "%i running processes, %i finished %i cores available\n" % (runningProcesses, finishedProcesses, num_cores)
