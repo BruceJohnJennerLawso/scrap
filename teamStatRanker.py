@@ -12,6 +12,16 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 		output = getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential', seasons, leagueId, levelId)
 	elif(targetStatName == "MaADiffQI"):
 		output = getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Diff Quality Index', seasons, leagueId, levelId)
+	elif(targetStatName == "MaAOQI"):
+		output = getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId)
+	elif(targetStatName == "MaADQI"):
+		output = getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId)	
+	elif(targetStatName == "AGCI"):
+		output = getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId)	
+	elif(targetStatName == "OQI"):
+		output = getStatContainer(Team.getOffenceQualityIndex, 'OQI', 'Offence Quality Index', seasons, leagueId, levelId)	
+	elif(targetStatName == "DQI"):
+		output = getStatContainer(Team.getDefenceQualityIndex, 'DQI', 'Defence Quality Index', seasons, leagueId, levelId)			
 	return output
 
 
