@@ -1,7 +1,6 @@
 import sensors
 
 
-def get 
 
 if(__name__ == "__main__"):
 	sensors.init()
