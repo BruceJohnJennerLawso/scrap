@@ -52,7 +52,15 @@ if(__name__ == "__main__"):
 	if(sortOrder not in ['asc', 'desc']):
 		print "Bad sort order argument %s supplied, must be either asc or desc" % sortOrder
 	
-	targetStatName = argv[4]
+	playoffTeamsOnly = argv[4]
+	if(playoffTeamsOnly == "True"):
+		playoffTeamsOnly = True
+	elif(playoffTeamsOnly == "False"):
+		playoffTeamsOnly = False
+	else:
+		print "Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly	
+	
+	targetStatName = argv[5]
 	
 	
 	## ids needed to open the proper folders and csv files contained within
@@ -65,6 +73,6 @@ if(__name__ == "__main__"):
 
 	stat = getTargetStatContainer(targetStatName, seasons, leagueId, levelId)
 	if(sortOrder == 'asc'):
-		stat.printSortedContainer()
+		stat.printSortedContainer(playoffTeamsOnly)
 	elif(sortOrder == 'desc'):
-		stat.printReverseSortedContainer()
+		stat.printReverseSortedContainer(playoffTeamsOnly)
