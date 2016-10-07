@@ -33,10 +33,11 @@ if(__name__ == "__main__"):
 			print "################################################################################"
 			print season.seasonId, "###########################################################################"
 			print "################################################################################\n"		
-		for teamName in teamNames:
 			for team in season.Teams:
-				if(teamName != 0):
+				print team.getDescriptionString(), "\n"
+		
+		if(teamNames != 0):
+			for teamName in teamNames:
+				for team in season.Teams:
 					if(team.getTeamName() == teamName):
 						print team.getDescriptionString(), "\n"			
-				else:	
-					print team.getDescriptionString(), "\n"
