@@ -29,6 +29,7 @@ def graphPlayoffSuccessRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 	 
 	
@@ -43,6 +44,7 @@ def graphPlayoffSuccessRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	return 0
@@ -59,6 +61,7 @@ def graphPlayoffOffenceRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 	 
 	
@@ -73,6 +76,7 @@ def graphPlayoffOffenceRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	return 0
@@ -89,6 +93,7 @@ def graphPlayoffDefenceRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 	 
 	
@@ -103,6 +108,7 @@ def graphPlayoffDefenceRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	return 0
@@ -119,6 +125,7 @@ def graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 	 
 	
@@ -133,6 +140,7 @@ def graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	return 0
@@ -153,6 +161,7 @@ def plotHistograms(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	graphTeamsHistogram(leagueId, levelId, False,\
@@ -169,6 +178,7 @@ def plotHistograms(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 	
 	return 0
@@ -188,6 +198,7 @@ def plotHeatmap(seasons, leagueId, levelId):
 	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
 
 	return 0
@@ -200,7 +211,7 @@ if(__name__ == "__main__"):
 	levelId = argv[2]
 	## ie 'beginner'
 	
-	num_cores = int(mp.cpu_count()*0.5)
+	num_cores = int(mp.cpu_count()*0.25)
 	
 	print "Running readata with argv ", argv, '\non %i cores, %i available' % (mp.cpu_count(), num_cores)
 	
@@ -219,7 +230,7 @@ if(__name__ == "__main__"):
 	p5 = mp.Process(target = plotHistograms, args=(seasons, leagueId, levelId), name = "Histograms")
 	p6 = mp.Process(target = plotHeatmap, args=(seasons, leagueId, levelId), name = "Heatmap")		
 
-	procs = [p1, p2, p3, p4, p5, p6]
+	procs = [p6, p2, p3, p4, p5, p1]
 	activeProcs = []
 	
 	while(True):

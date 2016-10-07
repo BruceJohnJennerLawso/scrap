@@ -376,6 +376,8 @@ class Team(object):
 	def getMaADiffQI(self):
 		return self.meanAdjustedAverageDiffQualityIndex
 
+	def getSQI(self):
+		return (self.getMaADiffQI() - (self.getMaAOQI() + self.getMaADQI()))
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 
 	## predictor of playoff success so far

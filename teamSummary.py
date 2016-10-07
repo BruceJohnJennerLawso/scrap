@@ -16,9 +16,9 @@ if(__name__ == "__main__"):
 	## ie 'beginner'
 	
 	
-	teamName = 0
+	teamNames = 0
 	if(len(argv) > 3):
-		teamName = argv[3]
+		teamNames = argv[3:len(argv)]
 	
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
@@ -29,14 +29,15 @@ if(__name__ == "__main__"):
 	seasonIndexList = getSeasonIndexList(leagueId)
 	
 	for season in seasons:
-		if(teamName == 0):
+		if(teamNames == 0):
 			print "################################################################################"
 			print season.seasonId, "###########################################################################"
 			print "################################################################################\n"		
-		
-		for team in season.Teams:
-			if(teamName != 0):
-				if(team.getTeamName() == teamName):
-					print team.getDescriptionString(), "\n"			
-			else:	
+			for team in season.Teams:
 				print team.getDescriptionString(), "\n"
+		
+		if(teamNames != 0):
+			for teamName in teamNames:
+				for team in season.Teams:
+					if(team.getTeamName() == teamName):
+						print team.getDescriptionString(), "\n"			

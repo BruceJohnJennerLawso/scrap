@@ -3,7 +3,7 @@
 ## do all the things...
 
 python readata.py watMu beginner>./logs/beginner.txt
-sleep 120
+sleep 300
 python readata.py watMu intermediate>./logs/intermediate.txt
 sleep 300
 python readata.py watMu advanced>./logs/advanced.txt
@@ -12,29 +12,12 @@ python readata.py watMu allstar>./logs/allstar.txt
 sleep 300
 
 python readata.py nhl everything>./logs/everything.txt
-sleep 600
+sleep 300
 python readata.py nhl originalSix>./logs/originalSix.txt
-sleep 600
+sleep 300
 python readata.py nhl earlyNhl>./logs/earlyNhl.txt
-sleep 600
+sleep 300
 python readata.py nhl postLockout>./logs/postLockout.txt
-sleep 600
-python readata.py nhl the40s>./logs/the40s.txt
-sleep 600
-python readata.py nhl the50s>./logs/the50s.txt
-sleep 600
-python readata.py nhl the60s>./logs/the60s.txt
-sleep 600
-python readata.py nhl the70s>./logs/the70s.txt
-sleep 600
-python readata.py nhl the80s>./logs/the80s.txt
-sleep 600
-python readata.py nhl the90s>./logs/the90s.txt
-sleep 600
-python readata.py nhl beforeTheLoserPoint>./logs/beforeTheLoserPoint.txt
-sleep 600
-python readata.py nhl withTheLoserPoint>./logs/withTheLoserPoint.txt
-
 ## this should take about a month on a dual core machine...
 
 exit 0

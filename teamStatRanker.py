@@ -22,7 +22,25 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 		output = getStatContainer(Team.getOffenceQualityIndex, 'OQI', 'Offence Quality Index', seasons, leagueId, levelId)	
 	elif(targetStatName == "DQI"):
 		output = getStatContainer(Team.getDefenceQualityIndex, 'DQI', 'Defence Quality Index', seasons, leagueId, levelId)			
+	elif(targetStatName == "MaAWQI"):
+		output = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId)			
+	elif(targetStatName == "MaAPQI"):
+		output = getStatContainer(Team.getMaAPQI, 'MaAPQI', 'Mean Adjusted Average Play Quality Index', seasons, leagueId, levelId)			
+	elif(targetStatName == "Points"):
+		output = getStatContainer(Team.getSeasonPointsTotal, 'Points', 'Season Points Total', seasons, leagueId, levelId)				
+	elif(targetStatName == "Offence"):
+		output = getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Season Goals For Average', seasons, leagueId, levelId)				
+	elif(targetStatName == "Defence"):
+		output = getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Season Goals Against Average', seasons, leagueId, levelId)				
+	elif(targetStatName == "SQI"):
+		output = getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId)				
+	else:
+		print "Stat name %s not found, available options are:\n\n" % targetStatName
+		print ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI"]
+		exit
 	return output
+
+
 
 
 if(__name__ == "__main__"):
