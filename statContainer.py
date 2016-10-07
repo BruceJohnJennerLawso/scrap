@@ -32,16 +32,24 @@ class statContainer:
 			print i
 		print "]"
 
-	def printSortedContainer(self):
+	def printSortedContainer(self, onlyPlayoffTeams=False):
 		print "[",
 		for i in sorted(self.dataPoints, key=lambda list: list[0]):
-			print "%.3f " % i[0], i[1:]
+			if(onlyPlayoffTeams == True):
+				if(i[4] == True):
+					print "%.3f " % i[0], i[1:]
+			else:
+				print "%.3f " % i[0], i[1:]
 		print "]"	
 		
-	def printReverseSortedContainer(self):
+	def printReverseSortedContainer(self, onlyPlayoffTeams=False):
 		print "[",
 		for i in reversed(sorted(self.dataPoints, key=lambda list: list[0])):
-			print "%.3f " % i[0], i[1:]
+			if(onlyPlayoffTeams == True):
+				if(i[4] == True):
+					print "%.3f " % i[0], i[1:]
+			else:
+				print "%.3f " % i[0], i[1:]
 		print "]"				
 		
 	def getStat(self, onlyPlayoffTeams=False):
