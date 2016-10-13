@@ -18,11 +18,11 @@ def Mean(dataSet):
 	
 def geometricMean(dataSet):
 	output = 1.000
-	n =  = len(dataSet)
+	n = len(dataSet)
 	
 	for cy in dataSet:
 		output *= cy
-	output = math.pow(output, (1/float(n))
+	output = math.pow(output, (1/float(n)))
 	return output
 	
 def isOdd(value):
@@ -123,13 +123,14 @@ def testListFunctions():
 		testArray.append(randam)
 	print "array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray)
 	
-	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray))
+	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray))
 	print "Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray))
 
 if(__name__ == "__main__"):
 	
 	import random
 	testListFunctions()
+	print geometricMean([16, 9])
 
 
 
