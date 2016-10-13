@@ -16,6 +16,15 @@ def Mean(dataSet):
 	## an integer, which we dont want
 	return output
 	
+def geometricMean(dataSet):
+	output = 1.000
+	n =  = len(dataSet)
+	
+	for cy in dataSet:
+		output *= cy
+	output = math.pow(output, (1/float(n))
+	return output
+	
 def isOdd(value):
 	if(value%2 != 0):
 		return True	
