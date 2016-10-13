@@ -2,6 +2,7 @@
 ## core shitty statistics module ###############################################
 ################################################################################
 import math
+import scipy.stats
 
 
 ## calls for the 3 basic properties of datasets ################################
@@ -41,6 +42,7 @@ def twoClosestIntegers(value):
 		print "twoClosestIntegers() called on integer %f, crashing everything..." % value
 		return []
 
+
 def getSkewness(dataSet):
 	sumCubes = 0.0
 	sumSquares = 0.0
@@ -55,6 +57,9 @@ def getSkewness(dataSet):
 	
 	output = (sumCubes/n)/((sumSquares/n)**1.5)
 	return output
+
+def getAdjustedKurtosis(dataSet):
+	return scipy.stats.kurtosis(dataSet)
 	
 def getValueForPercentile(percentile, dataSet):
 	n = float(len(dataSet))
@@ -174,7 +179,7 @@ def testListFunctions():
 		testArray.append(randam)
 	print "array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray)
 	
-	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f\nArray Skewness %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray), getSkewness(testArray))
+	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f\nArray Skewness %f\nArray Kurtosis %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray), getSkewness(testArray), getAdjustedKurtosis(testArray))
 	##print "Array percentiles\np(0) %.3f, p(25) %.3f, p(50) %.3f, p(75) %.3f, p(100) %.3f" % (getValueForPercentile(0.0, testArray), getValueForPercentile(0.25, testArray), getValueForPercentile(0.5, testArray), getValueForPercentile(0.75, testArray), getValueForPercentile(1.00, testArray))
 	print "Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray))
 
