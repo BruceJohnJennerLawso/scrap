@@ -47,15 +47,17 @@ def getValueForPercentile(percentile, dataSet):
 	
 	m = percentile*(n+1.0)	
 	
-	##print "percentile %f, n %f" % (percentile, n)
-	##print "m %f" % m
-	##if(not isInteger(m)):
-	##	print twoClosestIntegers(m)
+	print sorted(dataSet)
+	print [(i, (i+1), sorted(dataSet)[i]) for i in range(0, len(dataSet))]
+	print "percentile %f, n %f" % (percentile, n)
+	print "m %f, adjusted %d" % (m, (int(m) -2))
+	if(not isInteger(m)):
+		print twoClosestIntegers(m)
 		
 	if(isInteger(m)):
-		return sorted(dataSet)[int(m)-2]
+		return sorted(dataSet)[int(m)]
 	else:
-		return (sorted(dataSet)[twoClosestIntegers(m)[0]] + sorted(dataSet)[twoClosestIntegers(m)[1]])/2.0
+		return (sorted(dataSet)[twoClosestIntegers(m)[0]-2] + sorted(dataSet)[twoClosestIntegers(m)[1]-2])/2.0
 	
 def isOdd(value):
 	if(value%2 != 0):
