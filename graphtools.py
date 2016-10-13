@@ -203,7 +203,7 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	## label our axes like good students
-	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f" % (title, distMean, distMedian, distVar)
+	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f, Skewness %.3f, Kurtosis %.3f" % (title, distMean, distMedian, distVar, getSkewness(values), getAdjustedKurtosis(values))
 	plt.title(title_)
 	## an' title it
 	print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)
