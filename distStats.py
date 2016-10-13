@@ -25,6 +25,38 @@ def geometricMean(dataSet):
 	output = math.pow(output, (1/float(n)))
 	return output
 	
+def isInteger(value):
+	if(value == int(value)):
+		return True
+	else:
+		return False	
+
+def twoClosestIntegers(value):
+	roundedValue = int(value)
+	if(roundedValue < value):
+		return [roundedValue, roundedValue+1]
+	elif(roundedValue > value):
+		return [roundedValue-1, roundedValue]
+	else:
+		print "twoClosestIntegers() called on integer %f, crashing everything..." % value
+		return []
+	
+def getValueForPercentile(percentile, dataSet):
+	n = float(len(dataSet))
+	## plus 1 here because the dataset in the notes is from [y(1), ..., y(n)]
+	
+	m = percentile*(n+1.0)	
+	
+	##print "percentile %f, n %f" % (percentile, n)
+	##print "m %f" % m
+	##if(not isInteger(m)):
+	##	print twoClosestIntegers(m)
+		
+	if(isInteger(m)):
+		return sorted(dataSet)[int(m)-2]
+	else:
+		return (sorted(dataSet)[twoClosestIntegers(m)[0]] + sorted(dataSet)[twoClosestIntegers(m)[1]])/2.0
+	
 def isOdd(value):
 	if(value%2 != 0):
 		return True	
@@ -40,6 +72,8 @@ def Median(dataSet):
 		## not very confident with that, lets see if it works
 	else:
 		return float(sortedData[ (arrayLen/2) -1 ] + sortedData[ (arrayLen/2) ])/2
+		## average the two middle ones
+
 		
 def Mode(dataSet):
 	##sortedData = sorted(dataSet)
@@ -124,13 +158,13 @@ def testListFunctions():
 	print "array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray)
 	
 	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray))
+	print "Array percentiles\np(0) %.3f, p(25) %.3f, p(50) %.3f, p(75) %.3f, p(100) %.3f" % (getValueForPercentile(0.0, testArray), getValueForPercentile(0.25, testArray), getValueForPercentile(0.5, testArray), getValueForPercentile(0.75, testArray), getValueForPercentile(1.00, testArray))
 	print "Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray))
 
 if(__name__ == "__main__"):
 	
 	import random
 	testListFunctions()
-	print geometricMean([16, 9])
 
 
 
