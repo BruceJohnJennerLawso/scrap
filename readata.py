@@ -17,212 +17,101 @@ import multiprocessing as mp
 ## aspect of graphing with matplotlib or something
 
 
+def getDependentStatContainers(seasons, leagueId, levelId):
+	return [getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffOffenceTransition, 'POT', 'Playoff Offence Transition', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffDefenceTransition, 'PDT', 'Playoff Defence Transition', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPlayoffGoalDifferentialTransition, 'PGDT', 'Playoff Goal Differential Transition', seasons, leagueId, levelId)]		
+
+
+def getIndependentStatContainers(seasons, leagueId, levelId):
+	return [getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
+	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getCPQI, 'CPQI', 'Complete Play Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
+	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
+	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId)]			 	
+
 def graphPlayoffSuccessRelations(seasons, leagueId, levelId):
 	graphTeams(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
-	 
+	[getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 
 	
 	graphTeamsAgainstDeltas(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 
 	return 0
 
 def graphPlayoffOffenceRelations(seasons, leagueId, levelId):
 	graphTeams(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 	 
 	
 	graphTeamsAgainstDeltas(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 
 	return 0
 
 def graphPlayoffDefenceRelations(seasons, leagueId, levelId):
 	graphTeams(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 	 
 	
 	graphTeamsAgainstDeltas(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 
 	return 0
 
 def graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId):
 	graphTeams(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
 	 
 	
 	graphTeamsAgainstDeltas(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	[getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId)],\
+	getIndependentStatContainers(seasons, leagueId, levelId))
 
 	return 0
 
 def plotHistograms(seasons, leagueId, levelId):
 	
 	graphTeamsHistogram(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	getDependentStatContainers(seasons, leagueId, levelId) + getIndependentStatContainers(seasons, leagueId, levelId))
 
 	graphTeamsHistogram(leagueId, levelId, False,\
-	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
-	
+	getDependentStatContainers(seasons, leagueId, levelId) + getIndependentStatContainers(seasons, leagueId, levelId))
+
 	return 0
 
 def plotHeatmap(seasons, leagueId, levelId):
 	plotVariablesHeatmap(leagueId, levelId, True,\
-	getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsForAverage, 'playoffOffence', 'Playoff Goals For Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'playoffDefence', 'Playoff Goals Against Average', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
-	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId))				 	
+	getDependentStatContainers(seasons, leagueId, levelId) + getIndependentStatContainers(seasons, leagueId, levelId) )
 
 	return 0
 
 
-if(__name__ == "__main__"):
-	
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
-	
+def runMultithreaded(seasons, leagueId, levelId):
+
 	num_cores = int(mp.cpu_count()*0.25)
 	
 	print "Running readata with argv ", argv, '\non %i cores, %i available' % (mp.cpu_count(), num_cores)
 	
-	## ids needed to open the proper folders and csv files contained within
-	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	
-	
-	
-	
+
 	p1 = mp.Process(target = graphPlayoffSuccessRelations, args=(seasons, leagueId, levelId), name = "Playoff Success")
 	p2 = mp.Process(target = graphPlayoffOffenceRelations, args=(seasons, leagueId, levelId), name = "Playoff Offence")
 	p3 = mp.Process(target = graphPlayoffDefenceRelations, args=(seasons, leagueId, levelId), name = "Playoff Defence")
@@ -260,6 +149,34 @@ if(__name__ == "__main__"):
 					p.start()
 					break
 
+def runLinear(seasons, leagueId, levelId):
+	plotHeatmap(seasons, leagueId, levelId)
+	plotHistograms(seasons, leagueId, levelId)
+	graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId)
+	graphPlayoffSuccessRelations(seasons, leagueId, levelId)
+	graphPlayoffOffenceRelations(seasons, leagueId, levelId)
+	graphPlayoffDefenceRelations(seasons, leagueId, levelId)
+
+
+if(__name__ == "__main__"):
+	
+	leagueId = argv[1]
+	## ie 'watMu'
+	levelId = argv[2]
+	## ie 'beginner'
+	runMode = argv[3]
+
+	## ids needed to open the proper folders and csv files contained within
+	seasons = getAllSeasons(leagueId, levelId)
+	## retrieve list of seasons from the manifest for this level
+	##franchises = getFranchiseList(leagueId, levelId)
+	
+	if(runMode == "Multithread"):
+		runMultithreaded(seasons, leagueId, levelId)
+	elif(runMode == "Linear"):
+		runLinear(seasons, leagueId, levelId)
+	else:
+		print "Unable to parse runMode argument %s, exiting" % runMode
 
 
 

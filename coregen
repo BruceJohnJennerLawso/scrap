@@ -2,22 +2,22 @@
 
 ## do all the things...
 
-python readata.py watMu beginner>./logs/beginner.txt
+python readata.py watMu beginner Linear>./logs/beginner.txt
 sleep 300
-python readata.py watMu intermediate>./logs/intermediate.txt
+python readata.py watMu intermediate Linear>./logs/intermediate.txt
 sleep 300
-python readata.py watMu advanced>./logs/advanced.txt
+python readata.py watMu advanced Linear>./logs/advanced.txt
 sleep 300
-python readata.py watMu allstar>./logs/allstar.txt
+python readata.py watMu allstar Linear>./logs/allstar.txt
 sleep 300
 
-python readata.py nhl everything>./logs/everything.txt
+python readata.py nhl everything Linear>./logs/everything.txt
 sleep 300
-python readata.py nhl originalSix>./logs/originalSix.txt
+python readata.py nhl originalSix Linear>./logs/originalSix.txt
 sleep 300
-python readata.py nhl earlyNhl>./logs/earlyNhl.txt
+python readata.py nhl earlyNhl Linear>./logs/earlyNhl.txt
 sleep 300
-python readata.py nhl postLockout>./logs/postLockout.txt
+python readata.py nhl postLockout Linear>./logs/postLockout.txt
 ## this should take about a month on a dual core machine...
 
 exit 0
