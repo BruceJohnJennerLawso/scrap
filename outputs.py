@@ -24,13 +24,34 @@ def getAllSeasons(leagueId, levelId='null'):
 	seasons = []
 	
 	if(leagueId != 'watMu'):
-		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
-			## open the manifest csv file for this particular league
-			## (nhl)
-			reader = csv.reader(foo)
-			for row in reader:
-				## open the first season id in a row (formatted like termYYYY)
-				seasonId = row[0]
+		
+		try:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+				## open the manifest csv file for this particular league
+				## (nhl)
+				reader = csv.reader(foo)
+				for row in reader:
+					## open the first season id in a row (formatted like termYYYY)
+					seasonId = row[0]
+					idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
+					## open the list of team ids stored for that particular season in
+					## another csv file
+					teamIdList = []
+					with open(idPath, 'rb') as bar:
+						reading = csv.reader(bar)
+						for teamId in reading:
+							## open up the list of teamIds for the season in question
+							teamIdList.append(teamId[0])
+							## stuff the ids into a list
+						
+							## no idea why the ids are stored one deep
+					seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
+					## this should create a season from this data, and by extension
+					## constructs all of the teams that played in those seasons by
+					## extension
+		except IOError:
+			try:
+				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
 				## open the list of team ids stored for that particular season in
 				## another csv file
@@ -44,9 +65,9 @@ def getAllSeasons(leagueId, levelId='null'):
 					
 						## no idea why the ids are stored one deep
 				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
-				## this should create a season from this data, and by extension
-				## constructs all of the teams that played in those seasons by
-				## extension
+			except IOError:
+				print "Unable to make levelId argument %s work, failing" % levelId
+			
 	else:
 		
 		try:
@@ -74,24 +95,25 @@ def getAllSeasons(leagueId, levelId='null'):
 					## constructs all of the teams that played in those seasons by
 					## extension
 		except IOError:
-			print "Alt catching"
-			seasonId = levelId
-			for lev in ['beginner', 'intermediate', 'advanced', 'allstar']:
-				idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
-				print idPath
-				## open the list of team ids stored for that particular season in
-				## another csv file
-				teamIdList = []
-				with open(idPath, 'rb') as bar:
-					reading = csv.reader(bar)
-					for teamId in reading:
-						## open up the list of teamIds for the season in question
-						teamIdList.append(teamId[0])
-						## stuff the ids into a list
-						
-						## no idea why the ids are stored one deep
-				seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
-	
+			try:
+				seasonId = levelId
+				for lev in ['beginner', 'intermediate', 'advanced', 'allstar']:
+					idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
+					## open the list of team ids stored for that particular season in
+					## another csv file
+					teamIdList = []
+					with open(idPath, 'rb') as bar:
+						reading = csv.reader(bar)
+						for teamId in reading:
+							## open up the list of teamIds for the season in question
+							teamIdList.append(teamId[0])
+							## stuff the ids into a list
+							
+							## no idea why the ids are stored one deep
+					seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
+			except IOError:
+				print "Unable to make levelId argument %s work, failing" % levelId
+				return seasons
 	for season in seasons:
 		season.loadTierIV(seasons)
 	return seasons
