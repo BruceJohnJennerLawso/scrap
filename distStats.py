@@ -2,6 +2,7 @@
 ## core shitty statistics module ###############################################
 ################################################################################
 import math
+import scipy.stats
 
 
 ## calls for the 3 basic properties of datasets ################################
@@ -15,6 +16,68 @@ def Mean(dataSet):
 	## gotta make sure its a float, otherwise our mean gets rounded like
 	## an integer, which we dont want
 	return output
+	
+def geometricMean(dataSet):
+	output = 1.000
+	n = len(dataSet)
+	
+	for cy in dataSet:
+		output *= cy
+	output = math.pow(output, (1/float(n)))
+	return output
+	
+def isInteger(value):
+	if(value == int(value)):
+		return True
+	else:
+		return False	
+
+def twoClosestIntegers(value):
+	roundedValue = int(value)
+	if(roundedValue < value):
+		return [roundedValue, roundedValue+1]
+	elif(roundedValue > value):
+		return [roundedValue-1, roundedValue]
+	else:
+		print "twoClosestIntegers() called on integer %f, crashing everything..." % value
+		return []
+
+
+def getSkewness(dataSet):
+	sumCubes = 0.0
+	sumSquares = 0.0
+	
+	mean = Mean(dataSet)
+	n = float(len(dataSet))
+	
+	
+	for cy in dataSet:
+		sumCubes += (cy-mean)**3
+		sumSquares += (cy-mean)**2		
+	
+	output = (sumCubes/n)/((sumSquares/n)**1.5)
+	return output
+
+def getAdjustedKurtosis(dataSet):
+	return scipy.stats.kurtosis(dataSet)
+	
+def getValueForPercentile(percentile, dataSet):
+	n = float(len(dataSet))
+	## plus 1 here because the dataset in the notes is from [y(1), ..., y(n)]
+	
+	m = percentile*(n+1.0)	
+	
+	print sorted(dataSet)
+	print [(i, (i+1), sorted(dataSet)[i]) for i in range(0, len(dataSet))]
+	print "percentile %f, n %f" % (percentile, n)
+	print "m %f, adjusted %d" % (m, (int(m) -2))
+	if(not isInteger(m)):
+		print twoClosestIntegers(m)
+		
+	if(isInteger(m)):
+		return sorted(dataSet)[int(m)]
+	else:
+		return (sorted(dataSet)[twoClosestIntegers(m)[0]-2] + sorted(dataSet)[twoClosestIntegers(m)[1]-2])/2.0
 	
 def isOdd(value):
 	if(value%2 != 0):
@@ -31,6 +94,8 @@ def Median(dataSet):
 		## not very confident with that, lets see if it works
 	else:
 		return float(sortedData[ (arrayLen/2) -1 ] + sortedData[ (arrayLen/2) ])/2
+		## average the two middle ones
+
 		
 def Mode(dataSet):
 	##sortedData = sorted(dataSet)
@@ -114,7 +179,8 @@ def testListFunctions():
 		testArray.append(randam)
 	print "array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray)
 	
-	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray))
+	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f\nArray Skewness %f\nArray Kurtosis %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray), getSkewness(testArray), getAdjustedKurtosis(testArray))
+	##print "Array percentiles\np(0) %.3f, p(25) %.3f, p(50) %.3f, p(75) %.3f, p(100) %.3f" % (getValueForPercentile(0.0, testArray), getValueForPercentile(0.25, testArray), getValueForPercentile(0.5, testArray), getValueForPercentile(0.75, testArray), getValueForPercentile(1.00, testArray))
 	print "Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray))
 
 if(__name__ == "__main__"):
