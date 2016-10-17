@@ -50,6 +50,7 @@ def getAllSeasons(leagueId, levelId='null'):
 					## constructs all of the teams that played in those seasons by
 					## extension
 		except IOError:
+			print "Catching unusual argument %s" % levelId
 			try:
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
