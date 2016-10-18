@@ -88,6 +88,23 @@ def graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId):
 
 	return 0
 
+
+
+
+
+def graphRelationships(seasons, leagueId, levelId):
+	graphTeams(leagueId, levelId, True,\
+	getDependentStatContainers(seasons, leagueId, levelId),\
+	getIndependentStatContainers(seasons, leagueId, levelId)) 				 	
+	 
+	
+	graphTeamsAgainstDeltas(leagueId, levelId, True,\
+	getDependentStatContainers(seasons, leagueId, levelId),\
+	getIndependentStatContainers(seasons, leagueId, levelId))
+
+	return 0
+
+
 def plotHistograms(seasons, leagueId, levelId):
 	
 	graphTeamsHistogram(leagueId, levelId, True,\
@@ -118,8 +135,9 @@ def runMultithreaded(seasons, leagueId, levelId):
 	p4 = mp.Process(target = graphPlayoffGoalDifferentialRelations, args=(seasons, leagueId, levelId), name = "Playoff Goal Differential")
 	p5 = mp.Process(target = plotHistograms, args=(seasons, leagueId, levelId), name = "Histograms")
 	p6 = mp.Process(target = plotHeatmap, args=(seasons, leagueId, levelId), name = "Heatmap")		
+	p7 = mp.Process(target = plotRelationships, args=(seasons, leagueId, levelId), name = "All Dependent Variables")			
 
-	procs = [p6, p2, p3, p4, p5, p1]
+	procs = [p6, p4, p5, p7]
 	activeProcs = []
 	
 	while(True):
@@ -153,9 +171,11 @@ def runLinear(seasons, leagueId, levelId):
 	plotHeatmap(seasons, leagueId, levelId)
 	plotHistograms(seasons, leagueId, levelId)
 	graphPlayoffGoalDifferentialRelations(seasons, leagueId, levelId)
-	graphPlayoffSuccessRelations(seasons, leagueId, levelId)
-	graphPlayoffOffenceRelations(seasons, leagueId, levelId)
-	graphPlayoffDefenceRelations(seasons, leagueId, levelId)
+	graphRelationships(seasons, leagueId, levelId)
+	
+	##graphPlayoffSuccessRelations(seasons, leagueId, levelId)
+	##graphPlayoffOffenceRelations(seasons, leagueId, levelId)
+	##graphPlayoffDefenceRelations(seasons, leagueId, levelId)
 
 
 if(__name__ == "__main__"):
