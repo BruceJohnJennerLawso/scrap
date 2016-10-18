@@ -169,7 +169,7 @@ def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependents, ind
 			
 
 			thisDeltasContainer = statContainer("%s_ModelDeltaFor_%s" % (indie.getShortStatName(), depie.getShortStatName()), "Model Deltas for the %s model for %s" % (indie.getLongStatName(), depie.getLongStatName()),  thisIndieDeltas, indie.getTeamIds(playoffTeamsOnly), indie.getTeamNames(playoffTeamsOnly), indie.getYears(playoffTeamsOnly), indie.getMadePlayoffsList(playoffTeamsOnly))
-			plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, dependent.getShortStatName(), *[thisDeltasContainer]+[ind for ind in independents])
+			plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, depie.getShortStatName(), *[thisDeltasContainer]+[ind for ind in independents])
 			
 			print depie.getShortStatName(), " ", indie.getShortStatName(), " Model Deltas min ", min(thisIndieDeltas), " max ", max(thisIndieDeltas)
 			for indiana in independents:
