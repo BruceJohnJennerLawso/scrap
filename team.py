@@ -226,6 +226,20 @@ class Team(object):
 	
 	def getPlayoffAverageGoalDifferential(self):
 		return self.playoffAverageGoalDifferential
+	
+	
+	def getPlayoffOffenceTransition(self):
+		output = self.getPlayoffGoalsForAverage()-self.getSeasonGoalsForAverage()
+		return output
+		
+	def getPlayoffDefenceTransition(self):
+		output = self.getPlayoffGoalsAgainstAverage()-self.getSeasonGoalsAgainstAverage()
+		return output
+		
+	def getPlayoffGoalDifferentialTransition(self):
+		output = self.getPlayoffAverageGoalDifferential() - self.getSeasonGoalDifferentialAverage()
+		return output
+	
 		
 	def getRoster(self):
 		## *very important definition*
