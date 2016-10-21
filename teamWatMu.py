@@ -327,7 +327,7 @@ class watMuTeam(Team):
 		else:
 			## maybe we should throw something here?
 			## this pretty much always gets checked anyways
-			print "Unable to return playoff games, %s did not qualify for playoffs"
+			##print "Unable to return playoff games, %s did not qualify for playoffs"
 			return []
 			
 			

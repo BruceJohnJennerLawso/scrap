@@ -96,25 +96,28 @@ def getAllSeasons(leagueId, levelId='null'):
 					## constructs all of the teams that played in those seasons by
 					## extension
 		except IOError:
-			try:
+			if(True):
 				seasonId = levelId
 				for lev in ['beginner', 'intermediate', 'advanced', 'allstar']:
-					idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
-					## open the list of team ids stored for that particular season in
-					## another csv file
-					teamIdList = []
-					with open(idPath, 'rb') as bar:
-						reading = csv.reader(bar)
-						for teamId in reading:
-							## open up the list of teamIds for the season in question
-							teamIdList.append(teamId[0])
-							## stuff the ids into a list
-							
-							## no idea why the ids are stored one deep
-					seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
-			except IOError:
-				print "Unable to make levelId argument %s work, failing" % levelId
-				return seasons
+					try:
+						idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
+						## open the list of team ids stored for that particular season in
+						## another csv file
+						teamIdList = []
+						with open(idPath, 'rb') as bar:
+							reading = csv.reader(bar)
+							for teamId in reading:
+								## open up the list of teamIds for the season in question
+								teamIdList.append(teamId[0])
+								## stuff the ids into a list
+								
+								## no idea why the ids are stored one deep
+						seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
+					except IOError:
+						print "Unable to find level %s for %s, skipping" % (lev, seasonId)
+			##except IOError:
+			##	print "Unable to make levelId argument %s work, failing" % levelId
+			##	return seasons
 	for season in seasons:
 		season.loadTierIV(seasons)
 	return seasons
