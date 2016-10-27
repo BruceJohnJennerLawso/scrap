@@ -28,4 +28,4 @@ if(__name__ == "__main__"):
 	for season in seasons:
 		for team in season.Teams:
 			if(team.getTeamName() == teamName):
-				print "%i,%.3f" % (int(season.seasonId),team.getSeasonPointsTotal())
+				print "%i,%.3f" % (int(season.seasonId),team.getCPQI())

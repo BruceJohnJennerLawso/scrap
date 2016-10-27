@@ -135,7 +135,7 @@ def runMultithreaded(seasons, leagueId, levelId):
 	p4 = mp.Process(target = graphPlayoffGoalDifferentialRelations, args=(seasons, leagueId, levelId), name = "Playoff Goal Differential")
 	p5 = mp.Process(target = plotHistograms, args=(seasons, leagueId, levelId), name = "Histograms")
 	p6 = mp.Process(target = plotHeatmap, args=(seasons, leagueId, levelId), name = "Heatmap")		
-	p7 = mp.Process(target = plotRelationships, args=(seasons, leagueId, levelId), name = "All Dependent Variables")			
+	p7 = mp.Process(target = graphRelationships, args=(seasons, leagueId, levelId), name = "All Dependent Variables")			
 
 	procs = [p6, p4, p5, p7]
 	activeProcs = []
