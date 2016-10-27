@@ -124,7 +124,7 @@ def plotHeatmap(seasons, leagueId, levelId):
 
 def runMultithreaded(seasons, leagueId, levelId):
 
-	num_cores = int(mp.cpu_count()*0.25)
+	num_cores = int(mp.cpu_count()*0.5)
 	
 	print "Running readata with argv ", argv, '\non %i cores, %i available' % (mp.cpu_count(), num_cores)
 	
