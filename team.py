@@ -387,6 +387,9 @@ class Team(object):
 		## self.ADQI-leagueMean.ADQI
 		return self.meanAdjustedAverageDefenceQualityIndex
 
+	def getODQSplit(self):
+		return (self.getMaAOQI() - self.getMaADQI())
+
 	def getMaADiffQI(self):
 		return self.meanAdjustedAverageDiffQualityIndex
 	## our two indexes now adjusted for season mean in an attempt to make easier
