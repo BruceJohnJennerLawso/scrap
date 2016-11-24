@@ -78,9 +78,13 @@ class Team(object):
 			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 
 		self.loadTierI()
-		
-		
-		
+		rows = self.getCsvRowsList()
+		self.seasonParts = [seasonParts.seasonPart(rows, self.Games)]
+	
+	def getSeasonPart(self, gameConditions):
+		for part in self.seasonParts:
+			if(part.getGameConditions() == gameConditions.getGameConditions()):
+				return part
 		
 	## prototypes for the functions that load each tier of data ################
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############

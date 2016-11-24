@@ -26,8 +26,6 @@ class watMuTeam(Team):
 		
 	def loadTierI(self, debugInfo=False):
 		
-		debugInfo = True
-		
 		rows = self.getCsvRowsList()
 		
 		self.teamName = rows[0][0]

@@ -4,7 +4,7 @@
 ################################################################################
 
 
-class gamesSelectConditions(object)
+class gamesSelectConditions(object):
 	def __init__(self, part="completeSeason", fractionOfWhole=-1, startGameNumber=-1, endGameNumber=-1):
 		self.Conditions = []
 		## list of conditions always starting with a part string which describes
@@ -13,7 +13,12 @@ class gamesSelectConditions(object)
 			self.Conditions.append(part)
 		else:
 			print "Unrecognized condition %s supplied to seasonSelectConditions() object" % part
-			
+	
+	def __eq__(self, other):
+		if(self.Conditions == other.Conditions):
+			return True
+		else:
+			return False	
 			
 	def getGamesList(self, inputGames):
 		if(self.Conditions[0] == "completeSeason"):
@@ -24,7 +29,11 @@ class gamesSelectConditions(object)
 
 class seasonPart(object):
 	## base class constructor
-	def __init__(self, Games, gameConditions=gamesSelectConditions()):
-		self.Games = gameConditions.getGamesList(Games)
+	def __init__(self, rows, Games, gameConditions=gamesSelectConditions()):
+		self.gameConditions = gameConditions
+		self.Games = self.gameConditions.getGamesList(Games)
 		## take the original list of games for this season and run it through
 		## the seasonSelectConditions obj
+
+	def getGameConditions(self):
+		return self.gameConditions
