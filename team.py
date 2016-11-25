@@ -79,7 +79,7 @@ class Team(object):
 
 		self.loadTierI()
 		rows = self.getCsvRowsList()
-		self.seasonParts = [seasonParts.seasonPart(rows, self.Games)]
+		##self.seasonParts = [seasonParts.seasonPart(self.Games)]
 	
 	def getSeasonPart(self, gameConditions):
 		for part in self.seasonParts:

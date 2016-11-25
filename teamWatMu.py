@@ -25,7 +25,7 @@ class watMuTeam(Team):
 	## Tier I load call ########################################################	
 		
 	def loadTierI(self, debugInfo=False):
-		
+		debugInfo = True
 		rows = self.getCsvRowsList()
 		
 		self.teamName = rows[0][0]
@@ -44,8 +44,14 @@ class watMuTeam(Team):
 		## only the total of games in the season schedule that have been played
 		self.totalPlayoffGames = int(rows[1][3])
 		## total playoff games listed, including the TBDs
-		self.totalPlayoffGames = int(rows[1][4])
+		self.totalPlayoffGamesPlayed = int(rows[1][4])
 		## total playoff games actually played
+		
+		if(debugInfo):
+			print "total season length %i games" % self.seasonLength
+			print "total season games played so far %i games" % self.totalSeasonGames
+			print "total playoff games scheduled %i games" % self.totalPlayoffGames
+			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
 		
 		scheduleData = rows[2:(self.seasonLength + 2)]
 		## slice out only the rows that contain games data
