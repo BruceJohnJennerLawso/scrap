@@ -25,7 +25,7 @@ class watMuTeam(Team):
 	## Tier I load call ########################################################	
 		
 	def loadTierI(self, debugInfo=False):
-		debugInfo = True
+		##debugInfo = True
 		rows = self.getCsvRowsList()
 		
 		self.teamName = rows[0][0]
@@ -49,7 +49,8 @@ class watMuTeam(Team):
 		
 		if(debugInfo):
 			print "total season length %i games" % self.seasonLength
-			print "total season games played so far %i games" % self.totalSeasonGames
+			print "total season games in schedule %i" % self.totalSeasonGames
+			print "total season games played so far %i games" % self.totalSeasonGamesPlayed
 			print "total playoff games scheduled %i games" % self.totalPlayoffGames
 			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
 		
@@ -58,6 +59,36 @@ class watMuTeam(Team):
 		for game in scheduleData:
 			self.Games.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
 			## set up each game as an object in memory
+		
+		
+		startOfSeasonRows = 2
+		endOfSeasonRows = startOfSeasonRows + self.totalSeasonGamesPlayed
+		seasonData = rows[startOfSeasonRows:(endOfSeasonRows)]
+		## slice out only the rows that contain games data and ignore games that
+		## have not yet been played
+		for game in seasonData:
+			self.seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			## set up each game as an object in memory
+
+		if(debugInfo):
+			print "seasonData: "
+			for row in seasonData:
+				print row
+
+		startOfPlayoffRows = 2+self.totalSeasonGames
+		endOfPlayoffRows = startOfPlayoffRows + self.totalPlayoffGamesPlayed
+		
+		playoffData = rows[(startOfPlayoffRows):(endOfPlayoffRows)]
+		## slice out only the rows that contain games data and ignore games that
+		## have not yet been played
+		for game in playoffData:
+			self.playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			## set up each game as an object in memory
+
+		if(debugInfo):
+			print "\nplayoffData: "
+			for row in playoffData:
+				print row
 		
 		
 		## rosters...
@@ -145,7 +176,7 @@ class watMuTeam(Team):
 		if(averageSOCGames > 0):
 			## loop through the games again, if the value fails we overwrite it
 			## with the average of the games that were defined
-			for game in self.Games[0:self.totalSeasonGames]:
+			for game in self.seasonGames:
 				print game.Layers[0]
 				try:
 					game.getSOC()
@@ -317,22 +348,7 @@ class watMuTeam(Team):
 		else:
 			return False
 
-	def getSeasonGames(self):
-		## all game objects for watMu are stored in a list that has reg season
-		## and playoffs inclusive
-		
-		## so we need to slice the list to get only season games
-		return self.Games[0:self.totalSeasonGames]
-		
-	def getPlayoffGames(self):
-		if(self.qualifiedForPlayoffs() == True):
-			## quick check that there are playoff games to be had
-			return self.Games[self.totalSeasonGames:self.seasonLength]
-		else:
-			## maybe we should throw something here?
-			## this pretty much always gets checked anyways
-			##print "Unable to return playoff games, %s did not qualify for playoffs"
-			return []
+
 			
 			
 	def getPlayoffOpponentTeamNames(self):

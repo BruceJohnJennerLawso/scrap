@@ -68,9 +68,16 @@ class Team(object):
 		## output directory name under ./results/nhl is gonna be
 		
 		self.Games = []
+		## Deprecation in process...
 		## init list of objects of type game, currently empty, to be filled by
 		## the first loadTier call which opens the csv file and loads in the
 		## base data as game objects
+		
+		self.seasonGames = []
+		## list of objects representing season games
+		self.playoffGames = []
+		
+		
 		if(leagueId == 'nhl'):
 			self.loadPath = "./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId)
 			## shorter load path for nhl when we dont have to branch by levelId
@@ -126,6 +133,16 @@ class Team(object):
 	def getSeasonId(self):
 		## ie '2016' or 'fall2015'
 		return self.seasonId	
+		
+		
+	def getSeasonGames(self):
+		return self.seasonGames
+		
+	def getPlayoffGames(self):
+		if(self.qualifiedForPlayoffs()):	
+			return self.playoffGames	
+		else:
+			return []
 		
 	def getSeasonGoalsForAverage(self):
 		return float(self.seasonTotalGoalsFor)/float(self.totalSeasonGames)

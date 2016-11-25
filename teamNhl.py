@@ -84,6 +84,8 @@ class nhlTeam(Team):
 		
 		
 		self.playoffGames = []
+		self.seasonGames = []
+		
 		self.Games = []
 		
 		## ok, so now we need to construct a game object with the data that we
@@ -152,7 +154,7 @@ class nhlTeam(Team):
 			## exception if one of the indexes is still -1 (we never found it)
 			## but it gonna crash hard in that case anyways
 			
-			self.Games.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
+			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
 			## set up each game as an object in memory
 		
 		
@@ -409,14 +411,7 @@ class nhlTeam(Team):
 		else:
 			return False
 
-	def getSeasonGames(self):
-		## old relic of copied hasty code here
-		## just want to test this first
-		##return self.Games[0:self.totalSeasonGames]
-		return self.Games
-		
-	def getPlayoffGames(self):
-			return self.playoffGames
+
 			
 	def getPlayoffOpponentTeamNames(self):
 		output = []
