@@ -83,11 +83,6 @@ class nhlTeam(Team):
 			## empty lists
 		
 		
-		self.playoffGames = []
-		self.seasonGames = []
-		
-		self.Games = []
-		
 		## ok, so now we need to construct a game object with the data that we
 		## loaded 
 		

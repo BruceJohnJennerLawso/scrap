@@ -54,13 +54,6 @@ class watMuTeam(Team):
 			print "total playoff games scheduled %i games" % self.totalPlayoffGames
 			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
 		
-		scheduleData = rows[2:(self.seasonLength + 2)]
-		## slice out only the rows that contain games data
-		for game in scheduleData:
-			self.Games.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
-			## set up each game as an object in memory
-		
-		
 		startOfSeasonRows = 2
 		endOfSeasonRows = startOfSeasonRows + self.totalSeasonGamesPlayed
 		seasonData = rows[startOfSeasonRows:(endOfSeasonRows)]
@@ -74,6 +67,39 @@ class watMuTeam(Team):
 			print "seasonData: "
 			for row in seasonData:
 				print row
+
+		self.averageSOC = 0.000
+		averageSOCGames = 0
+		
+		for game in self.getSeasonGames():
+			try:
+				## try to add the SOC of a given game as a float 
+				self.averageSOC += game.getSOC()
+			except ValueError:
+				## if this fails because game.getSOC() is actually a string
+				## (saying 'avg.') we tally one more SOC game in the schedule
+				averageSOCGames += 1	
+				if(debugInfo):
+					print "Failed add due to ValueError"
+					print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
+		
+		SOC = float(self.averageSOC)/float(self.totalSeasonGamesPlayed-averageSOCGames) 
+		## start off by getting our average for the games that had an SOC number
+		## available
+		
+		if(averageSOCGames > 0):
+			## loop through the games again, if the value fails we overwrite it
+			## with the average of the games that were defined
+			for game in self.seasonGames:
+				print game.Layers[0]
+				try:
+					game.getSOC()
+				except ValueError:
+					if(debugInfo):
+						print "Failed int() cast due to ValueError"
+					game.setSOC(SOC)
+					print game.Layers[0]
+
 
 		startOfPlayoffRows = 2+self.totalSeasonGames
 		endOfPlayoffRows = startOfPlayoffRows + self.totalPlayoffGamesPlayed
@@ -100,28 +126,8 @@ class watMuTeam(Team):
 				print r
 		
 		
-		self.totalSeasonGames = 0
-		## this will be the total games that have been played up to this point
-		## even if there are more games in the schedule that have yet to be
-		## played
-		self.totalPlayoffGames = 0
+
 		
-		if(self.seasonLength >= 6):
-			self.totalSeasonGames +=6
-		else:
-			self.totalSeasonGames = self.seasonLength
-			self.totalPlayoffGames = 0
-		## I dont like how this works, cause it wont be able to handle in
-		## progress seasons properly
-		
-		## ideally, this needs to step through the game objects and verify that
-		## they have in fact been played 
-		
-		if((self.seasonLength-self.totalSeasonGames) > 0):
-			self.totalPlayoffGames += (self.seasonLength-self.totalSeasonGames)	
-		
-		
-		self.averageSOC = 0
 		
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
@@ -135,7 +141,6 @@ class watMuTeam(Team):
 		
 		self.averageGameClosenessIndex = 0
 		
-		averageSOCGames = 0
 		
 		for game in self.getSeasonGames():
 			
@@ -154,37 +159,12 @@ class watMuTeam(Team):
 				self.seasonGamesNotYetPlayed += 1
 			
 			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-				
-			try:
-				## try to add the SOC of a given game as a float 
-				self.averageSOC += game.getSOC()
-			except ValueError:
-				## if this fails because game.getSOC() is actually a string
-				## (saying 'avg.') we tally one more SOC game in the schedule
-				averageSOCGames += 1	
-				if(debugInfo):
-					print "Failed add due to ValueError"
-					print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
-		
+			
 		print "Total season games %i" % self.totalSeasonGames
 		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
 		
-		SOC = float(self.averageSOC)/float(self.totalSeasonGamesPlayed-averageSOCGames) 
-		## start off by getting our average for the games that had an SOC number
-		## available
 
-		if(averageSOCGames > 0):
-			## loop through the games again, if the value fails we overwrite it
-			## with the average of the games that were defined
-			for game in self.seasonGames:
-				print game.Layers[0]
-				try:
-					game.getSOC()
-				except ValueError:
-					if(debugInfo):
-						print "Failed int() cast due to ValueError"
-					game.setSOC(SOC)
-					print game.Layers[0]
+		
 
 		
 		self.averageSOC = 0

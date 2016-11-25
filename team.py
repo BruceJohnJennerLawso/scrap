@@ -67,7 +67,7 @@ class Team(object):
 		## for nhl, ahl, etc level, just leave this as 'null' or whatever the
 		## output directory name under ./results/nhl is gonna be
 		
-		self.Games = []
+		##self.Games = []
 		## Deprecation in process...
 		## init list of objects of type game, currently empty, to be filled by
 		## the first loadTier call which opens the csv file and loads in the
