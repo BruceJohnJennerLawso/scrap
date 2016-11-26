@@ -104,6 +104,8 @@ class Team(object):
 	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
 		debugInfo = True
 		
+		for game in self.getSeasonGames():
+			game.loadTierII(teamsList, teamRank)
 		
 		
 		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
