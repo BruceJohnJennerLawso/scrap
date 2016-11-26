@@ -47,7 +47,7 @@ def getSeasonIndexById(seasonId, indexList):
 
 class Team(object):
 	## base class constructor
-	def __init__(self, leagueId, levelId, seasonId, teamId):
+	def __init__(self, leagueId, levelId, seasonId, teamId, debugInfo):
 		self.seasonId = seasonId
 		## string that reliably identifies the current season, ie
 		## '2016' or
@@ -84,7 +84,7 @@ class Team(object):
 		else:
 			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 
-		self.loadTierI()
+		self.loadTierI(debugInfo)
 		rows = self.getCsvRowsList()
 		##self.seasonParts = [seasonParts.seasonPart(self.Games)]
 	

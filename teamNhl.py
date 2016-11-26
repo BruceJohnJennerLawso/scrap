@@ -9,8 +9,8 @@ from playerNhl import *
 
 
 class nhlTeam(Team):
-	def __init__(self, leagueId, seasonId, teamId, levelId = ''):
-		super(nhlTeam, self).__init__(leagueId, levelId, seasonId, teamId)
+	def __init__(self, leagueId, seasonId, teamId, levelId = '', debugInfo=False):
+		super(nhlTeam, self).__init__(leagueId, levelId, seasonId, teamId, debugInfo)
 		## call upstairs to set basic parameters
 		
 		## note that the levelId is an optional parameter
@@ -454,7 +454,7 @@ if(__name__ == "__main__"):
 	##daBuds = nhlTeam('nhl', '2016', 'TOR')
 	##daSharks = nhlTeam('nhl', '2016', 'SJS')
 	
-	fuckTampa = nhlTeam('nhl', '2015', 'TBL')
+	fuckTampa = nhlTeam('nhl', '2015', 'TBL', True)
 	## quick test to make sure everything is loading correctly
 	print fuckTampa.getTotalPlayoffGames()
 	print fuckTampa.getTotalPlayoffWins()

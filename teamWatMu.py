@@ -12,8 +12,8 @@ from playerWatMu import *
 
 
 class watMuTeam(Team):
-	def __init__(self, leagueId, levelId, seasonId, teamId):
-		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId)
+	def __init__(self, leagueId, levelId, seasonId, teamId, debugInfo=False):
+		super(watMuTeam, self).__init__(leagueId, levelId, seasonId, teamId, debugInfo)
 		## call the super parent constructor, which does a few basic assignments
 		## of the IDs provided, then creates the Games list, and sets the load
 		## path for the csv. Finally, the base constructor kicks off
@@ -28,7 +28,7 @@ class watMuTeam(Team):
 	
 	
 
-	def calculateSeasonStats(self):
+	def calculateTierISeasonStats(self):
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
 		self.seasonTotalGoalsAgainst = 0	
@@ -89,7 +89,42 @@ class watMuTeam(Team):
 		
 		
 	
+	def loadSeasonGames(self, rows, debugInfo=False):
+		seasonGames = []
+		
+		startOfSeasonRows = 2
+		endOfSeasonRows = startOfSeasonRows + self.totalSeasonGamesPlayed
+		seasonData = rows[startOfSeasonRows:(endOfSeasonRows)]
+		## slice out only the rows that contain games data and ignore games that
+		## have not yet been played
+		for game in seasonData:
+			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			## set up each game as an object in memory
+		if(debugInfo):
+			print "seasonData: "
+			for row in seasonData:
+				print row	
 	
+		return seasonGames
+	
+	def loadPlayoffGames(self, rows, debugInfo=False):
+		playoffGames = []
+		
+		startOfPlayoffRows = 2+self.totalSeasonGames
+		endOfPlayoffRows = startOfPlayoffRows + self.totalPlayoffGamesPlayed
+		
+		playoffData = rows[(startOfPlayoffRows):(endOfPlayoffRows)]
+		## slice out only the rows that contain games data and ignore games that
+		## have not yet been played
+		for game in playoffData:
+			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			## set up each game as an object in memory
+
+		if(debugInfo):
+			print "\nplayoffData: "
+			for row in playoffData:
+				print row
+		return playoffGames
 		
 	def loadTierI(self, debugInfo=False):
 		##debugInfo = True
@@ -121,19 +156,8 @@ class watMuTeam(Team):
 			print "total playoff games scheduled %i games" % self.totalPlayoffGames
 			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
 		
-		startOfSeasonRows = 2
-		endOfSeasonRows = startOfSeasonRows + self.totalSeasonGamesPlayed
-		seasonData = rows[startOfSeasonRows:(endOfSeasonRows)]
-		## slice out only the rows that contain games data and ignore games that
-		## have not yet been played
-		for game in seasonData:
-			self.seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
-			## set up each game as an object in memory
+		self.seasonGames = self.loadSeasonGames(rows, debugInfo)
 
-		if(debugInfo):
-			print "seasonData: "
-			for row in seasonData:
-				print row
 
 		self.averageSOC = 0.000
 		averageSOCGames = 0
@@ -168,21 +192,7 @@ class watMuTeam(Team):
 					print game.Layers[0]
 
 
-		startOfPlayoffRows = 2+self.totalSeasonGames
-		endOfPlayoffRows = startOfPlayoffRows + self.totalPlayoffGamesPlayed
-		
-		playoffData = rows[(startOfPlayoffRows):(endOfPlayoffRows)]
-		## slice out only the rows that contain games data and ignore games that
-		## have not yet been played
-		for game in playoffData:
-			self.playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
-			## set up each game as an object in memory
-
-		if(debugInfo):
-			print "\nplayoffData: "
-			for row in playoffData:
-				print row
-		
+		self.playoffGames = self.loadPlayoffGames(rows, debugInfo)
 		
 		## rosters...
 		self.Roster = rows[ (self.seasonLength + 3) ]
@@ -192,7 +202,7 @@ class watMuTeam(Team):
 			for r in self.Roster:
 				print r
 		
-		self.calculateSeasonStats()
+		self.calculateTierISeasonStats()
 
 		
 		
@@ -377,5 +387,5 @@ class watMuTeam(Team):
 		return self.realPlayoffs
 
 if(__name__ == "__main__"):
-	daDads = watMuTeam('watMu', 'beginner', 'fall2015', 12348)
+	daDads = watMuTeam('watMu', 'beginner', 'fall2015', 12348, True)
 	## quick test using the one and only Mighty Dads fall 2015
