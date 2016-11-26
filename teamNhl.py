@@ -15,9 +15,6 @@ class nhlTeam(Team):
 		
 		## note that the levelId is an optional parameter
 		## since the issue of nhl levelIds is kinda a mess
-		self.loadTierI(True)
-		## and lets kick this thing off by starting the load process
-		## automatically
 	
 		
 		
