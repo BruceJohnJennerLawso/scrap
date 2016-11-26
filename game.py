@@ -105,7 +105,7 @@ class Game(object):
 		## add that value to the total OQI
 		self.defenceQualityIndex = (opponent.getSeasonGoalsForAverage()-self.getGoalsAgainst())
 		## and for each game, the DQI is goals allowed below expectations,
-		self.diffQualityIndex = (self.getGoalDifferential()-opponent.getSeasonGoalDifferentialAverage())
+		self.diffQualityIndex = (self.getGoalDifferential()-(-opponent.getSeasonGoalDifferentialAverage()))
 		## so we add that value to the total DQI
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero
@@ -114,7 +114,7 @@ class Game(object):
 			if(self.Won()):
 				self.winQualityIndex = (self.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
 				self.playQualityIndex = (self.getGoalDifferential()*opponent.getSeasonPointsTotal()*self.getGameClosenessIndex()) 					
-			elif(game.Tied()):
+			elif(self.Tied()):
 				self.winQualityIndex = (opponent.getSeasonPointsTotal())
 				self.playQualityIndex = (opponent.getSeasonPointsTotal()*self.getGameClosenessIndex())						
 		## once we've calculated the total WQI & PQI, divy them over the total
