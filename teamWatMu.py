@@ -23,6 +23,73 @@ class watMuTeam(Team):
 	
 		
 	## Tier I load call ########################################################	
+	
+	
+	
+	
+
+	def calculateSeasonStats(self):
+		self.seasonPlusMinus = 0
+		self.seasonTotalGoalsFor = 0
+		self.seasonTotalGoalsAgainst = 0	
+		
+		self.seasonPointsTotal = 0	
+		self.seasonWins = 0
+		self.seasonTies = 0
+		self.seasonLosses = 0
+		self.seasonGamesNotYetPlayed = 0
+		
+		self.averageGameClosenessIndex = 0
+		
+		self.averageSOC = 0	
+		for game in self.getSeasonGames():
+			self.averageSOC += game.getSOC()
+			self.seasonTotalGoalsFor += game.getGoalsFor()
+			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
+			self.seasonPlusMinus += game.getGoalDifferential()
+			self.seasonPointsTotal += game.getPointsEarned()
+			
+			if(game.Won()):
+				self.seasonWins += 1
+			elif(game.Tied()):
+				self.seasonTies += 1
+			elif(game.Lost()):
+				self.seasonLosses += 1
+			elif(game.notYetPlayed()):
+				self.seasonGamesNotYetPlayed += 1
+			
+			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
+			
+		print "Total season games %i" % self.totalSeasonGames
+		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
+		self.averageSOC /= float(self.totalSeasonGames)		
+
+		
+		## now time to tally the stats we have available for the playoffs
+		
+		self.playoffWins = 0
+		##self.totalPlayoffGames = 0
+		self.playoffWinPercentage = 0.000
+		
+		self.playoffGoalsFor = 0
+		self.playoffGoalsAgainst = 0
+		self.playoffPlusMinus = 0
+		self.playoffAverageGoalDifferential = 0.000
+		
+		if(self.qualifiedForPlayoffs() == True):
+			self.totalPlayoffGames = len(self.getPlayoffGames())
+			for game in self.getPlayoffGames():		
+				if(game.Won()):
+					self.playoffWins += 1
+				self.playoffGoalsFor += game.getGoalsFor()
+				self.playoffGoalsAgainst += game.getGoalsAgainst()	
+				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())			
+			self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
+			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.totalPlayoffGames)
+		
+		
+	
+	
 		
 	def loadTierI(self, debugInfo=False):
 		##debugInfo = True
@@ -125,78 +192,11 @@ class watMuTeam(Team):
 			for r in self.Roster:
 				print r
 		
-		
+		self.calculateSeasonStats()
 
 		
 		
-		self.seasonPlusMinus = 0
-		self.seasonTotalGoalsFor = 0
-		self.seasonTotalGoalsAgainst = 0	
-		
-		self.seasonPointsTotal = 0	
-		self.seasonWins = 0
-		self.seasonTies = 0
-		self.seasonLosses = 0
-		self.seasonGamesNotYetPlayed = 0
-		
-		self.averageGameClosenessIndex = 0
-		
-		
-		for game in self.getSeasonGames():
-			
-			self.seasonTotalGoalsFor += game.getGoalsFor()
-			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
-			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned()
-			
-			if(game.Won()):
-				self.seasonWins += 1
-			elif(game.Tied()):
-				self.seasonTies += 1
-			elif(game.Lost()):
-				self.seasonLosses += 1
-			elif(game.notYetPlayed()):
-				self.seasonGamesNotYetPlayed += 1
-			
-			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-			
-		print "Total season games %i" % self.totalSeasonGames
-		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
-		
 
-		
-
-		
-		self.averageSOC = 0
-		for game in self.getSeasonGames():
-			## now that every game has a properly defined SOC, loop through
-			## and sum again before dividing to get the average
-			self.averageSOC += game.getSOC()
-		self.averageSOC /= float(self.totalSeasonGames)
-		
-		## now time to tally the stats we have available for the playoffs
-		
-		self.playoffWins = 0
-		##self.totalPlayoffGames = 0
-		self.playoffWinPercentage = 0.000
-		
-		self.playoffGoalsFor = 0
-		self.playoffGoalsAgainst = 0
-		self.playoffPlusMinus = 0
-		self.playoffAverageGoalDifferential = 0.000
-		
-		if(self.qualifiedForPlayoffs() == True):
-			self.totalPlayoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()	
-				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())			
-			self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
-			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.totalPlayoffGames)
-		
-		
 		
 		
 		
