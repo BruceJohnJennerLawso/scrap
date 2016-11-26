@@ -119,6 +119,8 @@ class Team(object):
 		
 		self.diffQualityIndex = 0.000
 		
+		self.diffQualityMargin = 0.000
+		
 		self.seasonRank = teamRank+1
 		## team rank is the index of this team after sorting based on the watMu
 		## standings criteria
@@ -149,13 +151,14 @@ class Team(object):
 					print '\n'
 				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 
-			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
+			self.offenceQualityIndex += game.getOffenceQualityIndex()
 			## for each game the OQI is goals scored above expectations, so we
 			## add that value to the total OQI
-			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
+			self.defenceQualityIndex += game.getDefenceQualityIndex()
 			## and for each game, the DQI is goals allowed below expectations,
-			self.diffQualityIndex += (game.getGoalDifferential()-(-opponent.getSeasonGoalDifferentialAverage()))
+			self.diffQualityIndex += game.getDiffQualityIndex()
 			## so we add that value to the total DQI
+			self.diffQualityMargin += game.getDiffQualMargin()
 			if(game.Lost() != True):	
 				## so long as we didnt lose the game, we will get a nonzero
 				## value for WQI and PQI, varying depending on the game stats
@@ -171,6 +174,8 @@ class Team(object):
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
+	def getDQM(self):
+		return self.diffQualityMargin
 		
 	def loadTierIII(self, teamsList, madeRealPlayoffs):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()

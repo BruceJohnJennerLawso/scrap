@@ -134,3 +134,6 @@ class Game(object):
 		
 	def getDiffQualityIndex(self):
 		return self.diffQualityIndex
+
+	def getDiffQualMargin(self):
+		return (self.getDiffQualityIndex()-self.getGoalDifferential())
