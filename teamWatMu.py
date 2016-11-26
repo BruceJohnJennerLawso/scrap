@@ -28,7 +28,7 @@ class watMuTeam(Team):
 	
 	
 
-	def calculateTierISeasonStats(self):
+	def calculateTierIStats(self):
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
 		self.seasonTotalGoalsAgainst = 0	
@@ -107,6 +107,39 @@ class watMuTeam(Team):
 	
 		return seasonGames
 	
+	def calculateSocValues(self, debugInfo=False):
+		self.averageSOC = 0.000
+		averageSOCGames = 0
+		
+		for game in self.getSeasonGames():
+			try:
+				## try to add the SOC of a given game as a float 
+				self.averageSOC += game.getSOC()
+			except ValueError:
+				## if this fails because game.getSOC() is actually a string
+				## (saying 'avg.') we tally one more SOC game in the schedule
+				averageSOCGames += 1	
+				if(debugInfo):
+					print "Failed add due to ValueError"
+					print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
+		
+		SOC = float(self.averageSOC)/float(self.totalSeasonGamesPlayed-averageSOCGames) 
+		## start off by getting our average for the games that had an SOC number
+		## available
+		
+		if(averageSOCGames > 0):
+			## loop through the games again, if the value fails we overwrite it
+			## with the average of the games that were defined
+			for game in self.seasonGames:
+				print game.Layers[0]
+				try:
+					game.getSOC()
+				except ValueError:
+					if(debugInfo):
+						print "Failed int() cast due to ValueError"
+					game.setSOC(SOC)
+					print game.Layers[0]
+	
 	def loadPlayoffGames(self, rows, debugInfo=False):
 		playoffGames = []
 		
@@ -157,41 +190,7 @@ class watMuTeam(Team):
 			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
 		
 		self.seasonGames = self.loadSeasonGames(rows, debugInfo)
-
-
-		self.averageSOC = 0.000
-		averageSOCGames = 0
-		
-		for game in self.getSeasonGames():
-			try:
-				## try to add the SOC of a given game as a float 
-				self.averageSOC += game.getSOC()
-			except ValueError:
-				## if this fails because game.getSOC() is actually a string
-				## (saying 'avg.') we tally one more SOC game in the schedule
-				averageSOCGames += 1	
-				if(debugInfo):
-					print "Failed add due to ValueError"
-					print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
-		
-		SOC = float(self.averageSOC)/float(self.totalSeasonGamesPlayed-averageSOCGames) 
-		## start off by getting our average for the games that had an SOC number
-		## available
-		
-		if(averageSOCGames > 0):
-			## loop through the games again, if the value fails we overwrite it
-			## with the average of the games that were defined
-			for game in self.seasonGames:
-				print game.Layers[0]
-				try:
-					game.getSOC()
-				except ValueError:
-					if(debugInfo):
-						print "Failed int() cast due to ValueError"
-					game.setSOC(SOC)
-					print game.Layers[0]
-
-
+		self.calculateSocValues(debugInfo)
 		self.playoffGames = self.loadPlayoffGames(rows, debugInfo)
 		
 		## rosters...
@@ -202,97 +201,11 @@ class watMuTeam(Team):
 			for r in self.Roster:
 				print r
 		
-		self.calculateTierISeasonStats()
+		self.calculateTierIStats()
 
 		
-		
+	## Tier IV load call ######################################################
 
-		
-		
-		
-		
-		
-		
-	## Tier II load call #######################################################	
-		
-	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
-		debugInfo = True
-		
-		
-		
-		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
-		
-		
-		self.averageWinQualityIndex = 0.000
-		self.averagePlayQualityIndex = 0.000
-		
-		self.defenceQualityIndex = 0.000
-		self.offenceQualityIndex = 0.000		
-		
-		self.diffQualityIndex = 0.000
-		
-		self.seasonRank = teamRank+1
-		## team rank is the index of this team after sorting based on the watMu
-		## standings criteria
-		
-		for game in self.getSeasonGames():
-			## we dont need to reload the data from csv, cause it was already
-			## loaded by the loadTierI(...) call and stored in objects
-			
-			opponentFound = False			
-			## start off by looking for our opponents object in the list of
-			## teams that we were given to search
-			for team in teamsList:
-				if(team.getTeamName() == game.getOpponentName()):
-					opponent = team
-					opponentFound = True
-					break
-					## once we find our team, assign it, and break outa here
-					
-					## shouldnt ever be two teams with the same name... I hope
-					
-			if(opponentFound == False):
-				## we wanna blow everything up here so that we can start
-				## debugging the problem 
-				if(debugInfo):
-					print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
-					for team in teamsList:
-						print team.getTeamName(),
-					print '\n'
-				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
-
-			self.offenceQualityIndex += (game.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
-			## for each game the OQI is goals scored above expectations, so we
-			## add that value to the total OQI
-			self.defenceQualityIndex += (opponent.getSeasonGoalsForAverage()-game.getGoalsAgainst())
-			## and for each game, the DQI is goals allowed below expectations,
-			self.diffQualityIndex += (game.getGoalDifferential()-opponent.getSeasonGoalDifferentialAverage())
-			## so we add that value to the total DQI
-			if(game.Lost() != True):	
-				## so long as we didnt lose the game, we will get a nonzero
-				## value for WQI and PQI, varying depending on the game stats
-				## and whether the game was a win or a tie
-				if(game.Won()):
-					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
-					self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
-				elif(game.Tied()):
-					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
-					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
-		self.averageWinQualityIndex /= float(self.totalSeasonGames)
-		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
-		## once we've calculated the total WQI & PQI, divy them over the total
-		## games played in that season to get an average
-
-	## Tier III load call ######################################################
-
-	def loadTierIII(self, teamsList, madeRealPlayoffs):	
-		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
-		
-		self.realPlayoffs = madeRealPlayoffs
-		
-		self.calculateMaValues(teamsList)
-		## send the list of team objects for this season off so we can get our
-		## mean adjusted values
 	
 	def loadTierIV(self, teamsList, seasonsList):
 		self.Players = []
