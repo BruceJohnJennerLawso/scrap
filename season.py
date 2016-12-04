@@ -59,3 +59,10 @@ class Season(Team):
 		output /= float(len(self.Teams))
 		return output
 		
+	def getTeamStatList(self, statName):
+		output = []
+		
+		for team in self.Teams:
+			output.append(statName(team))
+		return output		
+		
