@@ -14,6 +14,9 @@ class Season(Team):
 		self.leagueId = leagueId
 		self.levelId = levelId
 	
+	def getSeasonId(self):
+		return self.seasonId
+	
 	def getTotalNumberOfTeams(self):
 		## total teams in the league playing this season
 		return len(self.Teams)
@@ -47,3 +50,12 @@ class Season(Team):
 			if(team.getTeamName() == teamName):
 				return team
 		print "Unable to find team, no team with name %s found" % teamName	
+
+	def getTeamStatAverage(self, statName):
+		output = 0.00
+		
+		for team in self.Teams:
+			output += statName(team)
+		output /= float(len(self.Teams))
+		return output
+		

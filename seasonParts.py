@@ -38,4 +38,15 @@ class seasonPart(object):
 	def getGameConditions(self):
 		return self.gameConditions
 		
-
+	def getAverageForStat(self, statName):
+		output = 0.0
+		for game in self.Games:
+			output += statName(game)
+		output /= float(len(self.Games))
+		return output
+		
+	def getTotalForStat(self, statName):
+		output = 0.0
+		for game in self.Games:
+			output += statName(game)
+		return output
