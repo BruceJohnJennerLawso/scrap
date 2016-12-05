@@ -70,5 +70,7 @@ class Season(Team):
 		output = 0
 		for team in self.Teams:
 			if(team.getCPQI() > 0.987):
+			## 0.987 instead of 1.0 , since we want to ignore the possible
+			## effect of one bad game (ie 1/82 lower than 1)	
 				output += 1
 		return output
