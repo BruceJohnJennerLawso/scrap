@@ -69,6 +69,6 @@ class Season(Team):
 	def getTeamsAboveOneGoalCutoff(self):
 		output = 0
 		for team in self.Teams:
-			if(team.getCPQI() > 1.000):
+			if(team.getCPQI() > 0.987):
 				output += 1
 		return output
