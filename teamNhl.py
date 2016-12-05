@@ -346,6 +346,8 @@ class nhlTeam(Team):
 	
 	def __repr__(self):
 		return "<%s>" % (self.getDescriptionString())
+		## rewrite this with less info in our angle brackets to make it easier
+		## to read
 
 	def qualifiedForPlayoffs(self):
 		## in the case of the NHL (and most leagues) it is totally possible to
