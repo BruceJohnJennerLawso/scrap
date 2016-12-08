@@ -104,6 +104,9 @@ class Team(object):
 	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
 		debugInfo = True
 		
+		self.leagueTeamsList = teamsList
+		self.teamRank = teamRank
+		
 		for game in self.getSeasonGames():
 			game.loadTierII(teamsList, teamRank)
 		
@@ -178,8 +181,6 @@ class Team(object):
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
-	def getDQM(self):
-		return self.diffQualityMargin
 		
 	def loadTierIII(self, teamsList, madeRealPlayoffs):	
 		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
@@ -516,6 +517,9 @@ class Team(object):
 
 	def getCPQI(self):
 		return (self.getMaAOQI() + self.getMaADQI())
+
+	def getDQM(self):
+		return self.diffQualityMargin
 
 	## Tier IV #################################################################
 	
