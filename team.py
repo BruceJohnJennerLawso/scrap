@@ -86,7 +86,7 @@ class Team(object):
 
 		self.loadTierI(debugInfo)
 		rows = self.getCsvRowsList()
-		##self.seasonParts = [seasonParts.seasonPart(self.Games)]
+		self.seasonParts = []
 	
 	def getSeasonPart(self, gameConditions):
 		for part in self.seasonParts:
@@ -107,9 +107,16 @@ class Team(object):
 		self.leagueTeamsList = teamsList
 		self.teamRank = teamRank
 		
+		
 		for game in self.getSeasonGames():
 			game.loadTierII(teamsList, teamRank)
+
+		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="regularSeason"), gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="firstHalfRegularSeason"), gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="secondHalfRegularSeason"), gamesSelectConditions(part="none")),]		
 		
+		for part in self.seasonParts:
+			part.loadTierII(teamsList, teamRank)
 		
 		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		

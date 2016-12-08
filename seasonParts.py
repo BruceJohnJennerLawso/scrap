@@ -14,7 +14,9 @@ class gamesSelectConditions(object):
 		elif(part == "firstHalfRegularSeason")	
 			self.Conditions.append(part)
 		elif(part == "secondHalfRegularSeason")	
-			self.Conditions.append(part)			
+			self.Conditions.append(part)
+		elif(part == "none")	
+			self.Conditions.append(part)						
 		else:
 			print "Unrecognized condition %s supplied to seasonSelectConditions() object" % part
 		##self.comparisonCondition = gamesSelectConditions(comparison, comparison)
@@ -47,8 +49,8 @@ class gamesSelectConditions(object):
 				return inputGames[0:halfIndex]
 			elif(self.Conditions[0] == "secondHalfRegularSeason"):
 				return inputGames[halfIndex:len(inputGames)]
-			
-			return inputGames		
+		elif((self.Conditions[0] == "none")	
+			return []		
 		## if we have an unrecognized condition this is going to crash hard
 	
 
@@ -79,15 +81,20 @@ class seasonPart(object):
 		## I believe this should overwrite tierII stats for this season parts
 		## games when a different season game condition is used...
 		
-	def getAverageForStat(self, statName):
+	def getAverageForStat(self, statName, playoffGames=False):
 		output = 0.0
-		for game in self.Games:
-			output += statName(game)
-		output /= float(len(self.Games))
+		
+		if(not playoffGames):
+			for game in self.seasonGames:
+				output += statName(game)
+			output /= float(len(self.Games))
 		return output
 		
-	def getTotalForStat(self, statName):
+	def getTotalForStat(self, statName, playoffGames=False):
 		output = 0.0
-		for game in self.Games:
-			output += statName(game)
+		
+		if(not playoffGames):
+			for game in self.seasonGames:
+				output += statName(game)
+		
 		return output
