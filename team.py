@@ -118,6 +118,7 @@ class Team(object):
 		self.offenceQualityIndex = 0.000		
 		
 		self.diffQualityIndex = 0.000
+		self.oldDiffQualityIndex = 0.000
 		
 		self.diffQualityMargin = 0.000
 		
@@ -157,6 +158,7 @@ class Team(object):
 			self.defenceQualityIndex += game.getDefenceQualityIndex()
 			## and for each game, the DQI is goals allowed below expectations,
 			self.diffQualityIndex += game.getDiffQualityIndex()
+			self.oldDiffQualityIndex += game.oldDiffQualityIndex
 			## so we add that value to the total DQI
 			self.diffQualityMargin += game.getDiffQualMargin()
 			if(game.Lost() != True):	
@@ -170,7 +172,9 @@ class Team(object):
 					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
 					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
 		self.averageWinQualityIndex /= float(self.totalSeasonGames)
-		self.averagePlayQualityIndex /= float(self.totalSeasonGames)	
+		self.averagePlayQualityIndex /= float(self.totalSeasonGames)
+		
+		self.oldDiffQualityIndex /= float(self.totalSeasonGames)	
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
@@ -508,7 +512,7 @@ class Team(object):
 
 
 	def getSQI(self):
-		return (self.getMaADiffQI() - self.getCPQI() )
+		return (self.oldDiffQualityIndex - self.getCPQI() )
 
 	def getCPQI(self):
 		return (self.getMaAOQI() + self.getMaADQI())

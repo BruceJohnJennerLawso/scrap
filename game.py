@@ -106,6 +106,7 @@ class Game(object):
 		self.defenceQualityIndex = (opponent.getSeasonGoalsForAverage()-self.getGoalsAgainst())
 		## and for each game, the DQI is goals allowed below expectations,
 		self.diffQualityIndex = (self.getGoalDifferential()-(-opponent.getSeasonGoalDifferentialAverage()))
+		self.oldDiffQualityIndex = (self.getGoalDifferential()-(opponent.getSeasonGoalDifferentialAverage()))		
 		## so we add that value to the total DQI
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero

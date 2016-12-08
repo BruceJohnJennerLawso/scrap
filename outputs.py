@@ -159,6 +159,7 @@ def getFranchiseList(leagueId, levelId):
 
 def graphTeams(leagueId, levelId, playoffTeamsOnly, dependents, independents):
 	for depie in dependents:
+		## SHUT UP YOURE A TERRIBLE VARIABLE NAME
 		for indie in independents:
 			plotScatterplot(indie.getShortStatName(), depie.getShortStatName(), '%s\nby %s\nfor %s, %s' % (depie.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), depie.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, depie.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (depie.getShortStatName(), indie.getShortStatName()))		
 			## wow, that was quick
