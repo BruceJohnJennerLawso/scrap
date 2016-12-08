@@ -11,11 +11,11 @@ class gamesSelectConditions(object):
 		## how the condition should work, then 
 		if(part == "regularSeason"):
 			self.Conditions.append(part)
-		elif(part == "firstHalfRegularSeason")	
+		elif(part == "firstHalfRegularSeason"):
 			self.Conditions.append(part)
-		elif(part == "secondHalfRegularSeason")	
+		elif(part == "secondHalfRegularSeason"):
 			self.Conditions.append(part)
-		elif(part == "none")	
+		elif(part == "none"):
 			self.Conditions.append(part)						
 		else:
 			print "Unrecognized condition %s supplied to seasonSelectConditions() object" % part
@@ -32,7 +32,7 @@ class gamesSelectConditions(object):
 		if(self.Conditions[0] == "regularSeason"):
 			return inputGames
 		elif((self.Conditions[0] == "firstHalfRegularSeason")or(self.Conditions[0] == "secondHalfRegularSeason")):
-			if(distStats(isOdd(len(inputGames))) ):
+			if(distStats.isOdd(len(inputGames))):
 				## we have to make a decision here, so we will place the game in
 				## the middle in the back half by convention
 				halfIndex = float(len(inputGames))/2.0
@@ -43,13 +43,13 @@ class gamesSelectConditions(object):
 					halfIndex = halfIndexRounded
 					
 			else:
-				halfIndex = int(len(foo)/2.0)
+				halfIndex = int(len(inputGames)/2.0)
 				
 			if(self.Conditions[0] == "firstHalfRegularSeason"):
 				return inputGames[0:halfIndex]
 			elif(self.Conditions[0] == "secondHalfRegularSeason"):
 				return inputGames[halfIndex:len(inputGames)]
-		elif((self.Conditions[0] == "none")	
+		elif(self.Conditions[0] == "none"):
 			return []		
 		## if we have an unrecognized condition this is going to crash hard
 	
@@ -74,9 +74,9 @@ class seasonPart(object):
 		
 		## the comparison condition is then used to get the appropriate game
 		## part from opponent teams inside of game.loadTierII(...)
-		for game in (self.seasonGameConditions):
+		for game in (self.seasonGames):
 			game.loadTierII(teamsList, thisTeamRank)
-		for game in (self.playoffGameConditions):
+		for game in (self.playoffGames):
 			game.loadTierII(teamsList, thisTeamRank)			
 		## I believe this should overwrite tierII stats for this season parts
 		## games when a different season game condition is used...

@@ -111,9 +111,9 @@ class Team(object):
 		for game in self.getSeasonGames():
 			game.loadTierII(teamsList, teamRank)
 
-		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="regularSeason"), gamesSelectConditions(part="none")),\
-		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="firstHalfRegularSeason"), gamesSelectConditions(part="none")),\
-		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), gamesSelectConditions(part="secondHalfRegularSeason"), gamesSelectConditions(part="none")),]		
+		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="regularSeason"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none"))]		
 		
 		for part in self.seasonParts:
 			part.loadTierII(teamsList, teamRank)
