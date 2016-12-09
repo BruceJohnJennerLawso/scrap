@@ -66,7 +66,7 @@ class seasonPart(object):
 		## the seasonSelectConditions object
 
 	def getGameConditions(self):
-		return self.gameConditions
+		return [self.seasonGameConditions, self.playoffGameConditions]
 		
 	def loadTierII(self, teamsList, thisTeamRank):	
 		## I believe this function should be where the comparison game select
@@ -87,7 +87,7 @@ class seasonPart(object):
 		if(not playoffGames):
 			for game in self.seasonGames:
 				output += statName(game)
-			output /= float(len(self.Games))
+			output /= float(len(self.seasonGames))
 		return output
 		
 	def getTotalForStat(self, statName, playoffGames=False):

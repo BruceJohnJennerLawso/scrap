@@ -132,6 +132,9 @@ class Game(object):
 		
 	def getDefenceQualityIndex(self):
 		return self.defenceQualityIndex
+	
+	def getCPQI(self):
+		return (self.offenceQualityIndex + self.defenceQualityIndex)
 		
 	def getDiffQualityIndex(self):
 		return self.diffQualityIndex

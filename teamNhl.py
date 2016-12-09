@@ -334,7 +334,16 @@ class nhlTeam(Team):
 		## the fustercluck of writing an NHL player object just right now
 	
 	def getDescriptionString(self):
-		return "%s, %s (season %i)\nRank: %i (%i)%s, Pts %i Pct: %.3f,\nAGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\nDefence Quality Index %.3f, Offence Quality Index %.3f, Diff Quality Index %.3f\nMaADQI %.3f, MaAOQI %.3f MaADiffQI %.3f, DiffQualMargin %.3f\nOffense: %.3f, Defense %.3f, +/- %i\n%i Playoff Wins, Playoff Win %% of %.3f\nPlayoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage(), self.getAGCI(), self.getMaAWQI(), self.getMaAPQI(), self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex(), self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.diffQualityMargin, self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.playoffWins, self.getPlayoffWinPercentage(), self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())		
+		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
+		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
+		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
+		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
+		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI()) 
+		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus) 
+		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
+		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
+		output += "CPQI %.3f, (%.3f/%.3f) front/back" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI))
+		return output	
 		## I need to make a list of differences between this desc string and
 		## the watMu version
 	

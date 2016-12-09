@@ -6,7 +6,7 @@
 from player import *
 import csv
 import seasonParts
-
+import game
 
 def getSeasonIndexList(leagueId, debugInfo=False):
 	## opens up the file containing the names of every season in our data and
@@ -90,7 +90,7 @@ class Team(object):
 	
 	def getSeasonPart(self, gameConditions):
 		for part in self.seasonParts:
-			if(part.getGameConditions() == gameConditions.getGameConditions()):
+			if(part.getGameConditions() == gameConditions):
 				return part
 		
 	## prototypes for the functions that load each tier of data ################
@@ -527,6 +527,9 @@ class Team(object):
 
 	def getDQM(self):
 		return self.diffQualityMargin
+
+	def getFrontBackSplit(self):
+		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI))
 
 	## Tier IV #################################################################
 	

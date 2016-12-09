@@ -229,7 +229,8 @@ class watMuTeam(Team):
 		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI()) 
 		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
 		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
-		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
+		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
+		output += "CPQI %.3f, (%.3f/%.3f) front/back" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI))
 		return output
 		## I should really line break this so it fits into a terminal with less
 		## than 850 columns nicely
