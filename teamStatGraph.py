@@ -44,11 +44,11 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	elif(targetStatName == "PGDT"):
 		output = getStatContainer(Team.getPlayoffGoalDifferentialTransition, 'PGDT', 'Playoffs Goal Differential Transition', seasons, leagueId, levelId)	
 	elif(targetStatName == "ODQSplit"):
-		output = getStatContainer(Team.getODQSplit, 'ODQSplit', 'Offence/Defence Quality Split', seasons, leagueId, levelId)			
+		output = getStatContainer(Team.getODQSplit, 'ODQSplit', 'OffenceDefence Quality Split', seasons, leagueId, levelId)			
 	elif(targetStatName == "DQM"):
 		output = getStatContainer(Team.getDQM, 'DiffQualityMargin', 'DiffQualityMargin', seasons, leagueId, levelId)	
 	elif(targetStatName == "FBS"):
-		output = getStatContainer(Team.getFrontBackSplit, 'CPQI Front/Back Split', 'CPQI Front/Back Split', seasons, leagueId, levelId)				
+		output = getStatContainer(Team.getFrontBackSplit, 'CPQI FrontBack Split', 'CPQI FrontBack Split', seasons, leagueId, levelId)				
 	else:
 		print "Stat name %s not found, available options are:\n\n" % targetStatName
 		print ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "CPQI", "POT", "PDT", "PGDT"]

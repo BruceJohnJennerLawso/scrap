@@ -226,7 +226,7 @@ class watMuTeam(Team):
 		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI()) 
+		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
 		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
 		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
