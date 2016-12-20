@@ -18,6 +18,20 @@ import sys
 
 	## this was useful at some point
 
+
+def printTitleBox(text, debugInfo=False):
+	
+	textLength = len(text)
+	trailingLength = 80 - (3 + textLength + 1)
+	
+	if(debugInfo):
+		for i in range(0, len(text)):
+			print i, text[i]
+	
+	print "#"*80
+	print "##", text, "#"*trailingLength
+	print "#"*80, "\n"
+
 def getAllSeasons(leagueId, levelId='null'):
 	## returns a list of every season listed in our manifest file
 	## loaded completely with team Objects
