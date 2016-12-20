@@ -9,7 +9,7 @@ from outputs import *
 
 def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	if(targetStatName == "PlusMinus"):
-		output = getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential', seasons, leagueId, levelId)
+		output = getStatContainer(Team.getSeasonGoalDifferentialAverage, 'PlusMinus', 'Season Goal Differential', seasons, leagueId, levelId)
 	elif(targetStatName == "MaADiffQI"):
 		output = getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Diff Quality Index', seasons, leagueId, levelId)
 	elif(targetStatName == "MaAOQI"):
@@ -43,11 +43,17 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	elif(targetStatName == "PGDT"):
 		output = getStatContainer(Team.getPlayoffGoalDifferentialTransition, 'PGDT', 'Playoffs Goal Differential Transition', seasons, leagueId, levelId)	
 	elif(targetStatName == "ODQSplit"):
-		output = getStatContainer(Team.getODQSplit, 'ODQSplit', 'Offence/Defence Quality Split', seasons, leagueId, levelId)			
+		output = getStatContainer(Team.getODQSplit, 'ODQSplit', 'OffenceDefence Quality Split', seasons, leagueId, levelId)			
 	elif(targetStatName == "DQM"):
 		output = getStatContainer(Team.getDQM, 'DiffQualityMargin', 'DiffQualityMargin', seasons, leagueId, levelId)	
 	elif(targetStatName == "FBS"):
-		output = getStatContainer(Team.getFrontBackSplit, 'CPQI Front/Back Split', 'CPQI Front/Back Split', seasons, leagueId, levelId)				
+		output = getStatContainer(Team.getFrontBackSplit, 'CPQI FrontBack Split', 'CPQI FrontBack Split', seasons, leagueId, levelId)	
+	elif(targetStatName == "PlayoffOffence"):
+		output = getStatContainer(Team.getPlayoffGoalsForAverage, 'PlayoffOffence', 'PlayoffOffence', seasons, leagueId, levelId)	
+	elif(targetStatName == "PlayoffDefence"):
+		output = getStatContainer(Team.getPlayoffGoalsAgainstAverage, 'PlayoffDefence', 'PlayoffDefence', seasons, leagueId, levelId)
+	elif(targetStatName == "PlayoffSuccess"):
+		output = getStatContainer(Team.getPlayoffSuccessRating, 'PlayoffSuccess', 'PlayoffSuccess', seasons, leagueId, levelId)							
 	else:
 		print "Stat name %s not found, available options are:\n\n" % targetStatName
 		print ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "CPQI", "POT", "PDT", "PGDT"]
