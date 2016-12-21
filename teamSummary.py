@@ -29,11 +29,12 @@ if(__name__ == "__main__"):
 	seasonIndexList = getSeasonIndexList(leagueId)
 	
 	for season in seasons:
-		if(teamNames == 0):
-			##print "################################################################################"
-			##print season.seasonId, "###########################################################################"
-			##print "################################################################################\n"		
-			printTitleBox(season.seasonId)
+		if(teamNames == 0):	
+			
+			title = season.seasonId
+			if(leagueId == "watMu"):
+				title += ", " + season.levelId
+			printTitleBox(title)
 			for team in season.Teams:
 				print team.getDescriptionString(), "\n"
 		
