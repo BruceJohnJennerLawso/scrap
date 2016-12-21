@@ -102,7 +102,6 @@ class Team(object):
 	## Tier II load call #######################################################	
 		
 	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
-		debugInfo = True
 		
 		self.leagueTeamsList = teamsList
 		self.teamRank = teamRank
@@ -118,7 +117,9 @@ class Team(object):
 		for part in self.seasonParts:
 			part.loadTierII(teamsList, teamRank)
 		
-		print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
+		
+		if(debugInfo):
+			print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
 		
 		self.averageWinQualityIndex = 0.000
@@ -189,8 +190,9 @@ class Team(object):
 		## games played in that season to get an average
 
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs):	
-		print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+	def loadTierIII(self, teamsList, madeRealPlayoffs, debugInfo=False):	
+		if(debugInfo):
+			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		
 		self.realPlayoffs = madeRealPlayoffs
 		

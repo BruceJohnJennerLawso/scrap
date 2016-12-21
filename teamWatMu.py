@@ -28,7 +28,7 @@ class watMuTeam(Team):
 	
 	
 
-	def calculateTierIStats(self):
+	def calculateTierIStats(self, debugInfo=False):
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
 		self.seasonTotalGoalsAgainst = 0	
@@ -59,8 +59,8 @@ class watMuTeam(Team):
 				self.seasonGamesNotYetPlayed += 1
 			
 			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-			
-		print "Total season games %i" % self.totalSeasonGames
+		if(debugInfo):	
+			print "Total season games %i" % self.totalSeasonGames
 		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
 		self.averageSOC /= float(self.totalSeasonGames)		
 
@@ -131,14 +131,18 @@ class watMuTeam(Team):
 			## loop through the games again, if the value fails we overwrite it
 			## with the average of the games that were defined
 			for game in self.seasonGames:
-				print game.Layers[0]
+				
+				if(debugInfo):
+					print game.Layers[0]
+				
 				try:
 					game.getSOC()
 				except ValueError:
 					if(debugInfo):
 						print "Failed int() cast due to ValueError"
 					game.setSOC(SOC)
-					print game.Layers[0]
+					if(debugInfo):
+						print game.Layers[0]
 	
 	def loadPlayoffGames(self, rows, debugInfo=False):
 		playoffGames = []
@@ -166,8 +170,8 @@ class watMuTeam(Team):
 		self.teamName = rows[0][0]
 		self.seasonId = rows[0][1]
 		
-		
-		print "Load call watMuTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
+		if(debugInfo):
+			print "Load call watMuTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
 		self.seasonLength = int(rows[1][0])
 		## everything in the schedule, including playoff games
@@ -201,7 +205,7 @@ class watMuTeam(Team):
 			for r in self.Roster:
 				print r
 		
-		self.calculateTierIStats()
+		self.calculateTierIStats(debugInfo)
 
 		
 	## Tier IV load call ######################################################
