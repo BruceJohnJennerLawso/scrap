@@ -32,6 +32,53 @@ def printTitleBox(text, debugInfo=False):
 	print "##", text, "#"*trailingLength
 	print "#"*80, "\n"
 
+def clearTerminal():
+	## Clears the screen
+	##if(x>0):
+	##	for i in range(0, (x-1)):
+	##		print "\n",
+	sys.stdout.write("\x1b[2J\x1b[H");
+
+def printProgressBar(x, outOf, outputWidthCap=80):
+	outputLines = 1
+	
+	lastLineWidth = outOf
+	if(lastLineWidth > (outputWidthCap -2)):
+		##print "output range %i exceeds one line, going bigger" % lastLineWidth
+		while(lastLineWidth > (outputWidthCap -2)):
+			lastLineWidth -= (outputWidthCap -2)
+			outputLines += 1
+	
+	lineWidths = []
+	for i in range(1, outputLines+1):
+		if(i == outputLines):
+			## we hit our last line, so it might be slightly shorter
+			## than the previous ones
+			lineWidths.append(lastLineWidth)
+		else:
+			lineWidths.append(outputWidthCap -2)
+	lines = []
+		
+	count = x	
+		
+	for line in lineWidths:
+		lineString = "["
+		for i in range(line):
+			if(count > 0):
+				lineString += "*"
+				count -= 1
+			else:
+				lineString += "#"
+		lineString += "]"
+		lines.append(lineString)
+	for line in lines:
+		print line
+	##print outputLines			
+
+
+
+
+	
 def getAllSeasons(leagueId, levelId='null'):
 	## returns a list of every season listed in our manifest file
 	## loaded completely with team Objects
@@ -40,11 +87,24 @@ def getAllSeasons(leagueId, levelId='null'):
 	if(leagueId != 'watMu'):
 		
 		try:
+			total = 0
+			currentlyLoaded = 0
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+				## open the manifest csv file for this particular league
+				## (nhl)
+				earlyReader = csv.reader(foo)
+				for row in earlyReader:
+					total += 1
+				print "total ", total
+			
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league
 				## (nhl)
 				reader = csv.reader(foo)
 				for row in reader:
+					clearTerminal()
+					printProgressBar(currentlyLoaded, total)
+					
 					## open the first season id in a row (formatted like termYYYY)
 					seasonId = row[0]
 					idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
@@ -60,11 +120,18 @@ def getAllSeasons(leagueId, levelId='null'):
 						
 							## no idea why the ids are stored one deep
 					seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
+					
+					currentlyLoaded = len(seasons)
+					print "currentlyLoaded, ", currentlyLoaded
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
+				clearTerminal()
+				printProgressBar(currentlyLoaded, total)	
 		except IOError:
 			print "Catching unusual argument %s" % levelId
+			## a year was passed as argument instead of a season spread
+			## list name
 			try:
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
@@ -84,7 +151,7 @@ def getAllSeasons(leagueId, levelId='null'):
 				print "Unable to make levelId argument %s work, failing" % levelId
 			
 	else:
-		
+		## our league is watMu here
 		try:
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league & level
@@ -137,10 +204,6 @@ def getAllSeasons(leagueId, levelId='null'):
 	return seasons
 
 
-if(__name__ == "__main__"):
-	seasons = getAllSeasons('watMu', 'beginner')
-	demoStatContainer(seasons, 'watMu', 'beginner') 
-	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')
 
 def getFranchiseList(leagueId, levelId):
 	## returns a list of every season
@@ -269,3 +332,12 @@ def plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, variableToPr
 	
 	seabornHeatmap(dataPanda, './results', '%s/%s/%sBy' % (leagueId, levelId, variableToPredict), 'AllPlayoffTeams_%s_ModelDelta_Heatmap_%s_%s.png' % (variables[0].getShortStatName(), leagueId, levelId))
 
+
+
+if(__name__ == "__main__"):
+	##for i in range(192):
+	##	printProgressBar(i, 192)
+	
+	seasons = getAllSeasons('nhl', 'everything')
+	##demoStatContainer(seasons, 'watMu', 'beginner') 
+	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')
