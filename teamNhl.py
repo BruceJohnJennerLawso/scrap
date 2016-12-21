@@ -110,15 +110,16 @@ class nhlTeam(Team):
 		##print "%s: %s, Id: %s" % (self.teamName, rows[1][0], self.teamId)
 		
 		self.seasonName = rows[1][0]
-		
-		print "Load call nhlTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId)
+		if(debugInfo):
+			print "Load call nhlTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId)
 		##if((debugInfo)and(rawDataView)):
 		##	print "\n\nraw file\n\n"
 		
 		
 		
 		self.totalSeasonGames = int(rows[3][0])
-		print "Total season games %i" % self.totalSeasonGames
+		if(debugInfo):
+			print "Total season games %i" % self.totalSeasonGames
 		## set the length of the regular season from the csv data
 		self.totalPlayoffGames = 0
 		## by default we assume no playoff games
@@ -232,7 +233,8 @@ class nhlTeam(Team):
 		
 		
 		if(self.totalPlayoffGames > 0):
-			print "Total Playoff Games ", self.totalPlayoffGames
+			if(debugInfo):
+				print "Total Playoff Games ", self.totalPlayoffGames
 			
 			playoffDateIndex = -1
 			playoffLocationIndex = -1
