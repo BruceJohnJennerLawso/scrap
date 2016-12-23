@@ -99,109 +99,112 @@ def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 		
 	seasonIndexes = range(1, 21)+range(22,42)+range(43,63)+range(64, 84)+ range(85, 170)	
 	for i in seasonIndexes:
-		gameRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % i)
-		gameRow2 = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
-
-			## this should hopefully fix the issue with the game Time column
-			## messing up the offsets we were expecting
-		
-		if(len(gameRow) > 0):
-			## so we basically have two problems here:
-			## one, games only have times available for 2013 and later. Not that
-			## big of a deal, but a bit of a headache because the column that it
-			## was stored in is now gone, and everything is offset slightly off
+		try:
+			gameRow = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/text()' % i)
+			gameRow2 = tree.xpath('//div[@id="all_games"]/*/*/table/tbody/tr[%i]/*/*/text()' % i)		
+			print i, '\n', gameRow, '\n', gameRow2
+				## this should hopefully fix the issue with the game Time column
+				## messing up the offsets we were expecting
 			
-			## second problem, the game Dates are hyperlinked to the game box
-			## scores from 1988 onward, but its just plaintext for 1987 and
-			## earlier
-			
-			## Im thinking the best way of solving these problems is to tackle
-			## the overall problem in two steps.
-			
-			## first, I should save the header row at the start of the game data
-			## and use that to index the data instead of hoping for a hard
-			## layout across a century worth of data
-			
-			## and second, Im going to need to rewrite the section right after
-			## this so that it can handle the above issues with columns
-			## appearing and disappearing depending on the year
-			if(int(seasonId) <= 1987):
-				if(debugInfo):
-					print "Season before 1988"
-				if(gameRow[2] != '@'):
-					gameRow.insert(2, 'H')
-			
-				if(gameRow[6] not in ['OT', 'SO']):
-					## a little bit weird, but I think it works
-					gameRow.insert(6, 'REG')
-				gameRow.insert(3, gameRow2[0])
-				gameRow.insert(2, 'time unavailable')
-				##gameRow.insert(4, gameRow2[1])
-			elif((int(seasonId) >= 1988)and(int(seasonId) <= 2012)):
-				if(debugInfo):
-					print "Season between 1988 and 2012"
-				if(gameRow[1] != '@'):
-					gameRow.insert(1, 'H')
-			
-				if(gameRow[5] not in ['OT', 'SO']):
-					## a little bit weird, but I think it works
-					gameRow.insert(5, 'REG')
-				gameRow.insert(1, gameRow2[0])
-				gameRow.insert(3, gameRow2[1])
-				gameRow.insert(2, 'time unavailable')
-			elif((int(seasonId) >= 2013)and(int(seasonId) <= 2015)):
-				if(debugInfo):
-					print "Season after 2013, before 2016"
+			if(len(gameRow) > 0):
+				## so we basically have two problems here:
+				## one, games only have times available for 2013 and later. Not that
+				## big of a deal, but a bit of a headache because the column that it
+				## was stored in is now gone, and everything is offset slightly off
 				
-				if((seasonId == '2014')and(teamId == 'OTT')and(i == 54)):
-					continue
-				## I cannot figure out why this one was rescheduled
-				## most of the rest are blizzards and a medical emergency
-				## in the jackets/stars game
-				if((seasonId == '2014')and(teamId == 'BUF')and(i == 45)):
-					continue
-				if((seasonId == '2014')and(teamId == 'CAR')and(i == 46)):
-					continue					
-				if((seasonId == '2014')and(teamId == 'CAR')and(i == 52)):
-					continue	
-				if((seasonId == '2014')and(teamId == 'CAR')and(i == 55)):
-					continue						
-				if((seasonId == '2014')and(teamId == 'PHI')and(i == 53)):
-					continue						
-				if((seasonId == '2014')and(teamId == 'CBJ')and(i == 68)):
-					continue						
-				if((seasonId == '2014')and(teamId == 'DAL')and(i == 68)):
-					continue						
-
-					## theres a rescheduled game left in the schedule here which
-					## throws a wrench into the scraper
-					## gonna try jumping over it and seeing how that goes
+				## second problem, the game Dates are hyperlinked to the game box
+				## scores from 1988 onward, but its just plaintext for 1987 and
+				## earlier
 				
-				if(gameRow[2] != '@'):
-					gameRow.insert(2, 'H')
-				if(gameRow[6] not in ['OT', 'SO']):
-					## a little bit weird, but I think it works
-					gameRow.insert(6, 'REG')
-				gameRow.insert(1, gameRow2[0])
-				gameRow.insert(4, gameRow2[1])
-			else:
-				if(debugInfo):
-					print "Season after 2015"
-				if(gameRow[2] != '@'):
-					gameRow.insert(2, 'H')
-				if(gameRow[6] not in ['OT', 'SO']):
-					## a little bit weird, but I think it works
-					gameRow.insert(6, 'REG')
-				gameRow.insert(1, gameRow2[0])
-				gameRow.insert(4, gameRow2[1])
-				##gameRow.insert(2, 'time unavailable')
-			##if('Time' not in headingRow):
+				## Im thinking the best way of solving these problems is to tackle
+				## the overall problem in two steps.
+				
+				## first, I should save the header row at the start of the game data
+				## and use that to index the data instead of hoping for a hard
+				## layout across a century worth of data
+				
+				## and second, Im going to need to rewrite the section right after
+				## this so that it can handle the above issues with columns
+				## appearing and disappearing depending on the year
+				if(int(seasonId) <= 1987):
+					if(debugInfo):
+						print "Season before 1988"
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+				
+					if(gameRow[6] not in ['OT', 'SO']):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(3, gameRow2[0])
+					gameRow.insert(2, 'time unavailable')
+					##gameRow.insert(4, gameRow2[1])
+				elif((int(seasonId) >= 1988)and(int(seasonId) <= 2012)):
+					if(debugInfo):
+						print "Season between 1988 and 2012"
+					if(gameRow[1] != '@'):
+						gameRow.insert(1, 'H')
+				
+					if(gameRow[5] not in ['OT', 'SO']):
+						## a little bit weird, but I think it works
+						gameRow.insert(5, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(3, gameRow2[1])
+					gameRow.insert(2, 'time unavailable')
+				elif((int(seasonId) >= 2013)and(int(seasonId) <= 2015)):
+					if(debugInfo):
+						print "Season after 2013, before 2016"
+					
+					if((seasonId == '2014')and(teamId == 'OTT')and(i == 54)):
+						continue
+					## I cannot figure out why this one was rescheduled
+					## most of the rest are blizzards and a medical emergency
+					## in the jackets/stars game
+					if((seasonId == '2014')and(teamId == 'BUF')and(i == 45)):
+						continue
+					if((seasonId == '2014')and(teamId == 'CAR')and(i == 46)):
+						continue					
+					if((seasonId == '2014')and(teamId == 'CAR')and(i == 52)):
+						continue	
+					if((seasonId == '2014')and(teamId == 'CAR')and(i == 55)):
+						continue						
+					if((seasonId == '2014')and(teamId == 'PHI')and(i == 53)):
+						continue						
+					if((seasonId == '2014')and(teamId == 'CBJ')and(i == 68)):
+						continue						
+					if((seasonId == '2014')and(teamId == 'DAL')and(i == 68)):
+						continue						
+
+						## theres a rescheduled game left in the schedule here which
+						## throws a wrench into the scraper
+						## gonna try jumping over it and seeing how that goes
+					
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+					if(gameRow[6] not in ['OT', 'SO']):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(4, gameRow2[1])
+				else:
+					if(debugInfo):
+						print "Season after 2015"
+					if(gameRow[2] != '@'):
+						gameRow.insert(2, 'H')
+					if(gameRow[6] not in ['OT', 'SO']):
+						## a little bit weird, but I think it works
+						gameRow.insert(6, 'REG')
+					gameRow.insert(1, gameRow2[0])
+					gameRow.insert(4, gameRow2[1])
+					##gameRow.insert(2, 'time unavailable')
+				##if('Time' not in headingRow):
+				
 			
-		
-		if(len(gameRow) > 0):
-			if(debugInfo):
-				print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
-			gamesLists.append(gameRow)
+			if(len(gameRow) > 0):
+				if(debugInfo):
+					print i, ' ', gameRow, ' ', gameRow2, ' ', len(gameRow), '\n'
+				gamesLists.append(gameRow)
+		except IndexError:
+			continue		
 	regularSeasonLength = len(gamesLists)-1
 	
 	print 'Season length: %i games' % regularSeasonLength, '\n'
