@@ -31,7 +31,8 @@ if(__name__ == "__main__"):
 		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
 		playah = watMuPlayer(playerName, seasons)
 	else:
-		seasons = getAllSeasons(leagueId, 'everything')
+		##seasons = getAllSeasons(leagueId, 'everything')
+		seasons = getAllSeasons('wha', 'everything') + getAllSeasons('nhl', 'everything')
 		playah = nhlPlayer(playerName, seasons)		
 	
 	print playah.getStatsLine(), '\n\n'
