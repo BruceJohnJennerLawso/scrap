@@ -78,7 +78,7 @@ class Team(object):
 		self.playoffGames = []
 		
 		
-		if(leagueId == 'nhl'):
+		if((leagueId == 'nhl')or(leagueId == 'wha')):
 			self.loadPath = "./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId)
 			## shorter load path for nhl when we dont have to branch by levelId
 		else:

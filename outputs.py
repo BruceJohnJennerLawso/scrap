@@ -137,13 +137,14 @@ def getAllSeasons(leagueId, levelId='null'):
 			print "Catching unusual argument %s" % levelId
 			## a year was passed as argument instead of a season spread
 			## list name
-			try:
+			if(True):
 				
 				currentlyLoaded = 0
 				total = 1
 				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
+				print "idPath ",idPath 
 				## open the list of team ids stored for that particular season in
 				## another csv file
 				teamIdList = []
@@ -155,11 +156,14 @@ def getAllSeasons(leagueId, levelId='null'):
 						## stuff the ids into a list
 					
 						## no idea why the ids are stored one deep
+				print "finished creating teamIdList from %s" % idPath
 				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
+				print "finished appending seasons from idlist"
 				currentlyLoaded += 1
 				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
-			except IOError:
-				print "Unable to make levelId argument %s work, failing" % levelId
+			##except IOError:
+			##	print "Unable to make levelId argument %s work, failing" % levelId
+			##	return []
 			
 	else:
 		## our league is watMu here
