@@ -11,7 +11,7 @@ from graphtools import *
 from statRetrieve import *
 
 import sys  
-
+import time
 
 	##reload(sys)  
 	##sys.setdefaultencoding('utf8')
@@ -39,7 +39,7 @@ def clearTerminal():
 	##		print "\n",
 	sys.stdout.write("\x1b[2J\x1b[H");
 
-def printProgressBar(x, outOf, outputWidthCap=80):
+def printProgressBar(x, outOf, openSlotChar, filledSlotChar, outputWidthCap=80):
 	outputLines = 1
 	
 	lastLineWidth = outOf
@@ -65,10 +65,10 @@ def printProgressBar(x, outOf, outputWidthCap=80):
 		lineString = "["
 		for i in range(line):
 			if(count > 0):
-				lineString += "*"
+				lineString += filledSlotChar
 				count -= 1
 			else:
-				lineString += "#"
+				lineString += openSlotChar
 		lineString += "]"
 		lines.append(lineString)
 	for line in lines:
@@ -76,19 +76,26 @@ def printProgressBar(x, outOf, outputWidthCap=80):
 	##print outputLines			
 
 
-
-
+def displayLoadingFrame(feedbackText, currentlyLoaded, total, openSlotChar, filledSlotChar):
+	clearTerminal()
+	printProgressBar(currentlyLoaded, total, openSlotChar, filledSlotChar)
+	print "\n", feedbackText
 	
 def getAllSeasons(leagueId, levelId='null'):
 	## returns a list of every season listed in our manifest file
 	## loaded completely with team Objects
 	seasons = []
 	
+	
+	total = 0
+	currentlyLoaded = 0
+	
+	envString = "%s, %s" % (leagueId, levelId)
+	
+	
 	if(leagueId != 'watMu'):
 		
 		try:
-			total = 0
-			currentlyLoaded = 0
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league
 				## (nhl)
@@ -102,8 +109,7 @@ def getAllSeasons(leagueId, levelId='null'):
 				## (nhl)
 				reader = csv.reader(foo)
 				for row in reader:
-					clearTerminal()
-					printProgressBar(currentlyLoaded, total)
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 					
 					## open the first season id in a row (formatted like termYYYY)
 					seasonId = row[0]
@@ -126,13 +132,16 @@ def getAllSeasons(leagueId, levelId='null'):
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
-				clearTerminal()
-				printProgressBar(currentlyLoaded, total)	
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")	
 		except IOError:
 			print "Catching unusual argument %s" % levelId
 			## a year was passed as argument instead of a season spread
 			## list name
 			try:
+				
+				currentlyLoaded = 0
+				total = 1
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
 				## open the list of team ids stored for that particular season in
@@ -147,17 +156,28 @@ def getAllSeasons(leagueId, levelId='null'):
 					
 						## no idea why the ids are stored one deep
 				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
+				currentlyLoaded += 1
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 			except IOError:
 				print "Unable to make levelId argument %s work, failing" % levelId
 			
 	else:
 		## our league is watMu here
 		try:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:			
+				## open the manifest csv file for this particular league
+				## (watMu)
+				earlyReader = csv.reader(foo)
+				for row in earlyReader:
+					total += 1
+				print "total ", total
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league & level
 				## (waterloo intramurals and beginner...)
 				reader = csv.reader(foo)
 				for row in reader:
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
+					
 					## open the first season id in a row (formatted like termYYYY)
 					seasonId = row[0]
 					idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, levelId, seasonId)
@@ -173,15 +193,26 @@ def getAllSeasons(leagueId, levelId='null'):
 						
 							## no idea why the ids are stored one deep
 					seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
+					currentlyLoaded = len(seasons)
+					print "currentlyLoaded, ", currentlyLoaded
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 		except IOError:
 			if(True):
 				seasonId = levelId
-				for lev in ['beginner', 'intermediate', 'advanced', 'allstar']:
+				
+				watMuLevels = ['beginner', 'intermediate', 'advanced', 'allstar']
+				
+				total = len(watMuLevels)
+				for lev in watMuLevels:
+					
 					try:
-						idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
+						clearTerminal()
+						printProgressBar(currentlyLoaded, total, " ", "#")
+						
+						idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)					
 						## open the list of team ids stored for that particular season in
 						## another csv file
 						teamIdList = []
@@ -194,13 +225,24 @@ def getAllSeasons(leagueId, levelId='null'):
 								
 								## no idea why the ids are stored one deep
 						seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
+						currentlyLoaded += 1
 					except IOError:
 						print "Unable to find level %s for %s, skipping" % (lev, seasonId)
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 			##except IOError:
 			##	print "Unable to make levelId argument %s work, failing" % levelId
 			##	return seasons
+	
+	currentlyLoaded = 0
+	total = len(seasons)
 	for season in seasons:
+		displayLoadingFrame("loadTierIV for season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, "#", "*")
 		season.loadTierIV(seasons)
+		currentlyLoaded += 1
+	clearTerminal()
+	displayLoadingFrame("loadTierIV for season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, "#", "*")
+	time.sleep(1)		
+	## briefly pause here so we can see that the hashes are all gone * for nhl
 	return seasons
 
 
