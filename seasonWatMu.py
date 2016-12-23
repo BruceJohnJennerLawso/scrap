@@ -5,7 +5,7 @@
 from teamWatMu import *
 from season import *
 
-def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
+def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0, debugInfo=False):
 	## given an initial team that is in the playoff bracket we are
 	## looking for, crawl the full extent of the playoff bracket and
 	## output a list containing the standings positions (seeding nos)
@@ -21,12 +21,13 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0):
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
 		alreadyInBracket.append(thisTeamSeed)
-		if(count > 0):				
-			print "-"*count, thisTeamSeed
-			## indent in to give us a sense of how deep the recursive calls have
-			## gone
-		else:
-			print thisTeamSeed
+		if(debugInfo):
+			if(count > 0):				
+				print "-"*count, thisTeamSeed
+				## indent in to give us a sense of how deep the recursive calls have
+				## gone
+			else:
+				print thisTeamSeed
 		opponentSeeds = currentTeam.getPlayoffOpponentTeamSeeds(season)
 		## make a list of the opponent team seed numbers
 		for opponentSeed in opponentSeeds:

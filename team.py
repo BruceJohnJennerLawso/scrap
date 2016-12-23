@@ -5,7 +5,8 @@
 ################################################################################
 from player import *
 import csv
-
+import seasonParts
+import game
 
 def getSeasonIndexList(leagueId, debugInfo=False):
 	## opens up the file containing the names of every season in our data and
@@ -46,7 +47,7 @@ def getSeasonIndexById(seasonId, indexList):
 
 class Team(object):
 	## base class constructor
-	def __init__(self, leagueId, levelId, seasonId, teamId):
+	def __init__(self, leagueId, levelId, seasonId, teamId, debugInfo):
 		self.seasonId = seasonId
 		## string that reliably identifies the current season, ie
 		## '2016' or
@@ -66,20 +67,31 @@ class Team(object):
 		## for nhl, ahl, etc level, just leave this as 'null' or whatever the
 		## output directory name under ./results/nhl is gonna be
 		
-		self.Games = []
+		##self.Games = []
+		## Deprecation in process...
 		## init list of objects of type game, currently empty, to be filled by
 		## the first loadTier call which opens the csv file and loads in the
 		## base data as game objects
-		if(leagueId == 'nhl'):
+		
+		self.seasonGames = []
+		## list of objects representing season games
+		self.playoffGames = []
+		
+		
+		if((leagueId == 'nhl')or(leagueId == 'wha')):
 			self.loadPath = "./data/%s/%s/%s%s.csv" % (leagueId, seasonId, teamId, seasonId)
 			## shorter load path for nhl when we dont have to branch by levelId
 		else:
 			self.loadPath = "./data/%s/%s/%s/%s.csv" % (leagueId, levelId, seasonId, teamId)
 
-		self.loadTierI()
-		
-		
-		
+		self.loadTierI(debugInfo)
+		rows = self.getCsvRowsList()
+		self.seasonParts = []
+	
+	def getSeasonPart(self, gameConditions):
+		for part in self.seasonParts:
+			if(part.getGameConditions() == gameConditions):
+				return part
 		
 	## prototypes for the functions that load each tier of data ################
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############
@@ -87,11 +99,106 @@ class Team(object):
 	def loadTierI(self):
 		print "Bad call to Team.loadTierI"
 		
-	def loadTierII(self, teamsList):
-		print "Bad call to Team.loadTierII"
+	## Tier II load call #######################################################	
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs):
-		print "Bad call to Team.loadTierIII"
+	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
+		
+		self.leagueTeamsList = teamsList
+		self.teamRank = teamRank
+		
+		
+		for game in self.getSeasonGames():
+			game.loadTierII(teamsList, teamRank)
+
+		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="regularSeason"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none"))]		
+		
+		for part in self.seasonParts:
+			part.loadTierII(teamsList, teamRank)
+		
+		
+		if(debugInfo):
+			print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
+		
+		
+		self.averageWinQualityIndex = 0.000
+		self.averagePlayQualityIndex = 0.000
+		
+		self.defenceQualityIndex = 0.000
+		self.offenceQualityIndex = 0.000		
+		
+		self.diffQualityIndex = 0.000
+		self.oldDiffQualityIndex = 0.000
+		
+		self.diffQualityMargin = 0.000
+		
+		self.seasonRank = teamRank+1
+		## team rank is the index of this team after sorting based on the watMu
+		## standings criteria
+		
+		for game in self.getSeasonGames():
+			## we dont need to reload the data from csv, cause it was already
+			## loaded by the loadTierI(...) call and stored in objects
+			
+			opponentFound = False			
+			## start off by looking for our opponents object in the list of
+			## teams that we were given to search
+			for team in teamsList:
+				if(team.getTeamName() == game.getOpponentName()):
+					opponent = team
+					opponentFound = True
+					break
+					## once we find our team, assign it, and break outa here
+					
+					## shouldnt ever be two teams with the same name... I hope
+					
+			if(opponentFound == False):
+				## we wanna blow everything up here so that we can start
+				## debugging the problem 
+				if(debugInfo):
+					print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
+					for team in teamsList:
+						print team.getTeamName(),
+					print '\n'
+				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
+
+			self.offenceQualityIndex += game.getOffenceQualityIndex()
+			## for each game the OQI is goals scored above expectations, so we
+			## add that value to the total OQI
+			self.defenceQualityIndex += game.getDefenceQualityIndex()
+			## and for each game, the DQI is goals allowed below expectations,
+			self.diffQualityIndex += game.getDiffQualityIndex()
+			self.oldDiffQualityIndex += game.oldDiffQualityIndex
+			## so we add that value to the total DQI
+			self.diffQualityMargin += game.getDiffQualMargin()
+			if(game.Lost() != True):	
+				## so long as we didnt lose the game, we will get a nonzero
+				## value for WQI and PQI, varying depending on the game stats
+				## and whether the game was a win or a tie
+				if(game.Won()):
+					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
+					self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
+				elif(game.Tied()):
+					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
+					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
+		self.averageWinQualityIndex /= float(self.totalSeasonGames)
+		self.averagePlayQualityIndex /= float(self.totalSeasonGames)
+		
+		self.oldDiffQualityIndex /= float(self.totalSeasonGames)	
+		## once we've calculated the total WQI & PQI, divy them over the total
+		## games played in that season to get an average
+
+		
+	def loadTierIII(self, teamsList, madeRealPlayoffs, debugInfo=False):	
+		if(debugInfo):
+			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+		
+		self.realPlayoffs = madeRealPlayoffs
+		
+		self.calculateMaValues(teamsList)
+		## send the list of team objects for this season off so we can get our
+		## mean adjusted values	
 		
 	def loadTierIV(self, teamsList, seasonsList):
 		print "Bad call to Team.loadTierIV"		
@@ -121,6 +228,16 @@ class Team(object):
 	def getSeasonId(self):
 		## ie '2016' or 'fall2015'
 		return self.seasonId	
+		
+		
+	def getSeasonGames(self):
+		return self.seasonGames
+		
+	def getPlayoffGames(self):
+		if(self.qualifiedForPlayoffs()):	
+			return self.playoffGames	
+		else:
+			return []
 		
 	def getSeasonGoalsForAverage(self):
 		return float(self.seasonTotalGoalsFor)/float(self.totalSeasonGames)
@@ -405,10 +522,16 @@ class Team(object):
 
 
 	def getSQI(self):
-		return (self.getMaADiffQI() - self.getCPQI() )
+		return (self.oldDiffQualityIndex - self.getCPQI() )
 
 	def getCPQI(self):
 		return (self.getMaAOQI() + self.getMaADQI())
+
+	def getDQM(self):
+		return self.diffQualityMargin
+
+	def getFrontBackSplit(self):
+		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI))
 
 	## Tier IV #################################################################
 	

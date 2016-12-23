@@ -135,6 +135,8 @@ if(__name__ == "__main__"):
 
 def generateHistogram(xlabel, ylabel, title, values, output_path, output_directory, output_filename, subplot_col, subplot_row, subplot_no, minShow='foo', maxShow='bar', binCount=39):
 	
+	nVal = len(values)
+	
 	plotMax = 60.0
 	
 	if(minShow == 'foo'):
@@ -204,7 +206,7 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	## label our axes like good students
-	title_ = "%s\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f, Skewness %.3f, Kurtosis %.3f" % (title, distMean, distMedian, distVar, getSkewness(values), getAdjustedKurtosis(values))
+	title_ = "%s, n = %i\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f, Skewness %.3f, Kurtosis %.3f" % (title, nVal, distMean, distMedian, distVar, getSkewness(values), getAdjustedKurtosis(values))
 	plt.title(title_)
 	## an' title it
 	print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)
@@ -279,6 +281,8 @@ def getLinearModelDeltas(x_values, y_values, k=1.0, l=1.0):
 	
 def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
+	n=len(x_values)
+	
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
@@ -324,7 +328,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	plt.ylabel(ylabel)
 	## label our axes like good students
 	
-	title = "%s, r^2 = %f, p = %f (k*m)x + (l*b)" % (title, r_square, p_value)
+	title = "%s, n=%i, r^2 = %f, p = %f (k*m)x + (l*b)" % (title, n, r_square, p_value)
 	plt.title(title, size=10)
 	## an' title it
 	

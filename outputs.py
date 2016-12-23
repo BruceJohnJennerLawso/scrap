@@ -11,17 +11,87 @@ from graphtools import *
 from statRetrieve import *
 
 import sys  
-
+import time
 
 	##reload(sys)  
 	##sys.setdefaultencoding('utf8')
 
 	## this was useful at some point
 
+
+def printTitleBox(text, debugInfo=False):
+	
+	textLength = len(text)
+	trailingLength = 80 - (3 + textLength + 1)
+	
+	if(debugInfo):
+		for i in range(0, len(text)):
+			print i, text[i]
+	
+	print "#"*80
+	print "##", text, "#"*trailingLength
+	print "#"*80, "\n"
+
+def clearTerminal():
+	## Clears the screen
+	##if(x>0):
+	##	for i in range(0, (x-1)):
+	##		print "\n",
+	sys.stdout.write("\x1b[2J\x1b[H");
+
+def printProgressBar(x, outOf, openSlotChar, filledSlotChar, outputWidthCap=80):
+	outputLines = 1
+	
+	lastLineWidth = outOf
+	if(lastLineWidth > (outputWidthCap -2)):
+		##print "output range %i exceeds one line, going bigger" % lastLineWidth
+		while(lastLineWidth > (outputWidthCap -2)):
+			lastLineWidth -= (outputWidthCap -2)
+			outputLines += 1
+	
+	lineWidths = []
+	for i in range(1, outputLines+1):
+		if(i == outputLines):
+			## we hit our last line, so it might be slightly shorter
+			## than the previous ones
+			lineWidths.append(lastLineWidth)
+		else:
+			lineWidths.append(outputWidthCap -2)
+	lines = []
+		
+	count = x	
+		
+	for line in lineWidths:
+		lineString = "["
+		for i in range(line):
+			if(count > 0):
+				lineString += filledSlotChar
+				count -= 1
+			else:
+				lineString += openSlotChar
+		lineString += "]"
+		lines.append(lineString)
+	for line in lines:
+		print line
+	##print outputLines			
+
+
+def displayLoadingFrame(feedbackText, currentlyLoaded, total, openSlotChar, filledSlotChar):
+	clearTerminal()
+	printProgressBar(currentlyLoaded, total, openSlotChar, filledSlotChar)
+	print "\n", feedbackText
+	
 def getAllSeasons(leagueId, levelId='null'):
 	## returns a list of every season listed in our manifest file
 	## loaded completely with team Objects
 	seasons = []
+	
+	
+	total = 0
+	currentlyLoaded = 0
+	
+	envString = "%s, %s" % (leagueId, levelId)
+	
 	
 	if(leagueId != 'watMu'):
 		
@@ -29,8 +99,18 @@ def getAllSeasons(leagueId, levelId='null'):
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league
 				## (nhl)
+				earlyReader = csv.reader(foo)
+				for row in earlyReader:
+					total += 1
+				print "total ", total
+			
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+				## open the manifest csv file for this particular league
+				## (nhl)
 				reader = csv.reader(foo)
 				for row in reader:
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
+					
 					## open the first season id in a row (formatted like termYYYY)
 					seasonId = row[0]
 					idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
@@ -46,14 +126,25 @@ def getAllSeasons(leagueId, levelId='null'):
 						
 							## no idea why the ids are stored one deep
 					seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
+					
+					currentlyLoaded = len(seasons)
+					print "currentlyLoaded, ", currentlyLoaded
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")	
 		except IOError:
 			print "Catching unusual argument %s" % levelId
-			try:
+			## a year was passed as argument instead of a season spread
+			## list name
+			if(True):
+				
+				currentlyLoaded = 0
+				total = 1
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
+				print "idPath ",idPath 
 				## open the list of team ids stored for that particular season in
 				## another csv file
 				teamIdList = []
@@ -65,18 +156,32 @@ def getAllSeasons(leagueId, levelId='null'):
 						## stuff the ids into a list
 					
 						## no idea why the ids are stored one deep
+				print "finished creating teamIdList from %s" % idPath
 				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
-			except IOError:
-				print "Unable to make levelId argument %s work, failing" % levelId
+				print "finished appending seasons from idlist"
+				currentlyLoaded += 1
+				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
+			##except IOError:
+			##	print "Unable to make levelId argument %s work, failing" % levelId
+			##	return []
 			
 	else:
-		
+		## our league is watMu here
 		try:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:			
+				## open the manifest csv file for this particular league
+				## (watMu)
+				earlyReader = csv.reader(foo)
+				for row in earlyReader:
+					total += 1
+				print "total ", total
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league & level
 				## (waterloo intramurals and beginner...)
 				reader = csv.reader(foo)
 				for row in reader:
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
+					
 					## open the first season id in a row (formatted like termYYYY)
 					seasonId = row[0]
 					idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, levelId, seasonId)
@@ -92,15 +197,26 @@ def getAllSeasons(leagueId, levelId='null'):
 						
 							## no idea why the ids are stored one deep
 					seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
+					currentlyLoaded = len(seasons)
+					print "currentlyLoaded, ", currentlyLoaded
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 		except IOError:
 			if(True):
 				seasonId = levelId
-				for lev in ['beginner', 'intermediate', 'advanced', 'allstar']:
+				
+				watMuLevels = ['beginner', 'intermediate', 'advanced', 'allstar']
+				
+				total = len(watMuLevels)
+				for lev in watMuLevels:
+					
 					try:
-						idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)
+						clearTerminal()
+						printProgressBar(currentlyLoaded, total, " ", "#")
+						
+						idPath = "./data/%s/%s/%s/teamId.csv" % (leagueId, lev, seasonId)					
 						## open the list of team ids stored for that particular season in
 						## another csv file
 						teamIdList = []
@@ -113,20 +229,27 @@ def getAllSeasons(leagueId, levelId='null'):
 								
 								## no idea why the ids are stored one deep
 						seasons.append(watMuSeason(leagueId, lev, seasonId, teamIdList, True))
+						currentlyLoaded += 1
 					except IOError:
 						print "Unable to find level %s for %s, skipping" % (lev, seasonId)
+					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 			##except IOError:
 			##	print "Unable to make levelId argument %s work, failing" % levelId
 			##	return seasons
+	
+	currentlyLoaded = 0
+	total = len(seasons)
 	for season in seasons:
+		displayLoadingFrame("loadTierIV for season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, "#", "*")
 		season.loadTierIV(seasons)
+		currentlyLoaded += 1
+	clearTerminal()
+	displayLoadingFrame("loadTierIV for season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, "#", "*")
+	time.sleep(1)		
+	## briefly pause here so we can see that the hashes are all gone * for nhl
 	return seasons
 
 
-if(__name__ == "__main__"):
-	seasons = getAllSeasons('watMu', 'beginner')
-	demoStatContainer(seasons, 'watMu', 'beginner') 
-	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')
 
 def getFranchiseList(leagueId, levelId):
 	## returns a list of every season
@@ -159,6 +282,7 @@ def getFranchiseList(leagueId, levelId):
 
 def graphTeams(leagueId, levelId, playoffTeamsOnly, dependents, independents):
 	for depie in dependents:
+		## SHUT UP YOURE A TERRIBLE VARIABLE NAME
 		for indie in independents:
 			plotScatterplot(indie.getShortStatName(), depie.getShortStatName(), '%s\nby %s\nfor %s, %s' % (depie.getLongStatName(), indie.getLongStatName(), leagueId, levelId), indie.getStat(playoffTeamsOnly), depie.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, depie.getShortStatName()), '%s' % indie.getShortStatName(), '%s_by_%s.png' % (depie.getShortStatName(), indie.getShortStatName()))		
 			## wow, that was quick
@@ -254,3 +378,12 @@ def plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, variableToPr
 	
 	seabornHeatmap(dataPanda, './results', '%s/%s/%sBy' % (leagueId, levelId, variableToPredict), 'AllPlayoffTeams_%s_ModelDelta_Heatmap_%s_%s.png' % (variables[0].getShortStatName(), leagueId, levelId))
 
+
+
+if(__name__ == "__main__"):
+	##for i in range(192):
+	##	printProgressBar(i, 192)
+	
+	seasons = getAllSeasons('nhl', 'everything')
+	##demoStatContainer(seasons, 'watMu', 'beginner') 
+	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')

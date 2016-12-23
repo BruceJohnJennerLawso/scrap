@@ -7,8 +7,10 @@
 from statContainer import *
 
 	
-def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId):
-	print statCall
+def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, debugInfo=False):
+	
+	if(debugInfo):
+		print statCall
 	
 	statValues = []
 	teamIds = []
@@ -24,7 +26,8 @@ def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId):
 			years.append(team.seasonId)
 			madePlayoffs.append(team.madeRealPlayoffs())
 	container = statContainer(shortName, longName, statValues, teamIds, teamNames, years, madePlayoffs)
-	container.printContainer() 	
+	if(debugInfo):
+		container.printContainer() 	
 	return container
 	
 

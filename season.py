@@ -14,6 +14,9 @@ class Season(Team):
 		self.leagueId = leagueId
 		self.levelId = levelId
 	
+	def getSeasonId(self):
+		return self.seasonId
+	
 	def getTotalNumberOfTeams(self):
 		## total teams in the league playing this season
 		return len(self.Teams)
@@ -47,3 +50,27 @@ class Season(Team):
 			if(team.getTeamName() == teamName):
 				return team
 		print "Unable to find team, no team with name %s found" % teamName	
+
+	def getTeamStatAverage(self, statName):
+		output = 0.00
+		
+		for team in self.Teams:
+			output += statName(team)
+		output /= float(len(self.Teams))
+		return output
+		
+	def getTeamStatList(self, statName):
+		output = []
+		
+		for team in self.Teams:
+			output.append(statName(team))
+		return output		
+		
+	def getTeamsAboveOneGoalCutoff(self):
+		output = 0
+		for team in self.Teams:
+			if(team.getCPQI() > 0.987):
+			## 0.987 instead of 1.0 , since we want to ignore the possible
+			## effect of one bad game (ie 1/82 lower than 1)	
+				output += 1
+		return output

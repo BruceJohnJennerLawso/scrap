@@ -29,10 +29,12 @@ if(__name__ == "__main__"):
 	seasonIndexList = getSeasonIndexList(leagueId)
 	
 	for season in seasons:
-		if(teamNames == 0):
-			print "################################################################################"
-			print season.seasonId, "###########################################################################"
-			print "################################################################################\n"		
+		if(teamNames == 0):	
+			
+			title = season.seasonId
+			if(leagueId == "watMu"):
+				title += ", " + season.levelId
+			printTitleBox(title)
 			for team in season.Teams:
 				print team.getDescriptionString(), "\n"
 		
@@ -41,3 +43,9 @@ if(__name__ == "__main__"):
 				for team in season.Teams:
 					if(team.getTeamName() == teamName):
 						print team.getDescriptionString(), "\n"			
+						##i = 1
+						##print team.getSeasonGames()
+						##for gm in team.getSeasonGames():
+						##	print "game no %i," % i, gm.Layers[0], "\nOQI %.3f, DQI %.3f, DiffQI %.3f, True Diff %.3f, DiffQualOverDiff %.3f" % (gm.offenceQualityIndex, gm.defenceQualityIndex, gm.diffQualityIndex, gm.getGoalDifferential(), gm.getDiffQualMargin())
+						##	i += 1
+						

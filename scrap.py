@@ -9,7 +9,7 @@ import watMuScraper
 import nhlScraper
 	
 def scrapeListedTeams(debugInfo, leagueId, levelId):
-	if(leagueId == 'nhl'):
+	if((leagueId == 'nhl')or(leagueId == 'wha')):
 		## everything else besides watMu teams
 		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 			reader = csv.reader(foo)
