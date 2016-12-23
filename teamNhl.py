@@ -416,7 +416,7 @@ if(__name__ == "__main__"):
 	##daBuds = nhlTeam('nhl', '2016', 'TOR')
 	##daSharks = nhlTeam('nhl', '2016', 'SJS')
 	
-	fuckTampa = nhlTeam('nhl', '2015', 'TBL', True)
+	fuckTampa = nhlTeam('wha', '1978', 'SVT', True)
 	## quick test to make sure everything is loading correctly
 	print fuckTampa.getTotalPlayoffGames()
 	print fuckTampa.getTotalPlayoffWins()

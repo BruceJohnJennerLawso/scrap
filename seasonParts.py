@@ -87,7 +87,10 @@ class seasonPart(object):
 		if(not playoffGames):
 			for game in self.seasonGames:
 				output += statName(game)
-			output /= float(len(self.seasonGames))
+			if(len(self.seasonGames) != 0):
+				output /= float(len(self.seasonGames))
+			else:
+				output = 0.000
 		return output
 		
 	def getTotalForStat(self, statName, playoffGames=False):
