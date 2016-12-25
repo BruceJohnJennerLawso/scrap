@@ -384,6 +384,21 @@ if(__name__ == "__main__"):
 	##for i in range(192):
 	##	printProgressBar(i, 192)
 	
-	seasons = getAllSeasons('nhl', 'everything')
+	leagueId = 'nhl'
+	levelId = 'the60s'
+	
+	seasons = getAllSeasons(leagueId, levelId)
 	##demoStatContainer(seasons, 'watMu', 'beginner') 
-	foo = getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, 'watMu', 'allstar')
+	foo = getStatContainer(Team.getSeasonGoalDifferentialAverage, 'AveragePlusMinus', 'Average Plus Minus', seasons, leagueId, levelId)
+	bar = getStatContainer(Team.getCPQI, 'CPQI', 'Combined Play Quality Index', seasons, leagueId, levelId)
+	##foo.printReverseSortedContainer()
+	diffContainer = foo.getModelDiffs(bar)
+	diffContainer.printReverseSortedContainer()
+	
+	
+	
+	
+	
+	
+	
+	
