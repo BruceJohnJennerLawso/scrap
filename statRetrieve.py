@@ -31,7 +31,7 @@ def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, 
 	return container
 	
 
-def getModelDiffContainer(independentStatCall, independentShortName, independentLongName, dependentStatCall, dependentShortName, dependentLongName):
+def getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortName, independentLongName, dependentStatCall, dependentShortName, dependentLongName, debugInfo=False):
 	
 	if(debugInfo):
 		print "Independent: %s, " % (independentLongName), independentStatCall
@@ -61,6 +61,6 @@ def getModelDiffContainer(independentStatCall, independentShortName, independent
 	
 	modelDiffsContainer = independentContainer.getModelDiffs(dependentContainer)
 	
-	return container	
+	return modelDiffsContainer	
 
 

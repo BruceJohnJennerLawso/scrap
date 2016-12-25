@@ -6,8 +6,6 @@
 from sys import argv
 from outputs import *
 
-
-
 if(__name__ == "__main__"):
 		
 	leagueId = argv[1]

@@ -385,7 +385,7 @@ if(__name__ == "__main__"):
 	##	printProgressBar(i, 192)
 	
 	leagueId = 'nhl'
-	levelId = 'the60s'
+	levelId = 'the40s'
 	
 	seasons = getAllSeasons(leagueId, levelId)
 	##demoStatContainer(seasons, 'watMu', 'beginner') 
