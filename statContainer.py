@@ -6,19 +6,20 @@
 
 
 class statContainer:
-	def __init__(self, statNameShort, statNameLong, statList, teamIdList, teamNameList, yearList, madePlayoffs):
+	def __init__(self, statNameShort, statNameLong, statList, teamIdList, teamNameList, yearList, madePlayoffs, *otherStatLists):
 		self.statNameShort = statNameShort
 		self.statNameLong = statNameLong
 		
 		self.dataPoints = []
 		for i in range(0, len(statList)):
-			self.dataPoints.append([statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]])
-			self.dataPoints = sorted(self.dataPoints, key=lambda list: list[1])
-			self.dataPoints = sorted(self.dataPoints, key=lambda list: list[2])
-			self.dataPoints = sorted(self.dataPoints, key=lambda list: list[3])
-			self.dataPoints = sorted(self.dataPoints, key=lambda list: list[4])
-			## this ensuring that the teams should have the same order every
-			## time
+			statRow = [statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]]
+			self.dataPoints.append(statRow)
+		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[1])
+		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[2])
+		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[3])
+		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[4])
+		## this ensuring that the teams should have the same order every
+		## time
 
 	def getShortStatName(self):
 		return self.statNameShort
