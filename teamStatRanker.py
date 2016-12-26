@@ -42,3 +42,4 @@ if(__name__ == "__main__"):
 		stat.printSortedContainer(playoffTeamsOnly)
 	elif(sortOrder == 'desc'):
 		stat.printReverseSortedContainer(playoffTeamsOnly)
+	stat.printStatBounds(playoffTeamsOnly)

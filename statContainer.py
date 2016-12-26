@@ -70,6 +70,9 @@ class statContainer:
 			else:
 				print "%.3f " % i[0], i[1:]
 		print "]"				
+	
+	def printStatBounds(self, onlyPlayoffTeams=False):
+		print "[%.3f, %.3f]" % (min(self.getStat(onlyPlayoffTeams)), max(self.getStat(onlyPlayoffTeams)))
 		
 	def getStat(self, onlyPlayoffTeams=False):
 		output = []

@@ -59,18 +59,18 @@ def getStatInformation(targetStatName):
 
 def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	
-	statNames = ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "CPQI", "POT", "PDT", "PGDT"]
+	statNames = ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "DQM", "CPQI", "POT", "PDT", "PGDT"]
 	
 	try:
 		statCall, shortStatName, longStatName = getStatInformation(targetStatName)
 		return getStatContainer(statCall, shortStatName, longStatName, seasons, leagueId, levelId)
 	except TypeError:
-		targetStatName.rsplit('*')[0]
-		targetStatName.rsplit('*')[1]
+		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
+		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
 		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
 			## wordy, but its a rather specific requirement
-			dependentStatCall, dependentShortStatName, dependentLongStatName = getStatInformation(targetStatName.rsplit('*')[1])
-			independentStatCall, independentShortStatName, independentLongStatName = getStatInformation(targetStatName.rsplit('*')[0])
+			dependentStatCall, dependentShortStatName, dependentLongStatName = getStatInformation(targetStatName.rsplit('*')[0])
+			independentStatCall, independentShortStatName, independentLongStatName = getStatInformation(targetStatName.rsplit('*')[1])
 			return getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortStatName, independentLongStatName, dependentStatCall, dependentShortStatName, dependentLongStatName)
 		else:
 			print "Stat name %s not found, available options are:\n\n" % targetStatName
