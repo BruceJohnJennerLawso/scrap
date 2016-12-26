@@ -45,7 +45,11 @@ if(__name__ == "__main__"):
 	##			print "%i,%.3f" % (int(season.seasonId),team.getCPQI())
 
 	independent = statSelect.getTargetStatContainer(independentStat, seasons, leagueId, levelId)
+	print "Independent"
+	independent.printStatBounds()
 	dependent = statSelect.getTargetStatContainer(dependentStat, seasons, leagueId, levelId)
+	print "Dependent"
+	dependent.printStatBounds()
 	for var in [independent, dependent]:
 		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(playoffTeamsOnly),'./results/%s/%s/histograms' % (leagueId, levelId), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
 	plotScatterplot(independent.getShortStatName(), dependent.getShortStatName(), '%s\nby %s\nfor %s, %s' % (dependent.getLongStatName(), independent.getLongStatName(), leagueId, levelId), independent.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % independent.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), independent.getShortStatName()))		
