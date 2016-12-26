@@ -228,7 +228,7 @@ class nhlTeam(Team):
 			## exception if one of the indexes is still -1 (we never found it)
 			## but it gonna crash hard in that case anyways
 			
-			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
+			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex], seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		
 		
@@ -289,7 +289,7 @@ class nhlTeam(Team):
 				## need to define who the home team was here based on whether there
 				## was an @ or an H
 			
-				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex]))
+				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex], seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
 				## set up each game as a nhlGame object in memory
 		
 		
