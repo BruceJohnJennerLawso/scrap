@@ -94,6 +94,18 @@ class seasonPart(object):
 			else:
 				output = 0.000
 		return output
+		
+	def getAverageForRelStat(self, statName, teamsList, playoffGames=False):
+		output = 0.0
+		
+		if(not playoffGames):
+			for game in self.seasonGames:
+				output += statName(game, teamsList)
+			if(len(self.seasonGames) != 0):
+				output /= float(len(self.seasonGames))
+			else:
+				output = 0.000
+		return output		
 	
 	def getPointsPercentage(self, seasonIndex, playoffGames=False):
 		output = 0.0

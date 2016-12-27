@@ -1,7 +1,7 @@
 ## game.py #####################################################################
 ## object representing all of the data known about a given game ################
 ################################################################################
-
+import seasonParts
 
 class Game(object):
 	def __init__(self, comparisonSelectCondition, seasonIndex):
