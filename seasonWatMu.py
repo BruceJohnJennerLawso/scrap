@@ -149,12 +149,16 @@ class watMuSeason(Season):
 				## we reached the bottom of the league, no more brackets to crawl
 			
 		
+		awqiMean = 	self.getTeamStatAverage(Team.getAWQI)
+		apqiMean = self.getTeamStatAverage(Team.getAPQI)
+		adiffqiMean = self.getTeamStatAverage(Team.getADiffQI)
+		
 		for team in self.Teams:
 			
 			if(team.getSeasonRank() in self.topPlayoffBracket):
-				team.loadTierIII(self.Teams, True)
+				team.loadTierIII(self.Teams, True, awqiMean, apqiMean, adiffqiMean)
 			else:
-				team.loadTierIII(self.Teams, False)
+				team.loadTierIII(self.Teams, False, awqiMean, apqiMean, adiffqiMean)
 			## load the stats that depend on the tier II stats of other
 			## teams (usually adjusting stats for the season mean)
 		##for team in self.Teams:

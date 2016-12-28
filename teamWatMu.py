@@ -47,7 +47,7 @@ class watMuTeam(Team):
 			self.seasonTotalGoalsFor += game.getGoalsFor()
 			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
 			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned()
+			self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
 			
 			if(game.Won()):
 				self.seasonWins += 1
@@ -98,7 +98,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in seasonData:
-			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		if(debugInfo):
 			print "seasonData: "
@@ -154,7 +154,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in playoffData:
-			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6])))
+			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 
 		if(debugInfo):
@@ -230,7 +230,7 @@ class watMuTeam(Team):
 		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
+		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
 		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
 		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())

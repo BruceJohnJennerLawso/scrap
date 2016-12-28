@@ -25,7 +25,7 @@ class watMuGame(Game):
 	def cloneGame(self, newCompSelectConditions="noChange"):
 		if(type(newCompSelectConditions) == str):
 			newCompSelectConditions = self.getComparisonConditions()
-		return watMuGame(self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getSOC(), self.getOpponentName(), newCompSelectConditions)
+		return watMuGame(self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getSOC(), self.getOpponentName(), newCompSelectConditions, self.seasonIndex)
 
 		
 	def setSOC(self, newValue):
@@ -57,7 +57,7 @@ class watMuGame(Game):
 		else:
 			return False
 		
-	def getPointsEarned(self):
+	def getPointsEarned(self, seasonIndex):
 		## this needs to be defined on a league by league basis, since not all
 		## leagues actually score points the same way, ie Euro leagues with
 		## 3 point system
@@ -73,7 +73,7 @@ class watMuGame(Game):
 	def getMaxPointsPossible(self):
 		return 2
 		
-	def getPercentageOfGamePointsEarned(self):
+	def getPercentageOfGamePointsEarned(self, seasonIndex):
 		if(self.Won()):
 			return 1.000
 		elif(self.Tied()):
