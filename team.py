@@ -386,14 +386,14 @@ class Team(object):
 		## if this (self) team lost, they get 0.000. If they won, they get
 		## the goal differential (always positive) * opponents points percentage
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getWinQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getWinQualityIndex)
 		
 	def getAPQI(self):
 		## exact same calculation as AWQI, with one small change:
 		## the win quality index is the goal differential * opponent pts pct *
 		## the game closeness index of the game
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getPlayQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getPlayQualityIndex)
 		
 	def getSeasonRank(self):
 		## what position in the standings this team had after we sort by
@@ -413,7 +413,7 @@ class Team(object):
 		## seem to indicate that this (self) team has a good (quality) offence
 		## that can "get it done" against a good defensive team
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getTotalForRelStat(game.Game.getOffenceQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getOffenceQualityIndex)
 				
 	def getDefenceQualityIndex(self):
 		## converse to offence quality index, defence quality is the goals
@@ -424,17 +424,17 @@ class Team(object):
 		## good qualities as negative values, we now want it to be positive for
 		## good defensive teams 
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getTotalForRelStat(game.Game.getDefenceQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getDefenceQualityIndex)
 		
 	def getAOQI(self):
 		## self.AOQI-leagueMean.AOQI
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOffenceQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOffenceQualityIndex)
 		
 	def getADQI(self):
 		## dont corsi and drive kids
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getDefenceQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getDefenceQualityIndex)
 
 		
 	def getDiffQualityIndex(self):
@@ -525,7 +525,7 @@ class Team(object):
 
 	def getOldDiffQualityIndex(self):
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOldDiffQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getSQI(self):
 		return (self.getOldDiffQualityIndex() - self.getCPQI() )
@@ -535,10 +535,10 @@ class Team(object):
 
 	def getDQM(self):
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
-		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOldDiffQualityIndex, self.leagueTeamsList)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getFrontBackSplit(self):
-		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(game.Game.getCPQI, self.leagueTeamsList) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(game.Game.getCPQI, self.leagueTeamsList))
+		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI))
 
 	## Tier IV #################################################################
 	

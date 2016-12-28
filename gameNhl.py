@@ -26,6 +26,8 @@ class nhlGame(Game):
 		if(type(newCompSelectConditions) == str):
 			newCompSelectConditions = self.getComparisonConditions()
 		return nhlGame(self.getDate(), self.getLocation()[0], self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getThisTeamName(), self.getExtraTimeString(), newCompSelectConditions, self.seasonIndex)
+		## location gets modified in the object, so only the first
+		## character in the location string is passed to the new object
 	
 	def getGameDescription(self, teamsList=[]):
 		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
