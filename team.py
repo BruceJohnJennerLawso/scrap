@@ -404,15 +404,9 @@ class Team(object):
 		## if we score more goals in this game than the expectation, it would
 		## seem to indicate that this (self) team has a good (quality) offence
 		## that can "get it done" against a good defensive team
-		return self.offenceQualityIndex
-	
-	def getAOQI(self):
-		return self.getOffenceQualityIndex()/float(self.getSeasonGamesTotal())
-		## been meaning to do this, allows for comparison between teams that
-		## played seasons of different lengths
-		
-		## in other words, this is "Average goals above expectations per game"
-		
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getTotalForRelStat(game.Game.getOffenceQualityIndex, self.leagueTeamsList)
+				
 	def getDefenceQualityIndex(self):
 		## converse to offence quality index, defence quality is the goals
 		## allowed by this (self) team, **below** the expectation, based on the
@@ -421,11 +415,19 @@ class Team(object):
 		## this convention is changed from the original version, which had
 		## good qualities as negative values, we now want it to be positive for
 		## good defensive teams 
-		return self.defenceQualityIndex
-
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getTotalForRelStat(game.Game.getDefenceQualityIndex, self.leagueTeamsList)
+		
+	def getAOQI(self):
+		## self.AOQI-leagueMean.AOQI
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOffenceQualityIndex, self.leagueTeamsList)
+		
 	def getADQI(self):
-		return self.getDefenceQualityIndex()/float(self.getSeasonGamesTotal())
-		## ie "Average goals below expectations per game"
+		## dont corsi and drive kids
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getDefenceQualityIndex, self.leagueTeamsList)
+
 		
 	def getDiffQualityIndex(self):
 		return self.diffQualityIndex
@@ -494,15 +496,6 @@ class Team(object):
 		## self.APQI-leagueMean.AWQI
 		return self.meanAdjustedAveragePlayQualityIndex
 
-	def getMaAOQI(self):
-		## self.AOQI-leagueMean.AOQI
-		return self.meanAdjustedAverageOffenceQualityIndex
-		
-	def getMaADQI(self):
-		## dont corsi and drive kids
-		
-		## self.ADQI-leagueMean.ADQI
-		return self.meanAdjustedAverageDefenceQualityIndex
 
 	def getODQSplit(self):
 		return (self.getMaAOQI() - self.getMaADQI())
@@ -521,14 +514,19 @@ class Team(object):
 	## Its pronounced "Mah-Quee" in case you were wondering 
 
 
+	def getOldDiffQualityIndex(self):
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOldDiffQualityIndex, self.leagueTeamsList)
+
 	def getSQI(self):
-		return (self.oldDiffQualityIndex - self.getCPQI() )
+		return (self.getOldDiffQualityIndex() - self.getCPQI() )
 
 	def getCPQI(self):
-		return (self.getMaAOQI() + self.getMaADQI())
+		return (self.getAOQI() + self.getADQI())
 
 	def getDQM(self):
-		return self.diffQualityMargin
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getOldDiffQualityIndex, self.leagueTeamsList)
 
 	def getFrontBackSplit(self):
 		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(game.Game.getCPQI, self.leagueTeamsList) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(game.Game.getCPQI, self.leagueTeamsList))

@@ -120,13 +120,22 @@ class seasonPart(object):
 				output = 0.000
 		return output
 		
-		
-		
+
 	def getTotalForStat(self, statName, playoffGames=False):
 		output = 0.0
 		
 		if(not playoffGames):
 			for game in self.seasonGames:
 				output += statName(game)
+		
+		return output
+		
+		
+	def getTotalForRelStat(self, statName, teamsList, playoffGames=False):
+		output = 0.0
+		
+		if(not playoffGames):
+			for game in self.seasonGames:
+				output += statName(game, teamsList)
 		
 		return output
