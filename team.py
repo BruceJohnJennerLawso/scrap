@@ -163,40 +163,46 @@ class Team(object):
 					print '\n'
 				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 
-			self.offenceQualityIndex += game.getOffenceQualityIndex()
+			##self.offenceQualityIndex += game.getOffenceQualityIndex()
 			## for each game the OQI is goals scored above expectations, so we
 			## add that value to the total OQI
-			self.defenceQualityIndex += game.getDefenceQualityIndex()
+			##self.defenceQualityIndex += game.getDefenceQualityIndex()
 			## and for each game, the DQI is goals allowed below expectations,
-			self.diffQualityIndex += game.getDiffQualityIndex()
-			self.oldDiffQualityIndex += game.oldDiffQualityIndex
+			##self.diffQualityIndex += game.getDiffQualityIndex()
+			##self.oldDiffQualityIndex += game.oldDiffQualityIndex
 			## so we add that value to the total DQI
-			self.diffQualityMargin += game.getDiffQualMargin()
-			if(game.Lost() != True):	
+			##self.diffQualityMargin += game.getDiffQualMargin()
+			##if(game.Lost() != True):	
 				## so long as we didnt lose the game, we will get a nonzero
 				## value for WQI and PQI, varying depending on the game stats
 				## and whether the game was a win or a tie
-				if(game.Won()):
-					self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
-					self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
-				elif(game.Tied()):
-					self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
-					self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
-		self.averageWinQualityIndex /= float(self.totalSeasonGames)
-		self.averagePlayQualityIndex /= float(self.totalSeasonGames)
+			##	if(game.Won()):
+			##		self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
+			##		self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
+			##	elif(game.Tied()):
+			##		self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
+			##		self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
+		##self.averageWinQualityIndex /= float(self.totalSeasonGames)
+		##self.averagePlayQualityIndex /= float(self.totalSeasonGames)
 		
 		self.oldDiffQualityIndex /= float(self.totalSeasonGames)	
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
+	def getLeagueTeamsList(self):
+		return self.leagueTeamsList
+
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs, debugInfo=False):	
+	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, adiffqiMean, debugInfo=False):	
 		if(debugInfo):
 			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		
 		self.realPlayoffs = madeRealPlayoffs
-		
-		self.calculateMaValues(teamsList)
+		if(debugInfo):
+			print "Calculating Ma values"
+		self.calculateMaValues(teamsList, awqiMean, apqiMean, adiffqiMean)
+		if(debugInfo):
+			print "Finished calculating Ma values"
 		## send the list of team objects for this season off so we can get our
 		## mean adjusted values	
 		
@@ -379,13 +385,15 @@ class Team(object):
 		## schedule. The win quality index for a game is calculated as follows:
 		## if this (self) team lost, they get 0.000. If they won, they get
 		## the goal differential (always positive) * opponents points percentage
-		return self.averageWinQualityIndex
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getWinQualityIndex)
 		
 	def getAPQI(self):
 		## exact same calculation as AWQI, with one small change:
 		## the win quality index is the goal differential * opponent pts pct *
 		## the game closeness index of the game
-		return self.averagePlayQualityIndex
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getPlayQualityIndex)
 		
 	def getSeasonRank(self):
 		## what position in the standings this team had after we sort by
@@ -404,15 +412,9 @@ class Team(object):
 		## if we score more goals in this game than the expectation, it would
 		## seem to indicate that this (self) team has a good (quality) offence
 		## that can "get it done" against a good defensive team
-		return self.offenceQualityIndex
-	
-	def getAOQI(self):
-		return self.getOffenceQualityIndex()/float(self.getSeasonGamesTotal())
-		## been meaning to do this, allows for comparison between teams that
-		## played seasons of different lengths
-		
-		## in other words, this is "Average goals above expectations per game"
-		
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getOffenceQualityIndex)
+				
 	def getDefenceQualityIndex(self):
 		## converse to offence quality index, defence quality is the goals
 		## allowed by this (self) team, **below** the expectation, based on the
@@ -421,11 +423,19 @@ class Team(object):
 		## this convention is changed from the original version, which had
 		## good qualities as negative values, we now want it to be positive for
 		## good defensive teams 
-		return self.defenceQualityIndex
-
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getDefenceQualityIndex)
+		
+	def getAOQI(self):
+		## self.AOQI-leagueMean.AOQI
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOffenceQualityIndex)
+		
 	def getADQI(self):
-		return self.getDefenceQualityIndex()/float(self.getSeasonGamesTotal())
-		## ie "Average goals below expectations per game"
+		## dont corsi and drive kids
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getDefenceQualityIndex)
+
 		
 	def getDiffQualityIndex(self):
 		return self.diffQualityIndex
@@ -444,40 +454,15 @@ class Team(object):
 	## Tier III ################################################################
 
 
-	def calculateMaValues(self, teamsList):
+	def calculateMaValues(self, teamsList, awqiMean, apqiMean, adiffqiMean):
 		## take our values for awqi, apqi, aoqi, adqi, and adjust them relative
 		## to the mean of the league
-		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
-		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
-		
-		self.meanAdjustedAverageOffenceQualityIndex = self.getAOQI()
-		self.meanAdjustedAverageDefenceQualityIndex = self.getADQI()
-		
+		self.meanAdjustedAverageWinQualityIndex = self.getAWQI()
+		self.meanAdjustedAveragePlayQualityIndex = self.getAPQI()
 		self.meanAdjustedAverageDiffQualityIndex = self.getADiffQI()
-		
-		awqiMean = 0.000
-		apqiMean = 0.000
-		aoqiMean = 0.000
-		adqiMean = 0.000
-		adiffqiMean = 0.000
-		
-		for team in teamsList:
-			awqiMean += team.getAWQI()
-			apqiMean += team.getAPQI()
-			aoqiMean += team.getAOQI()
-			adqiMean += team.getADQI()
-			adiffqiMean += team.getADiffQI()
 			
-		awqiMean /= float(len(teamsList))
-		apqiMean /= float(len(teamsList))
-		aoqiMean /= float(len(teamsList))
-		adqiMean /= float(len(teamsList))
-		adiffqiMean /= float(len(teamsList))		
-		
 		self.meanAdjustedAverageWinQualityIndex -= awqiMean
 		self.meanAdjustedAveragePlayQualityIndex -= apqiMean
-		self.meanAdjustedAverageOffenceQualityIndex -= aoqiMean
-		self.meanAdjustedAverageDefenceQualityIndex -= adqiMean
 		self.meanAdjustedAverageDiffQualityIndex -= adiffqiMean
 
 
@@ -494,15 +479,6 @@ class Team(object):
 		## self.APQI-leagueMean.AWQI
 		return self.meanAdjustedAveragePlayQualityIndex
 
-	def getMaAOQI(self):
-		## self.AOQI-leagueMean.AOQI
-		return self.meanAdjustedAverageOffenceQualityIndex
-		
-	def getMaADQI(self):
-		## dont corsi and drive kids
-		
-		## self.ADQI-leagueMean.ADQI
-		return self.meanAdjustedAverageDefenceQualityIndex
 
 	def getODQSplit(self):
 		return (self.getMaAOQI() - self.getMaADQI())
@@ -521,14 +497,19 @@ class Team(object):
 	## Its pronounced "Mah-Quee" in case you were wondering 
 
 
+	def getOldDiffQualityIndex(self):
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
+
 	def getSQI(self):
-		return (self.oldDiffQualityIndex - self.getCPQI() )
+		return (self.getOldDiffQualityIndex() - self.getCPQI() )
 
 	def getCPQI(self):
-		return (self.getMaAOQI() + self.getMaADQI())
+		return (self.getAOQI() + self.getADQI())
 
 	def getDQM(self):
-		return self.diffQualityMargin
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getFrontBackSplit(self):
 		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI))

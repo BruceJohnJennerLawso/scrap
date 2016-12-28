@@ -52,7 +52,7 @@ if(__name__=="__main__"):
 	## ie 'nhl' or 'watMu'
 
 	levelId = argv[2]
-	scrapeListedTeams(False, leagueId, levelId)
+	scrapeListedTeams(True, leagueId, levelId)
 
 	
 

@@ -1,14 +1,19 @@
 ## game.py #####################################################################
 ## object representing all of the data known about a given game ################
 ################################################################################
-
+import seasonParts
 
 class Game(object):
-	def __init__(self):
+	def __init__(self, comparisonSelectCondition, seasonIndex):
 		self.Layers = []
 		## list of lists, with each list containing stats computed for that
 		## layer
 		self.layerCount = 0
+		self.comparisonSelectCondition = comparisonSelectCondition
+		self.seasonIndex = seasonIndex
+		
+	def getComparisonConditions(self):
+		return self.comparisonSelectCondition	
 		
 	def addLayer(self, data):
 		self.Layers.append(data)
@@ -65,18 +70,67 @@ class Game(object):
 		
 	## TierII statistics per game ##############################################
 	
+	def getOpponent(self):
+		return self.opponent
+		
+	def getWinQualityIndex(self):
+		output = 0.000
+		
+		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getPointsPercentage(self.seasonIndex)
+		if(self.Lost() != True):	
+			## so long as we didnt lose the game, we will get a nonzero
+			## value for WQI and PQI, varying depending on the game stats
+			## and whether the game was a win or a tie
+			if(self.Won()):
+				output += (self.getGoalDifferential()*opponentPointsPct) 
+			elif(self.Tied()):
+				output += (opponentPointsPct)	
+		return output
+	
+	def getPlayQualityIndex(self):
+		output = 0.000
+		
+		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getPointsPercentage(self.seasonIndex)
+		if(self.Lost() != True):	
+			## so long as we didnt lose the game, we will get a nonzero
+			## value for WQI and PQI, varying depending on the game stats
+			## and whether the game was a win or a tie
+			if(self.Won()):
+				output += (self.getGoalDifferential()*opponentPointsPct*self.getGameClosenessIndex()) 
+			elif(self.Tied()):
+				output += (opponentPointsPct*self.getGameClosenessIndex())	
+		return output
+	
+	def getDefenceQualityIndex(self):
+		output = 0.000	
+		opponentOffence = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsFor)
+		output += (opponentOffence - self.getGoalsAgainst())
+		return output
+
+	def getOffenceQualityIndex(self):
+		output = 0.000
+		
+		opponentDefence = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsAgainst)
+		output += (self.getGoalsFor() - opponentDefence)
+		return output
+		
+	def getDiffQualityIndex(self):
+		output = 0.000
+		
+		opponentGoalDiff = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalDifferential)
+		output += (self.getGoalsFor() - (-opponentGoalDiff))
+		return output	
+		
+	def getOldDiffQualityIndex(self):
+		output = 0.000
+		
+		opponentGoalDiff = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalDifferential)
+		output += (self.getGoalsFor() - opponentGoalDiff)
+		return output			
+	
+	
 	def loadTierII(self, teamsList, thisTeamRank):
-		self.winQualityIndex = 0.000
-		self.playQualityIndex = 0.000
 		
-		self.defenceQualityIndex = 0.000
-		self.offenceQualityIndex = 0.000		
-		
-		self.diffQualityIndex = 0.000
-		
-		self.seasonRank = thisTeamRank+1
-		## team rank is the index of this team after sorting based on the watMu
-		## standings criteria
 		
 		opponentFound = False			
 		## start off by looking for our opponents object in the list of
@@ -85,7 +139,7 @@ class Game(object):
 			if(team.getTeamName() == self.getOpponentName()):
 				opponent = team
 				opponentFound = True
-				break
+				self.opponent = opponent
 				## once we find our team, assign it, and break outa here
 					
 				## shouldnt ever be two teams with the same name... I hope
@@ -99,12 +153,34 @@ class Game(object):
 					print team.getTeamName(),
 				print '\n'
 			raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
-
-		self.offenceQualityIndex = (self.getGoalsFor()-opponent.getSeasonGoalsAgainstAverage())
+		
+		self.winQualityIndex = 0.000
+		self.playQualityIndex = 0.000
+		
+		self.defenceQualityIndex = 0.000
+		self.offenceQualityIndex = 0.000		
+		
+		self.diffQualityIndex = 0.000
+		
+		self.seasonRank = thisTeamRank+1
+		## team rank is the index of this team after sorting based on the watMu
+		## standings criteria
+		
+		
+		opponent = self.getOpponent()
+		
+		##self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getPointsPercentage(self.seasonIndex)
+		
+		self.opponentSeasonDefence = opponent.getSeasonGoalsAgainstAverage()
+		self.opponentSeasonOffence = opponent.getSeasonGoalsForAverage()
+		self.opponentSeasonPointsPct = opponent.getPointsPercentage()
+		
+		self.offenceQualityIndex = (self.getGoalsFor()-self.opponentSeasonDefence)
 		## for each game the OQI is goals scored above expectations, so we
 		## add that value to the total OQI
-		self.defenceQualityIndex = (opponent.getSeasonGoalsForAverage()-self.getGoalsAgainst())
+		self.defenceQualityIndex = (self.opponentSeasonOffence-self.getGoalsAgainst())
 		## and for each game, the DQI is goals allowed below expectations,
+		## ie the goals prevented above expectations
 		self.diffQualityIndex = (self.getGoalDifferential()-(-opponent.getSeasonGoalDifferentialAverage()))
 		self.oldDiffQualityIndex = (self.getGoalDifferential()-(opponent.getSeasonGoalDifferentialAverage()))		
 		## so we add that value to the total DQI
@@ -113,31 +189,30 @@ class Game(object):
 			## value for WQI and PQI, varying depending on the game stats
 			## and whether the game was a win or a tie
 			if(self.Won()):
-				self.winQualityIndex = (self.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
-				self.playQualityIndex = (self.getGoalDifferential()*opponent.getSeasonPointsTotal()*self.getGameClosenessIndex()) 					
+				self.winQualityIndex = (self.getGoalDifferential()*self.opponentSeasonPointsPct) 
+				self.playQualityIndex = (self.getGoalDifferential()*self.opponentSeasonPointsPct*self.getGameClosenessIndex()) 					
 			elif(self.Tied()):
-				self.winQualityIndex = (opponent.getSeasonPointsTotal())
-				self.playQualityIndex = (opponent.getSeasonPointsTotal()*self.getGameClosenessIndex())						
+				self.winQualityIndex = (self.opponentSeasonPointsPct)
+				self.playQualityIndex = (self.opponentSeasonPointsPct*self.getGameClosenessIndex())						
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 	
-	def getWinQualityIndex(self):
-		return self.winQualityIndex
+	##def getWinQualityIndex(self):
+	##	return self.winQualityIndex
 	
-	def getPlayQualityIndex(self):
-		return self.playQualityIndex
+	##def getPlayQualityIndex(self):
+	##	return self.playQualityIndex
 		
-	def getOffenceQualityIndex(self):
-		return self.offenceQualityIndex
+	##def getOffenceQualityIndex(self):
+	##	return self.offenceQualityIndex
 		
-	def getDefenceQualityIndex(self):
-		return self.defenceQualityIndex
+	##def getDefenceQualityIndex(self):
+	##	return self.defenceQualityIndex
 	
 	def getCPQI(self):
-		return (self.offenceQualityIndex + self.defenceQualityIndex)
+		return (self.getOffenceQualityIndex() + self.getDefenceQualityIndex())
 		
-	def getDiffQualityIndex(self):
-		return self.diffQualityIndex
+
 
 	def getDiffQualMargin(self):
-		return (self.getDiffQualityIndex()-self.getGoalDifferential())
+		return (self.getCPQI()-self.getGoalDifferential())

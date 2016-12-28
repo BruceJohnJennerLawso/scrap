@@ -8,21 +8,35 @@ from game import *
 
 
 class nhlGame(Game):
-	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, opponentName, thisTeamName, gameEndedIn):
-		super(nhlGame, self).__init__()
-		
+	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, opponentName, thisTeamName, gameEndedIn, comparisonSelectCondition, seasonIndex):
 		if(Location == '@'):
 			gameLocation = '@%s_%s' % (opponentName, dateString)
 		elif(Location == 'H'):
 			gameLocation = '@%s_%s' % (thisTeamName, dateString)
+		##print "Location, ", Location
+		super(nhlGame, self).__init__(comparisonSelectCondition, seasonIndex)
+		
 		## gonna use this to track back to what barn the game
 		## would have been played in
 		
 		self.addLayer([dateString, gameLocation, gameResult, goalsFor, goalsAgainst, thisTeamName, opponentName, gameEndedIn])
 		self.layerCount += 1
+
+	def cloneGame(self, newCompSelectConditions="noChange"):
+		if(type(newCompSelectConditions) == str):
+			newCompSelectConditions = self.getComparisonConditions()
+		return nhlGame(self.getDate(), self.getLocation()[0], self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getThisTeamName(), self.getExtraTimeString(), newCompSelectConditions, self.seasonIndex)
+		## location gets modified in the object, so only the first
+		## character in the location string is passed to the new object
 	
-	def getGameDescription(self):
-		return "%s %s %s %s %i-%i %s %s" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
+	def getGameDescription(self, teamsList=[]):
+		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(teamsList), self.getDefenceQualityIndex(teamsList), self.getDiffQualMargin(teamsList), self.getCPQI(teamsList))
+		if(len(teamsList) > 0):
+			opponent = self.getOpponent(teamsList)
+			output += opponent.getDescriptionString()
+			output += "\n\n"
+		return output
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]
@@ -98,5 +112,21 @@ class nhlGame(Game):
 					## been played yet, no points are earned
 			
 
-
-
+	def getMaxPointsPossible(self):
+		return 2
+		
+	def getPercentageOfGamePointsEarned(self, seasonIndex):
+		if(self.decidedInExtraTime() and (seasonIndex <= 82)):
+			if(self.Won()):
+				return 0.666
+			elif(self.Tied()):
+				return 0.500
+			else:
+				return 0.333			
+		else:
+			if(self.Won()):
+				return 1.000
+			elif(self.Tied()):
+				return 0.500
+			else:
+				return 0.000

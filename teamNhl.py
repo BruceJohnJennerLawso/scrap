@@ -228,7 +228,7 @@ class nhlTeam(Team):
 			## exception if one of the indexes is still -1 (we never found it)
 			## but it gonna crash hard in that case anyways
 			
-			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex]))
+			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex], seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		
 		
@@ -289,7 +289,7 @@ class nhlTeam(Team):
 				## need to define who the home team was here based on whether there
 				## was an @ or an H
 			
-				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex]))
+				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex], seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
 				## set up each game as a nhlGame object in memory
 		
 		
@@ -321,8 +321,11 @@ class nhlTeam(Team):
 			if(debugInfo):
 				for p in self.Roster:
 					print p, '\n'
-		
+		if(debugInfo):
+			print "Calculating Tier I stats"
 		self.calculateTierIStats()			
+		if(debugInfo):
+			print "Finished calculating Tier I stats"
 
 	## Tier IV load call ######################################################
 
@@ -340,11 +343,11 @@ class nhlTeam(Team):
 		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "MaADQI %.3f, MaAOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getMaADQI(), self.getMaAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
+		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
 		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus) 
 		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
-		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
+		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getFrontBackSplit())
 		return output	
 		## I need to make a list of differences between this desc string and
 		## the watMu version

@@ -31,3 +31,36 @@ def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, 
 	return container
 	
 
+def getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortName, independentLongName, dependentStatCall, dependentShortName, dependentLongName, debugInfo=False):
+	
+	if(debugInfo):
+		print "Independent: %s, " % (independentLongName), independentStatCall
+		print "Dependent: %s, " % (dependentLongName), dependentStatCall		
+		
+	
+	independentStatValues = []
+	dependentStatValues = []	
+	teamIds = []
+	teamNames = []
+	years = []
+	madePlayoffs = []
+
+	for season in seasons:
+		for team in season.Teams:
+			independentStatValues.append(independentStatCall(team))
+			dependentStatValues.append(dependentStatCall(team))	
+			teamIds.append(team.getTeamId())
+			teamNames.append(team.getTeamName())
+			years.append(team.seasonId)
+			madePlayoffs.append(team.madeRealPlayoffs())
+	independentContainer = statContainer(independentShortName, independentLongName, independentStatValues, teamIds, teamNames, years, madePlayoffs)
+	dependentContainer = statContainer(dependentShortName, dependentLongName, dependentStatValues, teamIds, teamNames, years, madePlayoffs)	
+	if(debugInfo):
+		independentContainer.printContainer()
+		dependentContainer.printContainer()		 	
+	
+	modelDiffsContainer = independentContainer.getModelDiffs(dependentContainer)
+	
+	return modelDiffsContainer	
+
+

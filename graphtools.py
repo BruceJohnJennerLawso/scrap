@@ -119,17 +119,17 @@ def snapToNearestTen(value):
 	
 	return output
 
-if(__name__ == "__main__"):
-	import random
+##if(__name__ == "__main__"):
+##	import random
+##	
+##	for i in range(0, 50):
+##		val = random.random()*100.0
+##		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'
+##	for i in range(0, 50):
+##		val = random.random()*-100.0
+##		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'	
 	
-	for i in range(0, 50):
-		val = random.random()*100.0
-		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'
-	for i in range(0, 50):
-		val = random.random()*-100.0
-		print "Value %f, rounded to nearest ten, %f" % (val, snapToNearestTen(val)), '\n'	
-	
-	print "Value %f, rounded to nearest ten, %f" % (89.99, snapToNearestTen(89.99)), '\n'		
+##	print "Value %f, rounded to nearest ten, %f" % (89.99, snapToNearestTen(89.99)), '\n'		
 	
 		
 
@@ -277,7 +277,49 @@ def getLinearModelDeltas(x_values, y_values, k=1.0, l=1.0):
 		modelDelta = y_values[i] - y_model[i]
 		modelDeltas.append(modelDelta)
 	return modelDeltas
+
+
+
+
+def getGraphBounds(values, snapToNearest=10):
+	lower = min(values)
+	upper = max(values)
 	
+	mid = (float(lower+ upper))/2.0
+	
+	def sign(value):
+		return value/abs(value)
+		## if its negative we get -1, if positive it outputs 1
+		
+		## I guess the type will be determined by the original value
+
+	def snapAwayFrom(value, mid, snapToNearest=10):
+		newValue = int(math.ceil(value /float(snapToNearest)))*snapToNearest
+		if(abs(newValue - mid) < abs(value - mid)):
+			## our value that we determined is actually closer to the
+			## midpoint than the original one, presumably because the
+			## negative lower bound ended up getting rounded upwards
+			newValue -= snapToNearest
+		
+		if(abs(newValue-min(values)) <= 0.2*snapToNearest):
+			## if we have a value within 20% of our tick away from the
+			## edge of the boundary, thats a bit too close for comfort,
+			## so we tick it one more away
+			newValue += snapToNearest*sign(value-mid)
+			## this is to compensate for values that fall exactly on the
+			## edge, or ones that are a wee bit too close for comfort
+		
+		return newValue
+			
+	lower = snapAwayFrom(lower, mid, snapToNearest)
+	upper = snapAwayFrom(upper, mid, snapToNearest)	
+	return (lower, upper)
+
+if(__name__ == "__main__"):
+	testValues = [3.583, -7.99]
+	lower, upper = getGraphBounds(testValues)
+	print testValues
+	print "[%.3f, %.3f]" % (lower, upper)
 	
 def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
@@ -286,17 +328,17 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	if(minShow == 'foo'):
 		## if we dont get anything for a manual max min, just set our max and
 		## min values for the graph range from the data
-		minShow = float(int(min(x_values)))	
-		maxShow = float(int(max(x_values))+1)	
+		##minShow = float(int(min(x_values)))	
+		##maxShow = float(int(max(x_values))+1)	
+		minShow, maxShow = getGraphBounds(x_values)
 		
-		
-		
-	minY = float(int(min(y_values)))*1.2
-	if(min(y_values) < 0):
-		minY = float(int(min(y_values))-1)*1.2
-	maxY = float(int(max(y_values)))*1.2
-	if(max(y_values) < 1):
-		maxY = float(int(max(y_values))+1)*1.2
+	minY, maxY = getGraphBounds(y_values, 5)	
+	##minY = float(int(min(y_values)))*1.2
+	##if(min(y_values) < 0):
+	##	minY = float(int(min(y_values))-1)*1.2
+	##maxY = float(int(max(y_values)))*1.2
+	##if(max(y_values) < 1):
+	##	maxY = float(int(max(y_values))+1)*1.2
 	
 		
 	print "minShow %f, maxShow %f, Y min %f, Y max %f" % (minShow, maxShow, minY, maxY)			

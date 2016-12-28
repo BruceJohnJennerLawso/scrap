@@ -7,8 +7,8 @@
 from game import *
 
 class watMuGame(Game):
-	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName):
-		super(watMuGame, self).__init__()
+	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName, comparisonSelectCondition, seasonIndex):
+		super(watMuGame, self).__init__(comparisonSelectCondition, seasonIndex)
 		self.addLayer([dateString, Location, gameResult, goalsFor, goalsAgainst, SOC, opponentName])
 		self.layerCount += 1
 
@@ -21,6 +21,12 @@ class watMuGame(Game):
 		
 		## typically a negative correlation between this and everything that
 		## shows a good team, because nobody usually hates on teams that suck
+
+	def cloneGame(self, newCompSelectConditions="noChange"):
+		if(type(newCompSelectConditions) == str):
+			newCompSelectConditions = self.getComparisonConditions()
+		return watMuGame(self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getSOC(), self.getOpponentName(), newCompSelectConditions, self.seasonIndex)
+
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue
@@ -51,7 +57,7 @@ class watMuGame(Game):
 		else:
 			return False
 		
-	def getPointsEarned(self):
+	def getPointsEarned(self, seasonIndex):
 		## this needs to be defined on a league by league basis, since not all
 		## leagues actually score points the same way, ie Euro leagues with
 		## 3 point system
@@ -64,3 +70,13 @@ class watMuGame(Game):
 			## regardless of whether we lost or the game hasnt been played yet,
 			## no points are earned
 	
+	def getMaxPointsPossible(self):
+		return 2
+		
+	def getPercentageOfGamePointsEarned(self, seasonIndex):
+		if(self.Won()):
+			return 1.000
+		elif(self.Tied()):
+			return 0.500
+		else:
+			return 0.000			

@@ -1,0 +1,33 @@
+scrap console
+10% season windows sigma for CPQI
+standard to string function for floats ints
+stat comparison ability for season parts
+downgoesbrown diff stat
+check qqplot linearity to determine best model fit
+conversion of date & time strings to MJD values
+Corrected NHL points percentages
+Website prompt fot teamSummary teamStatRanker
+AGCI Scatterplot axes dont set correctly
+Migration to game spread object containers
+have scraper save csvs by dropping unplayed lines
+Coaches WOWY ratings
+Windows support
+Have console scripts print an example command on failure
+Different Players with the same name
+Player summary stats count same seasons as a full season in the average
+calculation
+Scale point marker size by plot point density
+try to write a basic scraper for IMLeagues
+1992 Flyers W/L/T & Point totals are incorrect
+NHL playoff success is incomplete
+Franchise classification
+Time tracking of readata.py
+Autogenerate html pages to view graphs in bulk
+3d plots
+proper full franchise recognition
+level transition competitiveness benchmarks
+write a style guide
+Waterloo is going to imleagues
+player numbers not fully listed for teams before 1951
+Multiple apps, scrapers
+expand to cover other intramural leagues

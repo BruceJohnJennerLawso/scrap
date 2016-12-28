@@ -3,6 +3,8 @@
 ## season, and the stats that can be associated with those games ###############
 ################################################################################
 import distStats
+import gameWatMu
+import gameNhl
 
 class gamesSelectConditions(object):
 	def __init__(self, part="regularSeason", fractionOfWhole=-1, startGameNumber=-1, endGameNumber=-1):
@@ -60,8 +62,8 @@ class seasonPart(object):
 	def __init__(self, seasonGames, playoffGames, seasonGameConditions=gamesSelectConditions(), playoffGameConditions=gamesSelectConditions()):
 		self.seasonGameConditions = seasonGameConditions
 		self.playoffGameConditions = playoffGameConditions
-		self.seasonGames = self.seasonGameConditions.getGamesList(seasonGames)
-		self.playoffGames = self.playoffGameConditions.getGamesList(playoffGames)
+		self.seasonGames = self.seasonGameConditions.getGamesList([gm.cloneGame(seasonGameConditions) for gm in seasonGames])
+		self.playoffGames = self.playoffGameConditions.getGamesList([gm.cloneGame(playoffGameConditions) for gm in playoffGames])
 		## take the original list of games for this season and run it through
 		## the seasonSelectConditions object
 
@@ -92,7 +94,22 @@ class seasonPart(object):
 			else:
 				output = 0.000
 		return output
+			
+	
+	def getPointsPercentage(self, seasonIndex, playoffGames=False):
+		output = 0.0
+		ceiling = 0.0
+		if(not playoffGames):
+			for game in self.seasonGames:
+				output += game.getPointsEarned(seasonIndex)
+				ceiling += game.getMaxPointsPossible()
+			if(len(self.seasonGames) != 0):
+				output /= float(ceiling)
+			else:
+				output = 0.000
+		return output
 		
+
 	def getTotalForStat(self, statName, playoffGames=False):
 		output = 0.0
 		
@@ -101,3 +118,5 @@ class seasonPart(object):
 				output += statName(game)
 		
 		return output
+		
+
