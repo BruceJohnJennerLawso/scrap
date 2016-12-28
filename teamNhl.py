@@ -321,8 +321,11 @@ class nhlTeam(Team):
 			if(debugInfo):
 				for p in self.Roster:
 					print p, '\n'
-		
+		if(debugInfo):
+			print "Calculating Tier I stats"
 		self.calculateTierIStats()			
+		if(debugInfo):
+			print "Finished calculating Tier I stats"
 
 	## Tier IV load call ######################################################
 

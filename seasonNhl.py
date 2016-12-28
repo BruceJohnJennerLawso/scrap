@@ -5,7 +5,8 @@
 from teamNhl import *
 from season import *
 
-
+def debugInfoSwitch():
+	return False
 
 
 class nhlSeason(Season):
@@ -25,7 +26,7 @@ class nhlSeason(Season):
 			## work through the team ids list and construct nhlTeam
 			## objects using each teamId in the list, and append it into
 			## the list of teams
-			self.Teams.append(nhlTeam(leagueId, seasonId, teamId))
+			self.Teams.append(nhlTeam(leagueId, seasonId, teamId, debugInfo=debugInfoSwitch()))
 		
 
 		if(sortTeams == True):
@@ -43,10 +44,10 @@ class nhlSeason(Season):
 			## are probably rare
 
 		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team))
+			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
 			
 		for team in self.Teams:
-			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs())
+			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), debugInfoSwitch())
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:

@@ -189,14 +189,20 @@ class Team(object):
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
+	def getLeagueTeamsList(self):
+		return self.leagueTeamsList
+
 		
 	def loadTierIII(self, teamsList, madeRealPlayoffs, debugInfo=False):	
 		if(debugInfo):
 			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		
 		self.realPlayoffs = madeRealPlayoffs
-		
+		if(debugInfo):
+			print "Calculating Ma values"
 		self.calculateMaValues(teamsList)
+		if(debugInfo):
+			print "Finished calculating Ma values"
 		## send the list of team objects for this season off so we can get our
 		## mean adjusted values	
 		
@@ -379,13 +385,15 @@ class Team(object):
 		## schedule. The win quality index for a game is calculated as follows:
 		## if this (self) team lost, they get 0.000. If they won, they get
 		## the goal differential (always positive) * opponents points percentage
-		return self.averageWinQualityIndex
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getWinQualityIndex, self.leagueTeamsList)
 		
 	def getAPQI(self):
 		## exact same calculation as AWQI, with one small change:
 		## the win quality index is the goal differential * opponent pts pct *
 		## the game closeness index of the game
-		return self.averagePlayQualityIndex
+		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		return self.getSeasonPart(gameConditions).getAverageForRelStat(game.Game.getPlayQualityIndex, self.leagueTeamsList)
 		
 	def getSeasonRank(self):
 		## what position in the standings this team had after we sort by
@@ -449,8 +457,8 @@ class Team(object):
 	def calculateMaValues(self, teamsList):
 		## take our values for awqi, apqi, aoqi, adqi, and adjust them relative
 		## to the mean of the league
-		self.meanAdjustedAverageWinQualityIndex = self.averageWinQualityIndex
-		self.meanAdjustedAveragePlayQualityIndex = self.averagePlayQualityIndex
+		self.meanAdjustedAverageWinQualityIndex = self.getAWQI()
+		self.meanAdjustedAveragePlayQualityIndex = self.getAPQI()
 		
 		self.meanAdjustedAverageOffenceQualityIndex = self.getAOQI()
 		self.meanAdjustedAverageDefenceQualityIndex = self.getADQI()
@@ -463,12 +471,13 @@ class Team(object):
 		adqiMean = 0.000
 		adiffqiMean = 0.000
 		
-		for team in teamsList:
-			awqiMean += team.getAWQI()
-			apqiMean += team.getAPQI()
-			aoqiMean += team.getAOQI()
-			adqiMean += team.getADQI()
-			adiffqiMean += team.getADiffQI()
+		##for team in teamsList:
+			##awqiMean += team.getAWQI()
+			##apqiMean += team.getAPQI()
+			##aoqiMean += team.getAOQI()
+			##adqiMean += team.getADQI()
+			##adiffqiMean += team.getADiffQI()
+			
 			
 		awqiMean /= float(len(teamsList))
 		apqiMean /= float(len(teamsList))

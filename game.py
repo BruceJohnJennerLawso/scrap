@@ -71,27 +71,7 @@ class Game(object):
 	## TierII statistics per game ##############################################
 	
 	def getOpponent(self, teamsList):
-		opponentFound = False			
-		## start off by looking for our opponents object in the list of
-		## teams that we were given to search
-		for team in teamsList:
-			if(team.getTeamName() == self.getOpponentName()):
-				opponent = team
-				opponentFound = True
-				return opponent
-				## once we find our team, assign it, and break outa here
-					
-				## shouldnt ever be two teams with the same name... I hope
-					
-		if(opponentFound == False):
-			## we wanna blow everything up here so that we can start
-			## debugging the problem 
-			if(debugInfo):
-				print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
-				for team in teamsList:
-					print team.getTeamName(),
-				print '\n'
-			raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
+		return self.opponent
 		
 	def getWinQualityIndex(self, teamsList):
 		output = 0.000
@@ -157,6 +137,30 @@ class Game(object):
 	
 	
 	def loadTierII(self, teamsList, thisTeamRank):
+		
+		
+		opponentFound = False			
+		## start off by looking for our opponents object in the list of
+		## teams that we were given to search
+		for team in teamsList:
+			if(team.getTeamName() == self.getOpponentName()):
+				opponent = team
+				opponentFound = True
+				self.opponent = opponent
+				## once we find our team, assign it, and break outa here
+					
+				## shouldnt ever be two teams with the same name... I hope
+					
+		if(opponentFound == False):
+			## we wanna blow everything up here so that we can start
+			## debugging the problem 
+			if(debugInfo):
+				print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
+				for team in teamsList:
+					print team.getTeamName(),
+				print '\n'
+			raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
+		
 		self.winQualityIndex = 0.000
 		self.playQualityIndex = 0.000
 		

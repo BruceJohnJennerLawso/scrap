@@ -13,7 +13,7 @@ class nhlGame(Game):
 			gameLocation = '@%s_%s' % (opponentName, dateString)
 		elif(Location == 'H'):
 			gameLocation = '@%s_%s' % (thisTeamName, dateString)
-		print "Location, ", Location
+		##print "Location, ", Location
 		super(nhlGame, self).__init__(comparisonSelectCondition, seasonIndex)
 		
 		## gonna use this to track back to what barn the game
@@ -27,8 +27,14 @@ class nhlGame(Game):
 			newCompSelectConditions = self.getComparisonConditions()
 		return nhlGame(self.getDate(), self.getLocation()[0], self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getThisTeamName(), self.getExtraTimeString(), newCompSelectConditions, self.seasonIndex)
 	
-	def getGameDescription(self):
-		return "%s %s %s %s %i-%i %s %s" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
+	def getGameDescription(self, teamsList=[]):
+		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(teamsList), self.getDefenceQualityIndex(teamsList), self.getDiffQualMargin(teamsList), self.getCPQI(teamsList))
+		if(len(teamsList) > 0):
+			opponent = self.getOpponent(teamsList)
+			output += opponent.getDescriptionString()
+			output += "\n\n"
+		return output
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]

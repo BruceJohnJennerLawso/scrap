@@ -112,7 +112,7 @@ class seasonPart(object):
 		ceiling = 0.0
 		if(not playoffGames):
 			for game in self.seasonGames:
-				output += game.getPointsEarned()
+				output += game.getPointsEarned(seasonIndex)
 				ceiling += game.getMaxPointsPossible()
 			if(len(self.seasonGames) != 0):
 				output /= float(ceiling)
