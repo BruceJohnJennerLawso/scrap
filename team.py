@@ -193,14 +193,14 @@ class Team(object):
 		return self.leagueTeamsList
 
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs, debugInfo=False):	
+	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, adiffqiMean, debugInfo=False):	
 		if(debugInfo):
 			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		
 		self.realPlayoffs = madeRealPlayoffs
 		if(debugInfo):
 			print "Calculating Ma values"
-		self.calculateMaValues(teamsList)
+		self.calculateMaValues(teamsList, awqiMean, apqiMean, adiffqiMean)
 		if(debugInfo):
 			print "Finished calculating Ma values"
 		## send the list of team objects for this season off so we can get our
@@ -454,41 +454,15 @@ class Team(object):
 	## Tier III ################################################################
 
 
-	def calculateMaValues(self, teamsList):
+	def calculateMaValues(self, teamsList, awqiMean, apqiMean, adiffqiMean):
 		## take our values for awqi, apqi, aoqi, adqi, and adjust them relative
 		## to the mean of the league
 		self.meanAdjustedAverageWinQualityIndex = self.getAWQI()
 		self.meanAdjustedAveragePlayQualityIndex = self.getAPQI()
-		
-		self.meanAdjustedAverageOffenceQualityIndex = self.getAOQI()
-		self.meanAdjustedAverageDefenceQualityIndex = self.getADQI()
-		
 		self.meanAdjustedAverageDiffQualityIndex = self.getADiffQI()
-		
-		awqiMean = 0.000
-		apqiMean = 0.000
-		aoqiMean = 0.000
-		adqiMean = 0.000
-		adiffqiMean = 0.000
-		
-		##for team in teamsList:
-			##awqiMean += team.getAWQI()
-			##apqiMean += team.getAPQI()
-			##aoqiMean += team.getAOQI()
-			##adqiMean += team.getADQI()
-			##adiffqiMean += team.getADiffQI()
 			
-			
-		awqiMean /= float(len(teamsList))
-		apqiMean /= float(len(teamsList))
-		aoqiMean /= float(len(teamsList))
-		adqiMean /= float(len(teamsList))
-		adiffqiMean /= float(len(teamsList))		
-		
 		self.meanAdjustedAverageWinQualityIndex -= awqiMean
 		self.meanAdjustedAveragePlayQualityIndex -= apqiMean
-		self.meanAdjustedAverageOffenceQualityIndex -= aoqiMean
-		self.meanAdjustedAverageDefenceQualityIndex -= adqiMean
 		self.meanAdjustedAverageDiffQualityIndex -= adiffqiMean
 
 

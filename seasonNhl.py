@@ -46,8 +46,15 @@ class nhlSeason(Season):
 		for team in self.Teams:
 			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
 			
+			
+		awqiMean = 	self.getTeamStatAverage(Team.getAWQI)
+		apqiMean = self.getTeamStatAverage(Team.getAPQI)
+		adiffqiMean = self.getTeamStatAverage(Team.getADiffQI)
+		## this is a bit slow for modern era seasons, but acceptable
+		## enough given the benefits
+			
 		for team in self.Teams:
-			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), debugInfoSwitch())
+			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, adiffqiMean, debugInfoSwitch())
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:
