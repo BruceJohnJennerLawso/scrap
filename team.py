@@ -426,14 +426,16 @@ class Team(object):
 		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
 		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getDefenceQualityIndex)
 		
-	def getAOQI(self):
+	def getAOQI(self, gameConditions=[]):
 		## self.AOQI-leagueMean.AOQI
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		if(len(gameConditions) == 0):
+			gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOffenceQualityIndex)
 		
-	def getADQI(self):
+	def getADQI(self, gameConditions=[]):
 		## dont corsi and drive kids
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		if(len(gameConditions) == 0):
+			gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getDefenceQualityIndex)
 
 		
