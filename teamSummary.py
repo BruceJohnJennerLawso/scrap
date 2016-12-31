@@ -45,6 +45,6 @@ if(__name__ == "__main__"):
 						print team.getSeasonGames()
 						for gm in team.getSeasonGames():
 							##print "game no %i," % i, gm.Layers[0], "\nOQI %.3f, DQI %.3f, DiffQI %.3f, True Diff %.3f, DiffQualOverDiff %.3f" % (gm.offenceQualityIndex, gm.defenceQualityIndex, gm.diffQualityIndex, gm.getGoalDifferential(), gm.getDiffQualMargin())
-							print gm.getGameDescription(team.getLeagueTeamsList())
+							print gm.getGameDescription()
 							i += 1
 						

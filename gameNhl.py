@@ -29,13 +29,12 @@ class nhlGame(Game):
 		## location gets modified in the object, so only the first
 		## character in the location string is passed to the new object
 	
-	def getGameDescription(self, teamsList=[]):
+	def getGameDescription(self):
 		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
-		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(teamsList), self.getDefenceQualityIndex(teamsList), self.getDiffQualMargin(teamsList), self.getCPQI(teamsList))
-		if(len(teamsList) > 0):
-			opponent = self.getOpponent(teamsList)
-			output += opponent.getDescriptionString()
-			output += "\n\n"
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
+		output += self.opponent.getDescriptionString()
+		output += "\n\n"
+		
 		return output
 
 	def getThisTeamName(self):
