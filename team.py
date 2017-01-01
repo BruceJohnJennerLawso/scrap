@@ -163,28 +163,6 @@ class Team(object):
 					print '\n'
 				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 
-			##self.offenceQualityIndex += game.getOffenceQualityIndex()
-			## for each game the OQI is goals scored above expectations, so we
-			## add that value to the total OQI
-			##self.defenceQualityIndex += game.getDefenceQualityIndex()
-			## and for each game, the DQI is goals allowed below expectations,
-			##self.diffQualityIndex += game.getDiffQualityIndex()
-			##self.oldDiffQualityIndex += game.oldDiffQualityIndex
-			## so we add that value to the total DQI
-			##self.diffQualityMargin += game.getDiffQualMargin()
-			##if(game.Lost() != True):	
-				## so long as we didnt lose the game, we will get a nonzero
-				## value for WQI and PQI, varying depending on the game stats
-				## and whether the game was a win or a tie
-			##	if(game.Won()):
-			##		self.averageWinQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()) 
-			##		self.averagePlayQualityIndex += (game.getGoalDifferential()*opponent.getSeasonPointsTotal()*game.getGameClosenessIndex()) 					
-			##	elif(game.Tied()):
-			##		self.averageWinQualityIndex += (opponent.getSeasonPointsTotal())
-			##		self.averagePlayQualityIndex += (opponent.getSeasonPointsTotal()*game.getGameClosenessIndex())						
-		##self.averageWinQualityIndex /= float(self.totalSeasonGames)
-		##self.averagePlayQualityIndex /= float(self.totalSeasonGames)
-		
 		self.oldDiffQualityIndex /= float(self.totalSeasonGames)	
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average

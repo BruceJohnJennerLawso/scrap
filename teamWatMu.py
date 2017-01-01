@@ -24,10 +24,6 @@ class watMuTeam(Team):
 		
 	## Tier I load call ########################################################	
 	
-	
-	
-	
-
 	def calculateTierIStats(self, debugInfo=False):
 		self.seasonPlusMinus = 0
 		self.seasonTotalGoalsFor = 0
