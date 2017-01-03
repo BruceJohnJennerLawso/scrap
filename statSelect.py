@@ -10,12 +10,12 @@ from team import *
 def getStatInformation(targetStatName):
 	if(targetStatName == "PlusMinus"):
 		return (Team.getSeasonGoalDifferentialAverage, 'PlusMinus', 'Season Goal Differential')
-	elif(targetStatName == "MaADiffQI"):
-		return (Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Diff Quality Index')
-	elif(targetStatName == "MaAOQI"):
-		return (Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index')
-	elif(targetStatName == "MaADQI"):
-		return (Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index')	
+	elif(targetStatName == "ADiffQI"):
+		return (Team.getADiffQI, 'ADiffQI', 'Average Diff Quality Index')
+	elif(targetStatName == "AOQI"):
+		return (Team.getAOQI, 'AOQI', 'Average Offence Quality Index')
+	elif(targetStatName == "ADQI"):
+		return (Team.getADQI, 'ADQI', 'Average Defence Quality Index')	
 	elif(targetStatName == "AGCI"):
 		return (Team.getAGCI, 'AGCI', 'Average Game Closeness Index')	
 	elif(targetStatName == "OQI"):
@@ -59,7 +59,7 @@ def getStatInformation(targetStatName):
 
 def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	
-	statNames = ["PlusMinus", "MaADiffQI", "MaAOQI", "MaADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "DQM", "CPQI", "POT", "PDT", "PGDT"]
+	statNames = ["PlusMinus", "ADiffQI", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI", "MaAPQI", "Points", "Offence", "Defence", "SQI", "DQM", "CPQI", "POT", "PDT", "PGDT"]
 	
 	try:
 		statCall, shortStatName, longStatName = getStatInformation(targetStatName)
