@@ -55,7 +55,9 @@ class gamesSelectConditions(object):
 			return []		
 		## if we have an unrecognized condition this is going to crash hard
 	
-
+def getGameSelectConditions(description):
+	if(description == "completeSeason"):
+		return [seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]
 
 class seasonPart(object):
 	## base class constructor
@@ -82,41 +84,55 @@ class seasonPart(object):
 			game.loadTierII(teamsList, thisTeamRank)			
 		## I believe this should overwrite tierII stats for this season parts
 		## games when a different season game condition is used...
+	
+	def getGames(self, excludePlayoffGames=False):
+		if(excludePlayoffGames):
+			return self.seasonGames
+		else:
+			return self.seasonGames + self.playoffGames	
 		
-	def getAverageForStat(self, statName, playoffGames=False):
-		output = 0.0
+	def getTotalForStat(self, statName, playoffGames=False):
+		output = 0.000
+		games = self.getGames(not playoffGames)
 		
-		if(not playoffGames):
-			for game in self.seasonGames:
-				output += statName(game)
-			if(len(self.seasonGames) != 0):
-				output /= float(len(self.seasonGames))
-			else:
-				output = 0.000
+		for game in games:
+			output += statName(game)
+		
+		return output		
+		
+	def getAverageForStat(self, statName, playoffGames=True):
+		output = 0.000
+		games = self.getGames(not playoffGames)
+		
+		for game in games:
+			output += statName(game)
+		
+		if(len(games) != 0):
+			output /= float(len(games))
+		else:
+			output = 0.000
+		
 		return output
 			
 	
 	def getPointsPercentage(self, seasonIndex, playoffGames=False):
 		output = 0.0
 		ceiling = 0.0
-		if(not playoffGames):
-			for game in self.seasonGames:
-				output += game.getPointsEarned(seasonIndex)
-				ceiling += game.getMaxPointsPossible()
-			if(len(self.seasonGames) != 0):
-				output /= float(ceiling)
-			else:
-				output = 0.000
+		games = self.getGames(not playoffGames)
+		
+		
+		for game in games:
+			output += game.getPointsEarned(seasonIndex)
+			ceiling += game.getMaxPointsPossible()
+		
+		if(len(games) != 0):
+			output /= float(ceiling)
+		else:
+			output = 0.000
+		
 		return output
 		
 
-	def getTotalForStat(self, statName, playoffGames=False):
-		output = 0.0
-		
-		if(not playoffGames):
-			for game in self.seasonGames:
-				output += statName(game)
-		
-		return output
+
 		
 
