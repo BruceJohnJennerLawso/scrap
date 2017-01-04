@@ -25,39 +25,13 @@ class watMuTeam(Team):
 	## Tier I load call ########################################################	
 	
 	def calculateTierIStats(self, debugInfo=False):
-		self.seasonPlusMinus = 0
-		self.seasonTotalGoalsFor = 0
-		self.seasonTotalGoalsAgainst = 0	
-		
-		self.seasonPointsTotal = 0	
-		self.seasonWins = 0
-		self.seasonTies = 0
-		self.seasonLosses = 0
-		self.seasonGamesNotYetPlayed = 0
-		
-		self.averageGameClosenessIndex = 0
 		
 		self.averageSOC = 0	
 		for game in self.getSeasonGames():
 			self.averageSOC += game.getSOC()
-			self.seasonTotalGoalsFor += game.getGoalsFor()
-			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
-			self.seasonPlusMinus += game.getGoalDifferential()
-			##self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
 			
-			if(game.Won()):
-				self.seasonWins += 1
-			elif(game.Tied()):
-				self.seasonTies += 1
-			elif(game.Lost()):
-				self.seasonLosses += 1
-			elif(game.notYetPlayed()):
-				self.seasonGamesNotYetPlayed += 1
-			
-			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
 		if(debugInfo):	
 			print "Total season games %i" % self.totalSeasonGames
-		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
 		self.averageSOC /= float(self.totalSeasonGames)		
 
 		
@@ -227,7 +201,7 @@ class watMuTeam(Team):
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
 		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
-		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
+		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.getSeasonPlusMinus(), self.getSeasonAverageSOC()) 
 		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
 		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
@@ -300,7 +274,7 @@ class watMuTeam(Team):
 		return output
 
 	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
+		return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())
 		## typical hockey stat used for decades
 
 	def calculatePlayoffSuccessRating(self):

@@ -22,53 +22,6 @@ class nhlTeam(Team):
 		
 		
 	def calculateTierIStats(self):		
-		self.seasonPlusMinus = 0
-		## goal differential for the team overall
-		self.seasonTotalGoalsFor = 0
-		self.seasonTotalGoalsAgainst = 0	
-		## pretty self explanatory
-		self.seasonPointsTotal = 0
-		## 2 for a win, 1 for a tie/(ot/so) loss, 0 for a regulation loss
-		## (depending on whether the game was before or after 2002)
-		
-		## Thanks Bettman	
-		self.seasonWins = 0
-		self.seasonTies = 0
-		self.seasonRegulationLosses = 0
-		self.seasonExtraTimeLosses = 0
-		self.averageGameClosenessIndex = 0
-		
-		
-		## now that we have the season and playoff games loaded, we can make
-		## our totals/averages/what have you for tier I stats
-		for game in self.getSeasonGames():
-			
-			self.seasonTotalGoalsFor += game.getGoalsFor()
-			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
-			
-			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned()
-			
-			if(game.Won()):
-				self.seasonWins += 1
-			elif(game.Tied()):
-				self.seasonTies += 1
-			elif(game.Lost()):
-				if(game.decidedInExtraTime()):
-					self.seasonExtraTimeLosses += 1
-				else:
-					self.seasonRegulationLosses += 1
-			## this is such a mess, especially trying to print out a record
-			## string that makes sense across eras with this steaming pile of
-			## crap
-			
-			## again, really, thanks Bettman
-			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-			## see game module for more on this	
-
-		self.averageGameClosenessIndex /= float(self.totalSeasonGames)
-		## divy the GCI total over the games played for our average
-
 		
 		## now, we can quickly tally some stats for the playoffs, so we can
 		## do some graphing
@@ -344,7 +297,7 @@ class nhlTeam(Team):
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
 		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
-		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus) 
+		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.getSeasonPlusMinus()) 
 		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
 		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
@@ -407,7 +360,7 @@ class nhlTeam(Team):
 		return output
 
 	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonRegulationLosses, self.seasonExtraTimeLosses)
+		return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())
 		## I dont have the patience to do this right now, so this is only
 		## applicable for post 2005 lockout, with the shootout and loser point
 
