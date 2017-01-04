@@ -51,19 +51,19 @@ class Game(object):
 		## easy mode here	
 
 	def Won(self):
-		if(self.getGameResult() == 'won'):
+		if(self.getGameResult() in ['won', 'W']):
 			return True
 		else:
 			return False
 			
 	def Tied(self):
-		if(self.getGameResult() == 'tie'):
+		if(self.getGameResult() in ['tie', 'T']):
 			return True
 		else:
 			return False	
 			
 	def Lost(self):
-		if(self.getGameResult() == 'lost'):
+		if(self.getGameResult() in ['lost', 'L']):
 			return True
 		else:
 			return False
