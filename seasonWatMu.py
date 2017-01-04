@@ -68,6 +68,11 @@ class watMuSeason(Season):
 			## construct a team from each teamId, running the tierI
 			## load call automatically
 
+		for team in self.Teams:
+			team.loadTierII(self.Teams, self.Teams.index(team))
+			## calculate the stats for teams that depend on the stats of
+			## other teams in the league
+		
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
 			## be calculated from first tier data
@@ -78,12 +83,7 @@ class watMuSeason(Season):
 			## the standings page
 			
 			## highest priority stat at the end
-			
-
-		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team))
-			## calculate the stats for teams that depend on the stats of
-			## other teams in the league
+					
 		
 		self.topTeam = self.getTeamByPosition(1)
 		## next work through the teams this one played and add their position

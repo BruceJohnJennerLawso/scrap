@@ -40,7 +40,7 @@ class watMuGame(Game):
 		else:
 			return False
 		
-	def getPointsEarned(self, seasonIndex):
+	def getPointsEarned(self):
 		## this needs to be defined on a league by league basis, since not all
 		## leagues actually score points the same way, ie Euro leagues with
 		## 3 point system

@@ -43,7 +43,7 @@ class watMuTeam(Team):
 			self.seasonTotalGoalsFor += game.getGoalsFor()
 			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
 			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
+			##self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
 			
 			if(game.Won()):
 				self.seasonWins += 1
@@ -230,14 +230,13 @@ class watMuTeam(Team):
 		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
 		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
-		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
-		output += "Defence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsAgainst))
-		output += "Offence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsFor), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsFor), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsFor))		
+		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
+		output += "Defence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getGoalsAgainst))
+		output += "Offence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getGoalsFor))		
 
-		output += "Rel Front: ADQI %.3f, AOQI %.3f\n" % (self.getADQI([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]), self.getAOQI([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]))				
-		output += "Rel Back: ADQI %.3f, AOQI %.3f\n" % (self.getADQI([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]), self.getAOQI([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]))
-		output += "Rel Total: ADQI %.3f, AOQI %.3f" % (self.getADQI(), self.getAOQI())								
-		
+		output += "Rel Front: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")))				
+		output += "Rel Back: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")))
+		output += "Rel Total: ADQI %.3f, AOQI %.3f" % (self.getADQI(), self.getAOQI())									
 		return output
 		## I should really line break this so it fits into a terminal with less
 		## than 850 columns nicely

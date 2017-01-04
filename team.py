@@ -254,15 +254,17 @@ class Team(object):
 			return self.getSeasonPart(gameConditions).getTotalForStat(gameNhl.nhlGame.getPointsEarned)
 		except AttributeError:
 			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getPointsEarned)
-		
-		
+		except TypeError:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getPointsEarned)
 	def getSeasonPointsPossible(self):
 		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		try:
 			return self.getSeasonPart(gameConditions).getTotalForStat(gameNhl.nhlGame.getMaxPointsPossible)
 		except AttributeError:
 			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getMaxPointsPossible)
-		
+		except TypeError:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getMaxPointsPossible)			
+					
 	def getPointsPercentage(self):
 		## (points earned/total points available)
 		return float(self.getSeasonPointsTotal())/self.getSeasonPointsPossible()			
