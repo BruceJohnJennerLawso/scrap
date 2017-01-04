@@ -65,7 +65,9 @@ def getGameSelectConditions(description):
 	elif(description == "firstHalfRegularSeason"):
 		return [gamesSelectConditions(part="firstHalf"),gamesSelectConditions(part="none")]		
 	elif(description == "secondHalfRegularSeason"):
-		return [gamesSelectConditions(part="secondHalf"),gamesSelectConditions(part="none")]				
+		return [gamesSelectConditions(part="secondHalf"),gamesSelectConditions(part="none")]
+	elif(description == "playoffs"):
+		return [gamesSelectConditions(part="none"),gamesSelectConditions(part="everything")]						
 
 if(__name__ == "__main__"):
 	print "Fuck"

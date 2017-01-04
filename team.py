@@ -116,6 +116,7 @@ class Team(object):
 			game.loadTierII(teamsList, teamRank, self.getSeasonIndex())
 
 		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="everything"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="none"), seasonParts.gamesSelectConditions(part="everything")),\
 		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="everything"), seasonParts.gamesSelectConditions(part="everything")),\
 		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="firstHalf"), seasonParts.gamesSelectConditions(part="none")),\
 		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalf"), seasonParts.gamesSelectConditions(part="none"))]		
