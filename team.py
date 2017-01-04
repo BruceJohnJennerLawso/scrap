@@ -6,7 +6,12 @@
 from player import *
 import csv
 import seasonParts
+
 import game
+import gameNhl
+import gameWatMu
+
+import seasonParts
 
 def getSeasonIndexList(leagueId, debugInfo=False):
 	## opens up the file containing the names of every season in our data and
@@ -108,14 +113,15 @@ class Team(object):
 		
 		
 		for game in self.getSeasonGames():
-			game.loadTierII(teamsList, teamRank)
+			game.loadTierII(teamsList, teamRank, self.getSeasonIndex())
 
-		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="regularSeason"), seasonParts.gamesSelectConditions(part="none")),\
-		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none")),\
-		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"), seasonParts.gamesSelectConditions(part="none"))]		
+		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="everything"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="everything"), seasonParts.gamesSelectConditions(part="everything")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="firstHalf"), seasonParts.gamesSelectConditions(part="none")),\
+		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalf"), seasonParts.gamesSelectConditions(part="none"))]		
 		
 		for part in self.seasonParts:
-			part.loadTierII(teamsList, teamRank)
+			part.loadTierII(teamsList, teamRank, self.getSeasonIndex())
 		
 		
 		if(debugInfo):
@@ -216,6 +222,7 @@ class Team(object):
 		
 	def getSeasonGames(self):
 		return self.seasonGames
+		## gets list of game objects
 		
 	def getPlayoffGames(self):
 		if(self.qualifiedForPlayoffs()):	
@@ -224,33 +231,52 @@ class Team(object):
 			return []
 		
 	def getSeasonGoalsForAverage(self):
-		return float(self.seasonTotalGoalsFor)/float(self.totalSeasonGames)
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsFor)
 
 	def getSeasonGoalsAgainstAverage(self):
-		return float(self.seasonTotalGoalsAgainst)/float(self.totalSeasonGames)
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsAgainst)
 		
 	def getSeasonPlusMinus(self):
 		## goal differential (for - against)
-		return self.seasonPlusMinus
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsFor)
 	
 	def getSeasonGoalDifferentialAverage(self):
-		return self.getSeasonPlusMinus()/float(self.getSeasonGamesTotal())
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getGoalsFor)
 		
 	def getSeasonPointsTotal(self):
 		## (points earned)
-		return self.seasonPointsTotal		
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		try:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameNhl.nhlGame.getPointsEarned)
+		except AttributeError:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getPointsEarned)
+		
+		
+	def getSeasonPointsPossible(self):
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		try:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameNhl.nhlGame.getMaxPointsPossible)
+		except AttributeError:
+			return self.getSeasonPart(gameConditions).getTotalForStat(gameWatMu.watMuGame.getMaxPointsPossible)
 		
 	def getPointsPercentage(self):
 		## (points earned/total points available)
-		return self.seasonPointsTotal/float(self.totalSeasonGames*2)			
+		return float(self.getSeasonPointsTotal())/self.getSeasonPointsPossible()			
 	
 	def getSeasonGamesTotal(self):
-		## total games played in the regular season (up to this point)
-		return self.totalSeasonGames	
+		## total number of games played in the regular season (up to this point)
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getOne)	
 		
 	def getSeasonWinsTotal(self):
 		## games won, regarless of the situation
-		return self.seasonWins
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(game.Game.Won, True)	
 		
 	def getSeasonTiesTotal(self):
 		## games that were tied at the end of regulation and any extra
@@ -258,10 +284,12 @@ class Team(object):
 		
 		## no shootout games here, we only kicking things oldschool with true
 		## ties
-		return self.seasonTies	
-
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(game.Game.Tied, True)	
+		
 	def getSeasonLossTotal(self):
-		return self.seasonLosses		
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(game.Game.Lost, True)		
 	
 	def getAGCI(self):
 		## stat that measures how close the games this team played were on
@@ -276,7 +304,8 @@ class Team(object):
 		## 5-1 -> 0.250
 		## 6-1 -> 0.200
 		## 7-1 -> 0.166
-		return self.averageGameClosenessIndex
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGameClosenessIndex)
 		
 	def getTotalPlayoffGames(self):
 		## counts how many playoff games this team played in all (0, 4, 22, etc)
@@ -363,14 +392,14 @@ class Team(object):
 		## schedule. The win quality index for a game is calculated as follows:
 		## if this (self) team lost, they get 0.000. If they won, they get
 		## the goal differential (always positive) * opponents points percentage
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getWinQualityIndex)
 		
 	def getAPQI(self):
 		## exact same calculation as AWQI, with one small change:
 		## the win quality index is the goal differential * opponent pts pct *
 		## the game closeness index of the game
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getPlayQualityIndex)
 		
 	def getSeasonRank(self):
@@ -390,7 +419,7 @@ class Team(object):
 		## if we score more goals in this game than the expectation, it would
 		## seem to indicate that this (self) team has a good (quality) offence
 		## that can "get it done" against a good defensive team
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getOffenceQualityIndex)
 				
 	def getDefenceQualityIndex(self):
@@ -401,19 +430,19 @@ class Team(object):
 		## this convention is changed from the original version, which had
 		## good qualities as negative values, we now want it to be positive for
 		## good defensive teams 
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getDefenceQualityIndex)
 		
 	def getAOQI(self, gameConditions=[]):
 		## self.AOQI-leagueMean.AOQI
 		if(len(gameConditions) == 0):
-			gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+			gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOffenceQualityIndex)
 		
 	def getADQI(self, gameConditions=[]):
 		## dont corsi and drive kids
 		if(len(gameConditions) == 0):
-			gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+			gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getDefenceQualityIndex)
 
 		
@@ -478,7 +507,7 @@ class Team(object):
 
 
 	def getOldDiffQualityIndex(self):
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getSQI(self):
@@ -488,11 +517,14 @@ class Team(object):
 		return (self.getAOQI() + self.getADQI())
 
 	def getDQM(self):
-		gameConditions = [seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getFrontBackSplit(self):
-		return (self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI) - self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(game.Game.getCPQI))
+		frontCPQI = self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(game.Game.getCPQI)
+		backCPQI = self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(game.Game.getCPQI)		
+		
+		return (backCPQI - frontCPQI)
 
 	## Tier IV #################################################################
 	

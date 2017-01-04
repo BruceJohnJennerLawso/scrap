@@ -39,24 +39,6 @@ class nhlGame(Game):
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]
-	
-	def Won(self):
-		if(self.getGameResult() == 'W'):
-			return True
-		else:
-			return False
-			
-	def Tied(self):
-		if(self.getGameResult() == 'T'):
-			return True
-		else:
-			return False	
-			
-	def Lost(self):
-		if(self.getGameResult() == 'L'):
-			return True
-		else:
-			return False	
 
 	def notYetPlayed(self):
 		if(self.getGameResult() == '-'):
@@ -86,11 +68,11 @@ class nhlGame(Game):
 			return False
 
 		
-	def getPointsEarned(self, seasonIndex):
+	def getPointsEarned(self):
 		if(self.Won()):
 			return 2
 		else:
-			if(seasonIndex <= 82):
+			if(self.seasonIndex <= 82):
 				## season 82 here is 1998-99, the last year before the
 				## loser point era
 				if(self.Tied()):
@@ -114,8 +96,8 @@ class nhlGame(Game):
 	def getMaxPointsPossible(self):
 		return 2
 		
-	def getPercentageOfGamePointsEarned(self, seasonIndex):
-		if(self.decidedInExtraTime() and (seasonIndex <= 82)):
+	def getPercentageOfGamePointsEarned(self):
+		if(self.decidedInExtraTime() and (self.seasonIndex <= 82)):
 			if(self.Won()):
 				return 0.666
 			elif(self.Tied()):

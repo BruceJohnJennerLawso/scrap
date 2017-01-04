@@ -33,23 +33,6 @@ class watMuGame(Game):
 		## important to have this to reset values of avg games from
 		## 'avg.' -> 2.333 or whatever the teams overall average was
 
-	def Won(self):
-		if(self.getGameResult() == 'won'):
-			return True
-		else:
-			return False
-			
-	def Tied(self):
-		if(self.getGameResult() == 'tie'):
-			return True
-		else:
-			return False	
-			
-	def Lost(self):
-		if(self.getGameResult() == 'lost'):
-			return True
-		else:
-			return False
 
 	def notYetPlayed(self):
 		if(self.getGameResult() == '-'):

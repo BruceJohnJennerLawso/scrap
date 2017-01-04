@@ -29,12 +29,16 @@ class nhlSeason(Season):
 			self.Teams.append(nhlTeam(leagueId, seasonId, teamId, debugInfo=debugInfoSwitch()))
 		
 
+
+		for team in self.Teams:
+			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
+	
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
 			## be calculated from first tier data
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPlusMinus(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonWinsTotal(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPointsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonPlusMinus(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonWinsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonPointsTotal(), reverse=True)
 			## highest priority at the end
 			
 			## I need to look up what the actual sorting criteria for
@@ -42,9 +46,6 @@ class nhlSeason(Season):
 			
 			## it also probably varies depending on era, but tiebreakers
 			## are probably rare
-
-		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
 			
 			
 		awqiMean = 	self.getTeamStatAverage(Team.getAWQI)

@@ -11,6 +11,10 @@ class Game(object):
 		self.layerCount = 0
 		self.comparisonSelectCondition = comparisonSelectCondition
 		self.seasonIndex = seasonIndex
+	
+	def getOne(self):
+		## Just... dont worry about it ok?
+		return 1
 		
 	def getComparisonConditions(self):
 		return self.comparisonSelectCondition	
@@ -46,6 +50,24 @@ class Game(object):
 		return diff					
 		## easy mode here	
 
+	def Won(self):
+		if(self.getGameResult() == 'won'):
+			return True
+		else:
+			return False
+			
+	def Tied(self):
+		if(self.getGameResult() == 'tie'):
+			return True
+		else:
+			return False	
+			
+	def Lost(self):
+		if(self.getGameResult() == 'lost'):
+			return True
+		else:
+			return False
+
 	def getGameClosenessIndex(self):
 		if(self.Tied() != True):
 			return 1.000/float(abs(self.getGoalDifferential()))
@@ -66,14 +88,17 @@ class Game(object):
 		
 		## although now that I take a look at it, the dropoff is a little bit
 		## too steep early on between a 1 to 2 to 3 goal differential
+	
+	def getPointsPercentage(self):
+		return float(self.getPointsEarned())/self.getMaxPointsPossible()
 		
 		
 	## TierII statistics per game ##############################################
 		
 	
-	def loadTierII(self, teamsList, thisTeamRank):
+	def loadTierII(self, teamsList, thisTeamRank, seasonIndex):
 		
-		
+		self.seasonIndex = seasonIndex
 		opponentFound = False			
 		## start off by looking for our opponents object in the list of
 		## teams that we were given to search
@@ -109,7 +134,7 @@ class Game(object):
 	def getWinQualityIndex(self):
 		output = 0.000
 		
-		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getPointsPercentage(self.seasonIndex)
+		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getPointsPercentage)
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero
 			## value for WQI and PQI, varying depending on the game stats
@@ -123,7 +148,7 @@ class Game(object):
 	def getPlayQualityIndex(self):
 		output = 0.000
 		
-		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getPointsPercentage(self.seasonIndex)
+		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getPointsPercentage)
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero
 			## value for WQI and PQI, varying depending on the game stats
@@ -167,3 +192,20 @@ class Game(object):
 		
 	def getDiffQualMargin(self):
 		return (self.getCPQI()-self.getGoalDifferential())
+
+
+	## prototypes
+	#def Won(self):
+		#print "Bad call to game.Won()"
+		
+	#def Tied(self):
+		#print "Bad call to game.Tied()"
+
+	#def Lost(self):
+		#print "Bad call to game.Lost()"
+		
+	#def notYetPlayed(self):
+		#print "Bad call to game.notYetPlayed()"
+		
+	#def getPointsEarned(self, seasonIndex):
+		#print "Bad call to game.getPointsEarned()"		
