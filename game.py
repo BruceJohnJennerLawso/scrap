@@ -191,21 +191,4 @@ class Game(object):
 		return (self.getOffenceQualityIndex() + self.getDefenceQualityIndex())
 		
 	def getDiffQualMargin(self):
-		return (self.getCPQI()-self.getGoalDifferential())
-
-
-	## prototypes
-	#def Won(self):
-		#print "Bad call to game.Won()"
-		
-	#def Tied(self):
-		#print "Bad call to game.Tied()"
-
-	#def Lost(self):
-		#print "Bad call to game.Lost()"
-		
-	#def notYetPlayed(self):
-		#print "Bad call to game.notYetPlayed()"
-		
-	#def getPointsEarned(self, seasonIndex):
-		#print "Bad call to game.getPointsEarned()"		
+		return (self.getCPQI()-self.getGoalDifferential())	

@@ -178,14 +178,14 @@ class Team(object):
 		return self.leagueTeamsList
 
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, adiffqiMean, debugInfo=False):	
+	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, debugInfo=False):	
 		if(debugInfo):
 			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		
 		self.realPlayoffs = madeRealPlayoffs
 		if(debugInfo):
 			print "Calculating Ma values"
-		self.calculateMaValues(teamsList, awqiMean, apqiMean, adiffqiMean)
+		self.calculateMaValues(teamsList, awqiMean, apqiMean)
 		if(debugInfo):
 			print "Finished calculating Ma values"
 		## send the list of team objects for this season off so we can get our
@@ -448,16 +448,6 @@ class Team(object):
 			gameConditions = seasonParts.getGameSelectConditions("regularSeason")
 		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getDefenceQualityIndex)
 
-		
-	def getDiffQualityIndex(self):
-		return self.diffQualityIndex
-		
-	def getADiffQI(self):
-		return self.getDiffQualityIndex()/float(self.getSeasonGamesTotal())
-
-	def getMaAQualAboveDiff(self):
-		return (self.getADiffQI()-(self.getSeasonPlusMinus()/float(self.getSeasonGamesTotal())))
-
 	def getNetAODQISum(self):
 		return (self.getAOQI()+self.getADQI())
 		## Im strongly guessing that this will exactly match an average diff
@@ -466,16 +456,14 @@ class Team(object):
 	## Tier III ################################################################
 
 
-	def calculateMaValues(self, teamsList, awqiMean, apqiMean, adiffqiMean):
+	def calculateMaValues(self, teamsList, awqiMean, apqiMean):
 		## take our values for awqi, apqi, aoqi, adqi, and adjust them relative
 		## to the mean of the league
 		self.meanAdjustedAverageWinQualityIndex = self.getAWQI()
 		self.meanAdjustedAveragePlayQualityIndex = self.getAPQI()
-		self.meanAdjustedAverageDiffQualityIndex = self.getADiffQI()
 			
 		self.meanAdjustedAverageWinQualityIndex -= awqiMean
 		self.meanAdjustedAveragePlayQualityIndex -= apqiMean
-		self.meanAdjustedAverageDiffQualityIndex -= adiffqiMean
 
 
 	def getMaAWQI(self):
@@ -493,10 +481,8 @@ class Team(object):
 
 
 	def getODQSplit(self):
-		return (self.getMaAOQI() - self.getMaADQI())
+		return (self.getAOQI() - self.getADQI())
 
-	def getMaADiffQI(self):
-		return self.meanAdjustedAverageDiffQualityIndex
 	## our two indexes now adjusted for season mean in an attempt to make easier
 	## to compare across different seasons. MaAWQI appears to be the best 
 	## predictor of playoff success so far
@@ -507,11 +493,6 @@ class Team(object):
 	## (Winter 2014 Pucked Up) with a MaAWQI of 0.922
 	
 	## Its pronounced "Mah-Quee" in case you were wondering 
-
-
-	def getOldDiffQualityIndex(self):
-		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
-		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getOldDiffQualityIndex)
 
 	def getSQI(self):
 		return (self.getOldDiffQualityIndex() - self.getCPQI() )

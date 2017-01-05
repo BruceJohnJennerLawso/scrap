@@ -54,6 +54,9 @@ class nhlTeam(Team):
 			self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
 			self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
 		
+		
+		
+		
 	def loadTierI(self, debugInfo=False):		
 		rows = self.getCsvRowsList()
 		## use our utility function to retrieve the csv file for this team
@@ -295,8 +298,8 @@ class nhlTeam(Team):
 		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
 		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
-		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
+		output += "Defence Quality Index %.3f, Offence Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex())
+		output += "ADQI %.3f, AOQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getCPQI(), self.getDQM()) 
 		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.getSeasonPlusMinus()) 
 		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
 		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())

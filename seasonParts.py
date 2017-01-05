@@ -55,7 +55,7 @@ class gamesSelectConditions(object):
 				return inputGames[halfIndex:len(inputGames)]
 		elif(self.Conditions[0] == "none"):
 			return []		
-		## if we have an unrecognized condition this is going to crash hard
+		## if we have an unrecognized condition this is going to crash hard	
 	
 def getGameSelectConditions(description):
 	if(description == "completeSeason"):
@@ -111,7 +111,7 @@ class seasonPart(object):
 		else:
 			return self.seasonGames + self.playoffGames	
 		
-	def getTotalForStat(self, statName, playoffGames=False):
+	def getTotalForStat(self, statName, playoffGames=True):
 		output = 0.000
 		games = self.getGames(not playoffGames)
 		
@@ -120,7 +120,7 @@ class seasonPart(object):
 		
 		return output
 		
-	def getTotalMatchForStat(self, statName, valueToMatch, playoffGames=False):
+	def getTotalMatchForStat(self, statName, valueToMatch, playoffGames=True):
 		output = 0
 		games = self.getGames(not playoffGames)
 		
