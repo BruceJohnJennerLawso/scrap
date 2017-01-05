@@ -17,7 +17,7 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0, debugInfo=
 	
 	## so we just ignore anything that isnt in the topmost playoff
 	## bracket
-	thisTeamSeed = currentTeam.getSeasonRank()
+	thisTeamSeed = season.Teams.index(currentTeam)+1
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
 		alreadyInBracket.append(thisTeamSeed)
@@ -83,9 +83,13 @@ class watMuSeason(Season):
 			## the standings page
 			
 			## highest priority stat at the end
-					
 		
-		self.topTeam = self.getTeamByPosition(1)
+		
+		for team in self.Teams:			
+			team.setLeagueRank(self.Teams.index(team))
+		
+		
+		self.topTeam = self.Teams[0]
 		## next work through the teams this one played and add their position
 		## numbers to the top playoff bracket, then look through their
 		## opponents and so on
@@ -155,9 +159,9 @@ class watMuSeason(Season):
 		for team in self.Teams:
 			
 			if(team.getSeasonRank() in self.topPlayoffBracket):
-				team.loadTierIII(self.Teams, True, awqiMean, apqiMean)
+				team.loadTierIII(self.Teams, True, awqiMean, apqiMean, team.getSeasonRank())
 			else:
-				team.loadTierIII(self.Teams, False, awqiMean, apqiMean)
+				team.loadTierIII(self.Teams, False, awqiMean, apqiMean, team.getSeasonRank())
 			## load the stats that depend on the tier II stats of other
 			## teams (usually adjusting stats for the season mean)
 		##for team in self.Teams:

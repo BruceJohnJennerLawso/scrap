@@ -96,7 +96,7 @@ class Game(object):
 	## TierII statistics per game ##############################################
 		
 	
-	def loadTierII(self, teamsList, thisTeamRank, seasonIndex):
+	def loadTierII(self, teamsList, seasonIndex):
 		
 		self.seasonIndex = seasonIndex
 		opponentFound = False			
@@ -121,7 +121,7 @@ class Game(object):
 				print '\n'
 			raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 		
-		self.seasonRank = thisTeamRank+1
+		##self.seasonRank = thisTeamRank+1
 		## team rank is the index of this team after sorting based on the watMu
 		## standings criteria
 		

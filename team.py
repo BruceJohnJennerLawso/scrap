@@ -106,14 +106,11 @@ class Team(object):
 		
 	## Tier II load call #######################################################	
 		
-	def loadTierII(self, teamsList, teamRank, debugInfo=False):	
-		
-		self.leagueTeamsList = teamsList
-		self.teamRank = teamRank
+	def loadTierII(self, teamsList, debugInfo=False):	
 		
 		
 		for game in self.getSeasonGames():
-			game.loadTierII(teamsList, teamRank, self.getSeasonIndex())
+			game.loadTierII(teamsList, self.getSeasonIndex())
 
 		self.seasonParts = [seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="everything"), seasonParts.gamesSelectConditions(part="none")),\
 		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="none"), seasonParts.gamesSelectConditions(part="everything")),\
@@ -122,7 +119,7 @@ class Team(object):
 		seasonParts.seasonPart(self.getSeasonGames(), self.getPlayoffGames(), seasonParts.gamesSelectConditions(part="secondHalf"), seasonParts.gamesSelectConditions(part="none"))]		
 		
 		for part in self.seasonParts:
-			part.loadTierII(teamsList, teamRank, self.getSeasonIndex())
+			part.loadTierII(teamsList, self.getSeasonIndex())
 		
 		
 		if(debugInfo):
@@ -140,7 +137,6 @@ class Team(object):
 		
 		self.diffQualityMargin = 0.000
 		
-		self.seasonRank = teamRank+1
 		## team rank is the index of this team after sorting based on the watMu
 		## standings criteria
 		
@@ -174,11 +170,13 @@ class Team(object):
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
-	def getLeagueTeamsList(self):
-		return self.leagueTeamsList
-
+	def setLeagueRank(self, teamRank):	
+		self.teamRank = teamRank
+		self.seasonRank = teamRank+1
 		
-	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, debugInfo=False):	
+		
+	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, teamRank, debugInfo=False):	
+		
 		if(debugInfo):
 			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
 		

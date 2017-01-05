@@ -172,7 +172,7 @@ class watMuTeam(Team):
 		## parent team type), since SOC only applies in waterloo intramurals
 		
 	def getDescriptionString(self):
-		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
+		output = "%s, %s (season %i) (%s) RealPlayoffs = %r\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId, self.realPlayoffs)
 		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
 		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
 		output += "Defence Quality Index %.3f, Offence Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex())

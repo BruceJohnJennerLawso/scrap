@@ -94,14 +94,14 @@ class seasonPart(object):
 	def getGameConditions(self):
 		return [self.seasonGameConditions, self.playoffGameConditions]
 		
-	def loadTierII(self, teamsList, thisTeamRank, seasonIndex):	
+	def loadTierII(self, teamsList, seasonIndex):	
 		## I believe this function should be where the comparison game select
 		## condition is passed in.
 		
 		## the comparison condition is then used to get the appropriate game
 		## part from opponent teams inside of game.loadTierII(...)
 		for game in self.getGames():
-			game.loadTierII(teamsList, thisTeamRank, seasonIndex)			
+			game.loadTierII(teamsList, seasonIndex)			
 		## I believe this should overwrite tierII stats for this season parts
 		## games when a different season game condition is used...
 	

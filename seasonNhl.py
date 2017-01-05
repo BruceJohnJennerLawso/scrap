@@ -31,7 +31,7 @@ class nhlSeason(Season):
 
 		print "Starting Tier II for nhl season %s" % seasonId
 		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
+			team.loadTierII(self.Teams, debugInfoSwitch())
 
 		print "Sorting teams for nhl season %s" % seasonId
 	
@@ -48,6 +48,9 @@ class nhlSeason(Season):
 			
 			## it also probably varies depending on era, but tiebreakers
 			## are probably rare
+		
+		for team in self.Teams:			
+			team.setLeagueRank(self.Teams.index(team))
 			
 		print "Starting Tier III calculations for nhl season %s" % seasonId		
 			
@@ -68,7 +71,7 @@ class nhlSeason(Season):
 		print "Starting Tier III for nhl season %s" % seasonId	
 			
 		for team in self.Teams:
-			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, debugInfoSwitch())
+			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, self.Teams.index(team), debugInfoSwitch())
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:
