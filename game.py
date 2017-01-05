@@ -2,6 +2,8 @@
 ## object representing all of the data known about a given game ################
 ################################################################################
 import seasonParts
+from MJD import *
+
 
 class Game(object):
 	def __init__(self, comparisonSelectConditions, seasonIndex):
