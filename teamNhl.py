@@ -264,26 +264,8 @@ class nhlTeam(Team):
 		## gonna leave this offline for the moment, not too eager to dive into
 		## the fustercluck of writing an NHL player object just right now
 	
-	def getDescriptionString(self):
-		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
-		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
-		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
-		output += "Defence Quality Index %.3f, Offence Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex())
-		output += "ADQI %.3f, AOQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getCPQI(), self.getDQM()) 
-		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.getSeasonPlusMinus()) 
-		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
-		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
-		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
-		output += "Defence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getGoalsAgainst))
-		output += "Offence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(Game.getGoalsFor))		
-
-		output += "Rel Front: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")))				
-		output += "Rel Back: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")))
-		output += "Rel Total: ADQI %.3f, AOQI %.3f" % (self.getADQI(), self.getAOQI())								
-		
-		return output	
-		## I need to make a list of differences between this desc string and
-		## the watMu version
+	def getDescriptionHeader(self):		
+		return "%s, %s (season %i) (%s)" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.leagueId)
 	
 	def getSeasonIndex(self):
 		

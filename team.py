@@ -93,6 +93,27 @@ class Team(object):
 		rows = self.getCsvRowsList()
 		self.seasonParts = []
 	
+	def getDescriptionString(self):
+		output = "%s\n" % (self.getDescriptionHeader())
+		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
+		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
+		output += "Defence Quality Index %.3f, Offence Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex())
+		output += "ADQI %.3f, AOQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getCPQI(), self.getDQM()) 
+		output += "Offense: %.3f, Defense %.3f, +/- %i" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.getSeasonPlusMinus()) 
+		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
+		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
+		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(game.Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(game.Game.getCPQI), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(game.Game.getCPQI), self.getFrontBackSplit())
+		output += "Defence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(game.Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(game.Game.getGoalsAgainst), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(game.Game.getGoalsAgainst))
+		output += "Offence %.3f, (%.3f/%.3f)\n" % (self.getSeasonPart(seasonParts.getGameSelectConditions("regularSeason")).getAverageForStat(game.Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("firstHalfRegularSeason")).getAverageForStat(game.Game.getGoalsFor), self.getSeasonPart(seasonParts.getGameSelectConditions("secondHalfRegularSeason")).getAverageForStat(game.Game.getGoalsFor))		
+
+		output += "Rel Front: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("firstHalfRegularSeason")))				
+		output += "Rel Back: ADQI %.3f, AOQI %.3f\n" % (self.getADQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")), self.getAOQI(seasonParts.getGameSelectConditions("secondHalfRegularSeason")))
+		output += "Rel Total: ADQI %.3f, AOQI %.3f" % (self.getADQI(), self.getAOQI())									
+		return output
+		## I should really line break this so it fits into a terminal with less
+		## than 850 columns nicely
+	
+	
 	def getSeasonPart(self, gameConditions):
 		for part in self.seasonParts:
 			##print type(part.getGameConditions()), len(part.getGameConditions()), type(gameConditions), len(gameConditions)
@@ -127,48 +148,7 @@ class Team(object):
 		if(debugInfo):
 			print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
-		
-		self.averageWinQualityIndex = 0.000
-		self.averagePlayQualityIndex = 0.000
-		
-		self.defenceQualityIndex = 0.000
-		self.offenceQualityIndex = 0.000		
-		
-		self.diffQualityIndex = 0.000
-		self.oldDiffQualityIndex = 0.000
-		
-		self.diffQualityMargin = 0.000
-		
-		## team rank is the index of this team after sorting based on the watMu
-		## standings criteria
-		
-		for game in self.getSeasonGames():
-			## we dont need to reload the data from csv, cause it was already
-			## loaded by the loadTierI(...) call and stored in objects
 			
-			opponentFound = False			
-			## start off by looking for our opponents object in the list of
-			## teams that we were given to search
-			for team in teamsList:
-				if(team.getTeamName() == game.getOpponentName()):
-					opponent = team
-					opponentFound = True
-					break
-					## once we find our team, assign it, and break outa here
-					
-					## shouldnt ever be two teams with the same name... I hope
-					
-			if(opponentFound == False):
-				## we wanna blow everything up here so that we can start
-				## debugging the problem 
-				if(debugInfo):
-					print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
-					for team in teamsList:
-						print team.getTeamName(),
-					print '\n'
-				raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
-
-		self.oldDiffQualityIndex /= float(self.totalSeasonGames)	
 		## once we've calculated the total WQI & PQI, divy them over the total
 		## games played in that season to get an average
 
