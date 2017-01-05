@@ -27,6 +27,14 @@ class watMuGame(Game):
 			newCompSelectConditions = self.getComparisonConditions()
 		return watMuGame(self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getSOC(), self.getOpponentName(), newCompSelectConditions, self.seasonIndex)
 
+	def getGameDescription(self):
+		output = "%s %s %s %i-%i %s\n" % (self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName())
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
+		output += self.opponent.getDescriptionString()
+		output += "\n\n"
+		
+		return output
+
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue

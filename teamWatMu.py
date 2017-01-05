@@ -44,7 +44,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in seasonData:
-			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
+			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.getGameSelectConditions("regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		if(debugInfo):
 			print "seasonData: "
@@ -100,7 +100,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in playoffData:
-			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
+			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.getGameSelectConditions("everything"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 
 		if(debugInfo):

@@ -83,8 +83,8 @@ class seasonPart(object):
 		
 		self.seasonGameConditions = seasonGameConditions
 		self.playoffGameConditions = playoffGameConditions
-		self.seasonGames = self.seasonGameConditions.getGamesList([gm.cloneGame(seasonGameConditions) for gm in seasonGames])
-		self.playoffGames = self.playoffGameConditions.getGamesList([gm.cloneGame(playoffGameConditions) for gm in playoffGames])
+		self.seasonGames = self.seasonGameConditions.getGamesList([gm.cloneGame([seasonGameConditions, playoffGameConditions]) for gm in seasonGames])
+		self.playoffGames = self.playoffGameConditions.getGamesList([gm.cloneGame([seasonGameConditions, playoffGameConditions]) for gm in playoffGames])
 		## take the original list of games for this season and run it through
 		## the seasonSelectConditions object
 		if((self.seasonGames is None)or(self.playoffGames is None)):

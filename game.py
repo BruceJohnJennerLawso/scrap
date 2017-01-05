@@ -4,12 +4,12 @@
 import seasonParts
 
 class Game(object):
-	def __init__(self, comparisonSelectCondition, seasonIndex):
+	def __init__(self, comparisonSelectConditions, seasonIndex):
 		self.Layers = []
 		## list of lists, with each list containing stats computed for that
 		## layer
 		self.layerCount = 0
-		self.comparisonSelectCondition = comparisonSelectCondition
+		self.comparisonSelectConditions = comparisonSelectConditions
 		self.seasonIndex = seasonIndex
 	
 	def getOne(self):
@@ -17,7 +17,7 @@ class Game(object):
 		return 1
 		
 	def getComparisonConditions(self):
-		return self.comparisonSelectCondition	
+		return self.comparisonSelectConditions	
 		
 	def addLayer(self, data):
 		self.Layers.append(data)
@@ -134,7 +134,7 @@ class Game(object):
 	def getWinQualityIndex(self):
 		output = 0.000
 		
-		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getPointsPercentage)
+		opponentPointsPct = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getPointsPercentage)
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero
 			## value for WQI and PQI, varying depending on the game stats
@@ -148,7 +148,7 @@ class Game(object):
 	def getPlayQualityIndex(self):
 		output = 0.000
 		
-		opponentPointsPct = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getPointsPercentage)
+		opponentPointsPct = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getPointsPercentage)
 		if(self.Lost() != True):	
 			## so long as we didnt lose the game, we will get a nonzero
 			## value for WQI and PQI, varying depending on the game stats
@@ -161,28 +161,28 @@ class Game(object):
 	
 	def getDefenceQualityIndex(self):
 		output = 0.000	
-		opponentOffence = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsFor)
+		opponentOffence = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getGoalsFor)
 		output += (opponentOffence - self.getGoalsAgainst())
 		return output
 
 	def getOffenceQualityIndex(self):
 		output = 0.000
 		
-		opponentDefence = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalsAgainst)
+		opponentDefence = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getGoalsAgainst)
 		output += (self.getGoalsFor() - opponentDefence)
 		return output
 		
 	def getDiffQualityIndex(self):
 		output = 0.000
 		
-		opponentGoalDiff = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalDifferential)
+		opponentGoalDiff = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getGoalDifferential)
 		output += (self.getGoalsFor() - (-opponentGoalDiff))
 		return output	
 		
 	def getOldDiffQualityIndex(self):
 		output = 0.000
 		
-		opponentGoalDiff = self.getOpponent().getSeasonPart([self.getComparisonConditions(),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getGoalDifferential)
+		opponentGoalDiff = self.getOpponent().getSeasonPart(self.getComparisonConditions()).getAverageForStat(Game.getGoalDifferential)
 		output += (self.getGoalsFor() - opponentGoalDiff)
 		return output			
 

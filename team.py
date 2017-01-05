@@ -95,6 +95,8 @@ class Team(object):
 	
 	def getSeasonPart(self, gameConditions):
 		for part in self.seasonParts:
+			##print type(part.getGameConditions()), len(part.getGameConditions()), type(gameConditions), len(gameConditions)
+			##if((part.getGameConditions()[0] == gameConditions[0])and(part.getGameConditions()[1] == gameConditions[1])):
 			if(part.getGameConditions() == gameConditions):
 				return part
 		
