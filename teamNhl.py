@@ -314,16 +314,89 @@ class nhlTeam(Team):
 				## in that franchises list of names
 		return output
 
-	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())
-		## I dont have the patience to do this right now, so this is only
-		## applicable for post 2005 lockout, with the shootout and loser point
-
+	def getRecordString(self, detailed=False):
+		index = self.getSeasonIndex()
+		if((index <= 26)or(67 <= index <= 81)):
+			## the early nhl period, or the 84-98 period, where an OT period was
+			## played, but the loser did not get a point
+			if(not detailed):
+				return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())				
+			else:
+				return "(%s(%s)-%s(%s)-%s)" % (self.getSeasonWinsTotal(), self.getSeasonOvertimeWinTotal(), self.getSeasonLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())			
+		elif(82 <= index <= 87):
+			## the 99-04 period where OT was played, and an OT loser got one 
+			## point, but if the game ended in a tie, each team got 1 point
+			if(not detailed):
+				return "(%s-%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())						
+			else:
+				return "(%s(%s/%s)-%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationWinTotal(), self.getSeasonOvertimeWinTotal(), self.getSeasonLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())										
+		elif(index >= 88):
+			## the bettman shootout era
+			if(not detailed):
+				return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonExtraTimeLossTotal())
+			else:
+				return "(%s(%s/%s/%s)-%s-%s(%s/%s))" % (self.getSeasonWinsTotal(),\
+				self.getSeasonRegulationWinTotal(), self.getSeasonOvertimeWinTotal(),\
+				self.getSeasonShootoutWinTotal(), self.getSeasonLossTotal(), self.getSeasonExtraTimeLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonShootoutLossTotal())				
+		else:
+			return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationLossTotal(), self.getSeasonTiesTotal())				
+			## soooooo much better
+		
 		## have I mentioned all of the horrible things I would like to do to
 		## our friend Gary???
 
 	def calculatePlayoffSuccessRating(self):
 		return self.getTotalPlayoffWins()
+
+	def getSeasonRegulationLossTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInRegulationTime, True)
+
+	def getSeasonRegulationWinTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInRegulationTime, True)
+
+
+	def getSeasonExtraTimeLossTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInExtraTime, True)
+
+	def getSeasonExtraTimeWinTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInExtraTime, True)		
+
+	def getSeasonOvertimeLossTotal(self):
+		## total number of games lost in overtime
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInOvertime, True)	
+
+	def getSeasonOvertimeWinTotal(self):
+		## total number of games lost in overtime
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInOvertime, True)	
+
+	def getSeasonShootoutLossTotal(self):
+		## total number of games lost in a shootout
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInShootout, True)
+		
+	def getSeasonShootoutWinTotal(self):
+		## total number of games lost in a shootout
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInShootout, True)			
+	
 		
 	def madeRealPlayoffs(self):	
 		return self.qualifiedForPlayoffs()

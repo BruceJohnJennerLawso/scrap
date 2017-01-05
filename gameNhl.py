@@ -54,12 +54,60 @@ class nhlGame(Game):
 			return True
 		else:
 			return False
+	
+	def wonInOvertime(self):
+		if((self.decidedInOvertime())and(self.Won())):
+			return True
+		else:
+			return False	
+	
+	def lostInOvertime(self):
+		if((self.decidedInOvertime())and(self.Lost())):
+			return True
+		else:
+			return False
 		
 	def decidedInShootout(self):
 		if(self.Layers[0][7] == 'SO'):
 			return True
 		else:
 			return False
+
+	def wonInShootout(self):
+		if((self.decidedInShootout())and(self.Won())):
+			return True
+		else:
+			return False
+			
+	def lostInShootout(self):
+		if((self.decidedInShootout())and(self.Lost())):
+			return True
+		else:
+			return False	
+			
+	def wonInExtraTime(self):
+		if((self.decidedInExtraTime())and(self.Won())):
+			return True
+		else:
+			return False			
+
+	def lostInExtraTime(self):
+		if((self.decidedInExtraTime())and(self.Lost())):
+			return True
+		else:
+			return False	
+			
+	def wonInRegulationTime(self):
+		if((not self.decidedInExtraTime())and(self.Won())):
+			return True
+		else:
+			return False			
+
+	def lostInRegulationTime(self):
+		if((not self.decidedInExtraTime())and(self.Lost())):
+			return True
+		else:
+			return False						
 			
 	def decidedInExtraTime(self):
 		if((self.decidedInOvertime())or(self.decidedInShootout())):
