@@ -30,6 +30,10 @@ class Game(object):
 	def getDate(self):
 		return self.Layers[0][0]
 		## this should hopefully probably be a convention for all games levels
+	
+	def getGameMJD(self):
+		return getMJDForDate(self.getDate())
+		## this does not take into account 
 		
 	def getLocation(self):
 		return self.Layers[0][1]
