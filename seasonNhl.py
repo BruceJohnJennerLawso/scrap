@@ -69,11 +69,6 @@ class nhlSeason(Season):
 			
 		for team in self.Teams:
 			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, debugInfoSwitch())
-			
-			
-			gameConditions = seasonParts.getGameSelectConditions("playoffs")
-			print "Playoff Offence, ", team.getPlayoffGoalsForAverage(), team.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsFor), team.playoffGoalsFor, team.getSeasonPart(gameConditions).getTotalForStat(game.Game.getGoalsFor)
-	
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:

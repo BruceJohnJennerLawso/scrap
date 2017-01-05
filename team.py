@@ -242,11 +242,11 @@ class Team(object):
 	def getSeasonPlusMinus(self):
 		## goal differential (for - against)
 		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
-		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsFor)
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getGoalDifferential)
 	
 	def getSeasonGoalDifferentialAverage(self):
 		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
-		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getGoalsFor)
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalDifferential)
 		
 	def getSeasonPointsTotal(self):
 		## (points earned)
@@ -312,16 +312,24 @@ class Team(object):
 		
 	def getTotalPlayoffGames(self):
 		## counts how many playoff games this team played in all (0, 4, 22, etc)
-		return len(self.getPlayoffGames())
+		
+		gameConditions = seasonParts.getGameSelectConditions("playoffs")
+		return self.getSeasonPart(gameConditions).getTotalForStat(game.Game.getOne)
+		
+		##return len(self.getPlayoffGames())
 
 	def getTotalPlayoffWins(self):
 		## total games won in the playoffs
-		return self.playoffWins
+		gameConditions = seasonParts.getGameSelectConditions("playoffs")
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(game.Game.Won, True)
 		
 	def getPlayoffWinPercentage(self):
 		## what percentage of any playoff games played that the team won as a
 		## decimal, ie 0.782 
-		return self.playoffWinPercentage
+		if(self.getTotalPlayoffGames() > 0):
+			return float(self.getTotalPlayoffWins())/self.getTotalPlayoffGames()
+		else:
+			return 0.000
 	
 	def getRealPlayoffWinPercentage(self, season):
 		## the problem here is that for the watMu system, not all playoff wins
@@ -346,19 +354,16 @@ class Team(object):
 		return self.calculatePlayoffSuccessRating()	
 				
 	def getPlayoffGoalsForAverage(self):
-		output = 0.000
-		if(self.getTotalPlayoffGames() > 0):
-			output = float(self.playoffGoalsFor)/float(self.getTotalPlayoffGames())
-		return output
+		gameConditions = seasonParts.getGameSelectConditions("playoffs")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsFor)
 
 	def getPlayoffGoalsAgainstAverage(self):
-		output = 0.000
-		if(self.getTotalPlayoffGames() > 0):
-			output = float(self.playoffGoalsAgainst)/float(self.getTotalPlayoffGames())
-		return output
+		gameConditions = seasonParts.getGameSelectConditions("playoffs")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalsAgainst)
 	
 	def getPlayoffAverageGoalDifferential(self):
-		return self.playoffAverageGoalDifferential
+		gameConditions = seasonParts.getGameSelectConditions("playoffs")
+		return self.getSeasonPart(gameConditions).getAverageForStat(game.Game.getGoalDifferential)
 	
 	
 	def getPlayoffOffenceTransition(self):

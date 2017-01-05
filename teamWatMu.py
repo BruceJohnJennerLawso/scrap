@@ -33,30 +33,6 @@ class watMuTeam(Team):
 		if(debugInfo):	
 			print "Total season games %i" % self.totalSeasonGames
 		self.averageSOC /= float(self.totalSeasonGames)		
-
-		
-		## now time to tally the stats we have available for the playoffs
-		
-		self.playoffWins = 0
-		##self.totalPlayoffGames = 0
-		self.playoffWinPercentage = 0.000
-		
-		self.playoffGoalsFor = 0
-		self.playoffGoalsAgainst = 0
-		self.playoffPlusMinus = 0
-		self.playoffAverageGoalDifferential = 0.000
-		
-		if(self.qualifiedForPlayoffs() == True):
-			self.totalPlayoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()	
-				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())			
-			self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
-			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.totalPlayoffGames)
-		
 		
 	
 	def loadSeasonGames(self, rows, debugInfo=False):

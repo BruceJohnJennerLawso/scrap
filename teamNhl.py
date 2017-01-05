@@ -22,37 +22,7 @@ class nhlTeam(Team):
 		
 		
 	def calculateTierIStats(self):		
-		
-		## now, we can quickly tally some stats for the playoffs, so we can
-		## do some graphing
-		self.playoffWins = 0
-		self.totalPlayoffGames = 0
-		
-		self.playoffWinPercentage = 0.000
-		## not nearly as useful as it is for watMu (you can at least lose one
-		## game in the NHL playoffs without going home right away), but why not
-		## hang on to it
-		
-		self.playoffGoalsFor = 0
-		self.playoffGoalsAgainst = 0
-		self.playoffPlusMinus = 0
-		self.playoffAverageGoalDifferential = 0.000		
-		
-		if(self.qualifiedForPlayoffs()):
-			self.totalPlayoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())
-			
-			self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
-			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.getTotalPlayoffGames())
-			
-			self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
-			self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
+		pass
 		
 		
 		
@@ -371,7 +341,7 @@ class nhlTeam(Team):
 		## our friend Gary???
 
 	def calculatePlayoffSuccessRating(self):
-		return self.playoffWins
+		return self.getTotalPlayoffWins()
 		
 	def madeRealPlayoffs(self):	
 		return self.qualifiedForPlayoffs()
