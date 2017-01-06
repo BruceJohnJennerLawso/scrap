@@ -22,84 +22,10 @@ class nhlTeam(Team):
 		
 		
 	def calculateTierIStats(self):		
-		self.seasonPlusMinus = 0
-		## goal differential for the team overall
-		self.seasonTotalGoalsFor = 0
-		self.seasonTotalGoalsAgainst = 0	
-		## pretty self explanatory
-		self.seasonPointsTotal = 0
-		## 2 for a win, 1 for a tie/(ot/so) loss, 0 for a regulation loss
-		## (depending on whether the game was before or after 2002)
-		
-		## Thanks Bettman	
-		self.seasonWins = 0
-		self.seasonTies = 0
-		self.seasonRegulationLosses = 0
-		self.seasonExtraTimeLosses = 0
-		self.averageGameClosenessIndex = 0
+		pass
 		
 		
-		## now that we have the season and playoff games loaded, we can make
-		## our totals/averages/what have you for tier I stats
-		for game in self.getSeasonGames():
-			
-			self.seasonTotalGoalsFor += game.getGoalsFor()
-			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
-			
-			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
-			
-			if(game.Won()):
-				self.seasonWins += 1
-			elif(game.Tied()):
-				self.seasonTies += 1
-			elif(game.Lost()):
-				if(game.decidedInExtraTime()):
-					self.seasonExtraTimeLosses += 1
-				else:
-					self.seasonRegulationLosses += 1
-			## this is such a mess, especially trying to print out a record
-			## string that makes sense across eras with this steaming pile of
-			## crap
-			
-			## again, really, thanks Bettman
-			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
-			## see game module for more on this	
-
-		self.averageGameClosenessIndex /= float(self.totalSeasonGames)
-		## divy the GCI total over the games played for our average
-
 		
-		## now, we can quickly tally some stats for the playoffs, so we can
-		## do some graphing
-		self.playoffWins = 0
-		self.totalPlayoffGames = 0
-		
-		self.playoffWinPercentage = 0.000
-		## not nearly as useful as it is for watMu (you can at least lose one
-		## game in the NHL playoffs without going home right away), but why not
-		## hang on to it
-		
-		self.playoffGoalsFor = 0
-		self.playoffGoalsAgainst = 0
-		self.playoffPlusMinus = 0
-		self.playoffAverageGoalDifferential = 0.000		
-		
-		if(self.qualifiedForPlayoffs()):
-			self.totalPlayoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()				
-				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())
-			
-			self.playoffWinPercentage = float(self.playoffWins)/float(self.getTotalPlayoffGames())
-			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.getTotalPlayoffGames())
-			
-			self.playoffOffence = self.playoffGoalsFor/float(self.totalPlayoffGames)
-			self.playoffDefence = self.playoffGoalsAgainst/float(self.totalPlayoffGames)
 		
 	def loadTierI(self, debugInfo=False):		
 		rows = self.getCsvRowsList()
@@ -228,7 +154,7 @@ class nhlTeam(Team):
 			## exception if one of the indexes is still -1 (we never found it)
 			## but it gonna crash hard in that case anyways
 			
-			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex], seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
+			self.seasonGames.append(nhlGame(game[dateIndex], game[locationIndex], game[resultIndex], game[goalsForIndex], game[goalsAgainstIndex],  game[opponentNameIndex], self.teamName, game[gameEndedInIndex], seasonParts.getGameSelectConditions("regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		
 		
@@ -289,7 +215,7 @@ class nhlTeam(Team):
 				## need to define who the home team was here based on whether there
 				## was an @ or an H
 			
-				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex], seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
+				self.playoffGames.append(nhlGame(game[playoffDateIndex], game[playoffLocationIndex], game[playoffResultIndex], game[playoffGoalsForIndex], game[playoffGoalsAgainstIndex],  game[playoffOpponentNameIndex], self.teamName, game[playoffGameEndedInIndex], seasonParts.getGameSelectConditions("everything"), self.getSeasonIndex()))
 				## set up each game as a nhlGame object in memory
 		
 		
@@ -338,19 +264,8 @@ class nhlTeam(Team):
 		## gonna leave this offline for the moment, not too eager to dive into
 		## the fustercluck of writing an NHL player object just right now
 	
-	def getDescriptionString(self):
-		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
-		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
-		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
-		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
-		output += "Offense: %.3f, Defense %.3f, +/- %i\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus) 
-		output += "%i Playoff Wins, Playoff Win %% of %.3f\n" % (self.getTotalPlayoffWins(), self.getPlayoffWinPercentage())
-		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
-		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForRelStat(Game.getCPQI, self.leagueTeamsList), self.getFrontBackSplit())
-		return output	
-		## I need to make a list of differences between this desc string and
-		## the watMu version
+	def getDescriptionHeader(self):		
+		return "%s, %s (season %i) (%s)" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.leagueId)
 	
 	def getSeasonIndex(self):
 		
@@ -399,16 +314,89 @@ class nhlTeam(Team):
 				## in that franchises list of names
 		return output
 
-	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonRegulationLosses, self.seasonExtraTimeLosses)
-		## I dont have the patience to do this right now, so this is only
-		## applicable for post 2005 lockout, with the shootout and loser point
-
+	def getRecordString(self, detailed=False):
+		index = self.getSeasonIndex()
+		if((index <= 26)or(67 <= index <= 81)):
+			## the early nhl period, or the 84-98 period, where an OT period was
+			## played, but the loser did not get a point
+			if(not detailed):
+				return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())				
+			else:
+				return "(%s(%s)-%s(%s)-%s)" % (self.getSeasonWinsTotal(), self.getSeasonOvertimeWinTotal(), self.getSeasonLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())			
+		elif(82 <= index <= 87):
+			## the 99-04 period where OT was played, and an OT loser got one 
+			## point, but if the game ended in a tie, each team got 1 point
+			if(not detailed):
+				return "(%s-%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())						
+			else:
+				return "(%s(%s/%s)-%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationWinTotal(), self.getSeasonOvertimeWinTotal(), self.getSeasonLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonTiesTotal())										
+		elif(index >= 88):
+			## the bettman shootout era
+			if(not detailed):
+				return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonExtraTimeLossTotal())
+			else:
+				return "(%s(%s/%s/%s)-%s-%s(%s/%s))" % (self.getSeasonWinsTotal(),\
+				self.getSeasonRegulationWinTotal(), self.getSeasonOvertimeWinTotal(),\
+				self.getSeasonShootoutWinTotal(), self.getSeasonLossTotal(), self.getSeasonExtraTimeLossTotal(), self.getSeasonOvertimeLossTotal(), self.getSeasonShootoutLossTotal())				
+		else:
+			return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonRegulationLossTotal(), self.getSeasonTiesTotal())				
+			## soooooo much better
+		
 		## have I mentioned all of the horrible things I would like to do to
 		## our friend Gary???
 
 	def calculatePlayoffSuccessRating(self):
-		return self.playoffWins
+		return self.getTotalPlayoffWins()
+
+	def getSeasonRegulationLossTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInRegulationTime, True)
+
+	def getSeasonRegulationWinTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInRegulationTime, True)
+
+
+	def getSeasonExtraTimeLossTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInExtraTime, True)
+
+	def getSeasonExtraTimeWinTotal(self):
+		## total number games lost, if the game went longer than regulation time
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInExtraTime, True)		
+
+	def getSeasonOvertimeLossTotal(self):
+		## total number of games lost in overtime
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInOvertime, True)	
+
+	def getSeasonOvertimeWinTotal(self):
+		## total number of games lost in overtime
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInOvertime, True)	
+
+	def getSeasonShootoutLossTotal(self):
+		## total number of games lost in a shootout
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.lostInShootout, True)
+		
+	def getSeasonShootoutWinTotal(self):
+		## total number of games lost in a shootout
+		gameConditions = seasonParts.getGameSelectConditions("regularSeason")
+		
+		return self.getSeasonPart(gameConditions).getTotalMatchForStat(gameNhl.nhlGame.wonInShootout, True)			
+	
 		
 	def madeRealPlayoffs(self):	
 		return self.qualifiedForPlayoffs()

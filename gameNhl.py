@@ -29,35 +29,16 @@ class nhlGame(Game):
 		## location gets modified in the object, so only the first
 		## character in the location string is passed to the new object
 	
-	def getGameDescription(self, teamsList=[]):
+	def getGameDescription(self):
 		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
-		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(teamsList), self.getDefenceQualityIndex(teamsList), self.getDiffQualMargin(teamsList), self.getCPQI(teamsList))
-		if(len(teamsList) > 0):
-			opponent = self.getOpponent(teamsList)
-			output += opponent.getDescriptionString()
-			output += "\n\n"
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
+		output += self.opponent.getDescriptionString()
+		output += "\n\n"
+		
 		return output
 
 	def getThisTeamName(self):
 		return self.Layers[0][5]
-	
-	def Won(self):
-		if(self.getGameResult() == 'W'):
-			return True
-		else:
-			return False
-			
-	def Tied(self):
-		if(self.getGameResult() == 'T'):
-			return True
-		else:
-			return False	
-			
-	def Lost(self):
-		if(self.getGameResult() == 'L'):
-			return True
-		else:
-			return False	
 
 	def notYetPlayed(self):
 		if(self.getGameResult() == '-'):
@@ -73,12 +54,60 @@ class nhlGame(Game):
 			return True
 		else:
 			return False
+	
+	def wonInOvertime(self):
+		if((self.decidedInOvertime())and(self.Won())):
+			return True
+		else:
+			return False	
+	
+	def lostInOvertime(self):
+		if((self.decidedInOvertime())and(self.Lost())):
+			return True
+		else:
+			return False
 		
 	def decidedInShootout(self):
 		if(self.Layers[0][7] == 'SO'):
 			return True
 		else:
 			return False
+
+	def wonInShootout(self):
+		if((self.decidedInShootout())and(self.Won())):
+			return True
+		else:
+			return False
+			
+	def lostInShootout(self):
+		if((self.decidedInShootout())and(self.Lost())):
+			return True
+		else:
+			return False	
+			
+	def wonInExtraTime(self):
+		if((self.decidedInExtraTime())and(self.Won())):
+			return True
+		else:
+			return False			
+
+	def lostInExtraTime(self):
+		if((self.decidedInExtraTime())and(self.Lost())):
+			return True
+		else:
+			return False	
+			
+	def wonInRegulationTime(self):
+		if((not self.decidedInExtraTime())and(self.Won())):
+			return True
+		else:
+			return False			
+
+	def lostInRegulationTime(self):
+		if((not self.decidedInExtraTime())and(self.Lost())):
+			return True
+		else:
+			return False						
 			
 	def decidedInExtraTime(self):
 		if((self.decidedInOvertime())or(self.decidedInShootout())):
@@ -87,11 +116,11 @@ class nhlGame(Game):
 			return False
 
 		
-	def getPointsEarned(self, seasonIndex):
+	def getPointsEarned(self):
 		if(self.Won()):
 			return 2
 		else:
-			if(seasonIndex <= 82):
+			if(self.seasonIndex <= 82):
 				## season 82 here is 1998-99, the last year before the
 				## loser point era
 				if(self.Tied()):
@@ -115,8 +144,8 @@ class nhlGame(Game):
 	def getMaxPointsPossible(self):
 		return 2
 		
-	def getPercentageOfGamePointsEarned(self, seasonIndex):
-		if(self.decidedInExtraTime() and (seasonIndex <= 82)):
+	def getPercentageOfGamePointsEarned(self):
+		if(self.decidedInExtraTime() and (self.seasonIndex <= 82)):
 			if(self.Won()):
 				return 0.666
 			elif(self.Tied()):

@@ -27,29 +27,20 @@ class watMuGame(Game):
 			newCompSelectConditions = self.getComparisonConditions()
 		return watMuGame(self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getSOC(), self.getOpponentName(), newCompSelectConditions, self.seasonIndex)
 
+	def getGameDescription(self):
+		output = "%s %s %s %i-%i %s\n" % (self.getDate(), self.getLocation(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName())
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
+		output += self.opponent.getDescriptionString()
+		output += "\n\n"
+		
+		return output
+
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue
 		## important to have this to reset values of avg games from
 		## 'avg.' -> 2.333 or whatever the teams overall average was
 
-	def Won(self):
-		if(self.getGameResult() == 'won'):
-			return True
-		else:
-			return False
-			
-	def Tied(self):
-		if(self.getGameResult() == 'tie'):
-			return True
-		else:
-			return False	
-			
-	def Lost(self):
-		if(self.getGameResult() == 'lost'):
-			return True
-		else:
-			return False
 
 	def notYetPlayed(self):
 		if(self.getGameResult() == '-'):
@@ -57,7 +48,7 @@ class watMuGame(Game):
 		else:
 			return False
 		
-	def getPointsEarned(self, seasonIndex):
+	def getPointsEarned(self):
 		## this needs to be defined on a league by league basis, since not all
 		## leagues actually score points the same way, ie Euro leagues with
 		## 3 point system

@@ -21,7 +21,7 @@ class nhlSeason(Season):
 		self.playoffBrackets = []
 		## the top playoff bracket and all additional ones as lists
 		## of seeding numbers inside of a list
-		
+		print "Starting Tier I for nhl season %s" % seasonId
 		for teamId in teamIdList:
 			## work through the team ids list and construct nhlTeam
 			## objects using each teamId in the list, and append it into
@@ -29,12 +29,18 @@ class nhlSeason(Season):
 			self.Teams.append(nhlTeam(leagueId, seasonId, teamId, debugInfo=debugInfoSwitch()))
 		
 
+		print "Starting Tier II for nhl season %s" % seasonId
+		for team in self.Teams:
+			team.loadTierII(self.Teams, debugInfoSwitch())
+
+		print "Sorting teams for nhl season %s" % seasonId
+	
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
 			## be calculated from first tier data
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPlusMinus(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonWinsTotal(), reverse=True)
-			self.Teams = sorted(self.Teams, key=lambda watMuTeam: watMuTeam.getSeasonPointsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonPlusMinus(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonWinsTotal(), reverse=True)
+			self.Teams = sorted(self.Teams, key=lambda nhlTeam: nhlTeam.getSeasonPointsTotal(), reverse=True)
 			## highest priority at the end
 			
 			## I need to look up what the actual sorting criteria for
@@ -42,19 +48,30 @@ class nhlSeason(Season):
 			
 			## it also probably varies depending on era, but tiebreakers
 			## are probably rare
-
-		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team), debugInfoSwitch())
+		
+		for team in self.Teams:			
+			team.setLeagueRank(self.Teams.index(team))
 			
+		print "Starting Tier III calculations for nhl season %s" % seasonId		
 			
-		awqiMean = 	self.getTeamStatAverage(Team.getAWQI)
-		apqiMean = self.getTeamStatAverage(Team.getAPQI)
-		adiffqiMean = self.getTeamStatAverage(Team.getADiffQI)
+		##awqiMean = 	self.getTeamStatAverage(Team.getAWQI)
+		##apqiMean = self.getTeamStatAverage(Team.getAPQI)
+		##adiffqiMean = self.getTeamStatAverage(Team.getADiffQI)
 		## this is a bit slow for modern era seasons, but acceptable
 		## enough given the benefits
+
+		awqiMean = 	0.0
+		apqiMean = 0.0
+		for team in self.Teams:
+			awqiMean += team.getAWQI()
+			apqiMean += team.getAPQI()
+
+		print "awqiMean %.3f, apqiMean %.3f" % (awqiMean, apqiMean)
+
+		print "Starting Tier III for nhl season %s" % seasonId	
 			
 		for team in self.Teams:
-			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, adiffqiMean, debugInfoSwitch())
+			team.loadTierIII(self.Teams, team.qualifiedForPlayoffs(), awqiMean, apqiMean, self.Teams.index(team), debugInfoSwitch())
 	
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:

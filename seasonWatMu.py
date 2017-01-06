@@ -17,7 +17,7 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0, debugInfo=
 	
 	## so we just ignore anything that isnt in the topmost playoff
 	## bracket
-	thisTeamSeed = currentTeam.getSeasonRank()
+	thisTeamSeed = season.Teams.index(currentTeam)+1
 	## find the seed of the current team we are looking for
 	if(thisTeamSeed not in alreadyInBracket):
 		alreadyInBracket.append(thisTeamSeed)
@@ -68,6 +68,11 @@ class watMuSeason(Season):
 			## construct a team from each teamId, running the tierI
 			## load call automatically
 
+		for team in self.Teams:
+			team.loadTierII(self.Teams, self.Teams.index(team))
+			## calculate the stats for teams that depend on the stats of
+			## other teams in the league
+		
 		if(sortTeams == True):
 			## all of the criteria used to determine standings position can
 			## be calculated from first tier data
@@ -78,14 +83,13 @@ class watMuSeason(Season):
 			## the standings page
 			
 			## highest priority stat at the end
-			
-
-		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team))
-			## calculate the stats for teams that depend on the stats of
-			## other teams in the league
 		
-		self.topTeam = self.getTeamByPosition(1)
+		
+		for team in self.Teams:			
+			team.setLeagueRank(self.Teams.index(team))
+		
+		
+		self.topTeam = self.Teams[0]
 		## next work through the teams this one played and add their position
 		## numbers to the top playoff bracket, then look through their
 		## opponents and so on
@@ -111,62 +115,17 @@ class watMuSeason(Season):
 		## the number of teams in the league that we have covered in the
 		## first playoff bracket
 		
-		##while(True):
-			## cycle constantly until we have covered all of the playoff
-			## brackets in this league
-		##	totalTeams = self.getTotalPlayoffTeams()
-			## get a list of the team objects that made the playoffs
-			## (excluding teams that got DNQs because of forfeits or
-			## poor behaviour or whatever)
-		##	if(debugInfo):
-		##		print "total teams for %s: %i" % (self.seasonId, totalTeams)
-		##		print "teams so far: %i" % teamsSoFar
-		##	if(totalTeams > teamsSoFar):
-				## if we havent run past the end of the playoff teams,
-				## we are going to keep finding more playoff brackets
-		##		lastSeed = max(lastPlayoffBracket)
-				## we need to find the seeding number thats at the top
-				## of the next playoff bracket, so we will base it off
-				## of the team that was at the bottom of the previous
-				## one
-				
-		##		topOfNewBracket = self.getTeamByPosition(lastSeed+1)
-				## use the last seed to get the top seed in the next
-				## bracket
-		##		lastPlayoffBracket = getSeedsInBracket(topOfNewBracket, self, [])
-				## crawl the bracket
-		##		self.playoffBrackets.append(lastPlayoffBracket)
-				## attach the bracket to the list of brackets
-		##		teamsSoFar += len(lastPlayoffBracket)
-				## increment the counter
-		## Im not terribly confident in the reliability of this code to
-		## handle 100% of cases, but its low enough priority that it
-		## can be ignored for now
-		
-		## the top playoff bracket is all that really matters anyways
-		##	else:
-		##		break
-				## we reached the bottom of the league, no more brackets to crawl
-			
-		
 		awqiMean = 	self.getTeamStatAverage(Team.getAWQI)
 		apqiMean = self.getTeamStatAverage(Team.getAPQI)
-		adiffqiMean = self.getTeamStatAverage(Team.getADiffQI)
 		
 		for team in self.Teams:
 			
 			if(team.getSeasonRank() in self.topPlayoffBracket):
-				team.loadTierIII(self.Teams, True, awqiMean, apqiMean, adiffqiMean)
+				team.loadTierIII(self.Teams, True, awqiMean, apqiMean, team.getSeasonRank())
 			else:
-				team.loadTierIII(self.Teams, False, awqiMean, apqiMean, adiffqiMean)
+				team.loadTierIII(self.Teams, False, awqiMean, apqiMean, team.getSeasonRank())
 			## load the stats that depend on the tier II stats of other
 			## teams (usually adjusting stats for the season mean)
-		##for team in self.Teams:
-		##	team.loadTierIV(self.Teams, seasonsList)
-			## load the players
-		
-		## this should be done after all seasons have been loaded, so
-		## we dont get things all screwy
 		
 	def loadTierIV(self, seasonsList):
 		for team in self.Teams:

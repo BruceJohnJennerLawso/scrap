@@ -24,69 +24,15 @@ class watMuTeam(Team):
 		
 	## Tier I load call ########################################################	
 	
-	
-	
-	
-
 	def calculateTierIStats(self, debugInfo=False):
-		self.seasonPlusMinus = 0
-		self.seasonTotalGoalsFor = 0
-		self.seasonTotalGoalsAgainst = 0	
-		
-		self.seasonPointsTotal = 0	
-		self.seasonWins = 0
-		self.seasonTies = 0
-		self.seasonLosses = 0
-		self.seasonGamesNotYetPlayed = 0
-		
-		self.averageGameClosenessIndex = 0
 		
 		self.averageSOC = 0	
 		for game in self.getSeasonGames():
 			self.averageSOC += game.getSOC()
-			self.seasonTotalGoalsFor += game.getGoalsFor()
-			self.seasonTotalGoalsAgainst += game.getGoalsAgainst()
-			self.seasonPlusMinus += game.getGoalDifferential()
-			self.seasonPointsTotal += game.getPointsEarned(self.getSeasonIndex())
 			
-			if(game.Won()):
-				self.seasonWins += 1
-			elif(game.Tied()):
-				self.seasonTies += 1
-			elif(game.Lost()):
-				self.seasonLosses += 1
-			elif(game.notYetPlayed()):
-				self.seasonGamesNotYetPlayed += 1
-			
-			self.averageGameClosenessIndex += game.getGameClosenessIndex()	
 		if(debugInfo):	
 			print "Total season games %i" % self.totalSeasonGames
-		self.averageGameClosenessIndex /= float(self.totalSeasonGamesPlayed)
 		self.averageSOC /= float(self.totalSeasonGames)		
-
-		
-		## now time to tally the stats we have available for the playoffs
-		
-		self.playoffWins = 0
-		##self.totalPlayoffGames = 0
-		self.playoffWinPercentage = 0.000
-		
-		self.playoffGoalsFor = 0
-		self.playoffGoalsAgainst = 0
-		self.playoffPlusMinus = 0
-		self.playoffAverageGoalDifferential = 0.000
-		
-		if(self.qualifiedForPlayoffs() == True):
-			self.totalPlayoffGames = len(self.getPlayoffGames())
-			for game in self.getPlayoffGames():		
-				if(game.Won()):
-					self.playoffWins += 1
-				self.playoffGoalsFor += game.getGoalsFor()
-				self.playoffGoalsAgainst += game.getGoalsAgainst()	
-				self.playoffPlusMinus += (game.getGoalsFor() - game.getGoalsAgainst())			
-			self.playoffWinPercentage = float(self.playoffWins)/float(self.totalPlayoffGames)
-			self.playoffAverageGoalDifferential = self.playoffPlusMinus/float(self.totalPlayoffGames)
-		
 		
 	
 	def loadSeasonGames(self, rows, debugInfo=False):
@@ -98,7 +44,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in seasonData:
-			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="regularSeason"), self.getSeasonIndex()))
+			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.getGameSelectConditions("regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		if(debugInfo):
 			print "seasonData: "
@@ -154,7 +100,7 @@ class watMuTeam(Team):
 		## slice out only the rows that contain games data and ignore games that
 		## have not yet been played
 		for game in playoffData:
-			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.gamesSelectConditions(part="none"), self.getSeasonIndex()))
+			playoffGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.getGameSelectConditions("everything"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 
 		if(debugInfo):
@@ -225,19 +171,8 @@ class watMuTeam(Team):
 		## the only value that needs to be defined here (instead of in the
 		## parent team type), since SOC only applies in waterloo intramurals
 		
-	def getDescriptionString(self):
-		output = "%s, %s (season %i) (%s)\n" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId)
-		output += "Rank: %i (%i)%s, Pts %i Pct: %.3f,\n" % (self.getSeasonRank(), self.totalSeasonGames, self.getRecordString(), self.getSeasonPointsTotal(), self.getPointsPercentage()) 
-		output += "AGCI: %.3f, MaAWQI %.3f, MaAPQI %.3f\n" % (self.getAGCI(), self.getMaAWQI(), self.getMaAPQI())
-		output += "Defence Quality Index %.3f, Offence Quality Index %.3f Diff Quality Index %.3f\n" % (self.getDefenceQualityIndex(), self.getOffenceQualityIndex(), self.getDiffQualityIndex())
-		output += "ADQI %.3f, AOQI %.3f, MaADiffQI %.3f, SQI %.3f, CPQI %.3f, DQM %.3f\n" % (self.getADQI(), self.getAOQI(), self.getMaADiffQI(), self.getSQI(), self.getCPQI(), self.getDQM()) 
-		output += "Offense: %.3f, Defense %.3f, +/- %i, Average SOC of %.3f\n" % (self.getSeasonGoalsForAverage(), self.getSeasonGoalsAgainstAverage(), self.seasonPlusMinus, self.getSeasonAverageSOC()) 
-		output += "Playoff Win %% of %.3f\n" % self.getPlayoffWinPercentage()
-		output += "Playoff Offence %.3f, Playoff Defence %.3f, Playoff Avg. Goal Diff %.3f\n" % (self.getPlayoffGoalsForAverage(), self.getPlayoffGoalsAgainstAverage(), self.getPlayoffAverageGoalDifferential())
-		output += "CPQI %.3f, (%.3f/%.3f) front/back (%.3f FBS)" % (self.getSeasonPart([seasonParts.gamesSelectConditions(part="regularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="firstHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getSeasonPart([seasonParts.gamesSelectConditions(part="secondHalfRegularSeason"),seasonParts.gamesSelectConditions(part="none")]).getAverageForStat(Game.getCPQI), self.getFrontBackSplit())
-		return output
-		## I should really line break this so it fits into a terminal with less
-		## than 850 columns nicely
+	def getDescriptionHeader(self):	
+		return "%s, %s (season %i) (%s)\nMade real playoffs = %r, Average SOC of %.3f" % (self.getTeamName(), self.getSeasonId(), self.getSeasonIndex(), self.levelId, self.realPlayoffs, self.getSeasonAverageSOC())
 	
 	
 	def getSeasonIndex(self):
@@ -298,7 +233,7 @@ class watMuTeam(Team):
 		return output
 
 	def getRecordString(self):
-		return "(%s-%s-%s)" % (self.seasonWins, self.seasonLosses, self.seasonTies)
+		return "(%s-%s-%s)" % (self.getSeasonWinsTotal(), self.getSeasonLossTotal(), self.getSeasonTiesTotal())
 		## typical hockey stat used for decades
 
 	def calculatePlayoffSuccessRating(self):
