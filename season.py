@@ -13,9 +13,13 @@ class Season(Team):
 		self.seasonId = seasonId
 		self.leagueId = leagueId
 		self.levelId = levelId
-	
+
+	def getLeagueId(self):
+		return self.leagueId
+
 	def getSeasonId(self):
 		return self.seasonId
+
 	
 	def getTotalNumberOfTeams(self):
 		## total teams in the league playing this season
