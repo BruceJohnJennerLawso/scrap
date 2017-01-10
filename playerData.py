@@ -6,6 +6,8 @@ from outputs import *
 
 from collections import Counter
 
+def moduleId():
+	return "playerData"
 
 if(__name__ == "__main__"):
 		

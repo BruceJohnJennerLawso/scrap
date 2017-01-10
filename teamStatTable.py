@@ -8,7 +8,8 @@ from sys import argv
 from outputs import *
 
 
-
+def moduleId():
+	return "teamStatTable"
 
 if(__name__ == "__main__"):
 	leagueId = argv[1]

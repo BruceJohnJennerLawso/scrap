@@ -6,6 +6,9 @@
 from sys import argv
 from outputs import *
 
+def moduleId():
+	return "teamSummary"
+
 if(__name__ == "__main__"):
 		
 	leagueId = argv[1]

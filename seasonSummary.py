@@ -9,6 +9,8 @@ from distStats import *
 from scipy.stats import norm
 import math
 
+def moduleId():
+	return "seasonSummary"
 
 if(__name__ == "__main__"):
 		

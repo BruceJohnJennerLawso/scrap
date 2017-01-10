@@ -4,7 +4,7 @@
 ################################################################################
 
 import matplotlib
-matplotlib.use('Agg')
+
 ## begone ye horrible display environment errors
 
 from sys import argv
@@ -16,6 +16,9 @@ import multiprocessing as mp
 ## I cant remember exactly what this was needed for, its some very specific
 ## aspect of graphing with matplotlib or something
 
+
+def moduleId():
+	return "readata"
 
 def getDependentStatContainers(seasons, leagueId, levelId):
 	return [getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\

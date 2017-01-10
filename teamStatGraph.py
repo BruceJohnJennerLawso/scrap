@@ -9,6 +9,9 @@ from outputs import *
 
 import statSelect
 
+def moduleId():
+	return "teamStatGraph"
+
 if(__name__ == "__main__"):
 	leagueId = argv[1]
 	## ie 'watMu'
