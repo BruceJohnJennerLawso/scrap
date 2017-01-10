@@ -37,13 +37,16 @@ def getModuleByName(moduleName):
 	return []
 	## intentional crash here
 
+def getModuleDescription(module):
+	pass
+
 def help():
 	## Oh wont you pleaaaaaase pleaaaaaaaaaaase help meeeee
 	print "Scrap Version %s" % ("blah")
 	
 	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
 	
-	print "Currently loaded %i seasons for %i teams in %i leagues" % (len(seasons), len(flatTeams), len(set([ssn.getLeagueId() for ssn in seasons])))
+	print "Currently loaded %i seasons in %i leagues with %i teams" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))
 
 if(__name__ == "scrap"):
 	printTitleBox("The Scrap Project")
