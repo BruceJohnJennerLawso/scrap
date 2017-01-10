@@ -31,7 +31,7 @@ class nhlSeason(Season):
 
 		print "Starting Tier II for nhl season %s" % seasonId
 		for team in self.Teams:
-			team.loadTierII(self.Teams, debugInfoSwitch())
+			team.loadTierII(self.Teams)
 
 		print "Sorting teams for nhl season %s" % seasonId
 	

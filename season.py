@@ -17,6 +17,9 @@ class Season(Team):
 	def getLeagueId(self):
 		return self.leagueId
 
+	def getLevelId(self):
+		return self.levelId
+
 	def getSeasonId(self):
 		return self.seasonId
 

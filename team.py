@@ -146,6 +146,7 @@ class Team(object):
 		
 		
 		if(debugInfo):
+			print "debugInfo=%r" % debugInfo
 			print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
 		
 			

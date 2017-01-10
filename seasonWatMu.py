@@ -69,7 +69,7 @@ class watMuSeason(Season):
 			## load call automatically
 
 		for team in self.Teams:
-			team.loadTierII(self.Teams, self.Teams.index(team))
+			team.loadTierII(self.Teams)
 			## calculate the stats for teams that depend on the stats of
 			## other teams in the league
 		
