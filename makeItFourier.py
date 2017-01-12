@@ -7,11 +7,22 @@ import scipy.fftpack
 
 import math
 
-def graph2dData(x, y, colour):
+def graph2dData(x, y, colour, zoomXAxis=False, threshold=0.001):
 	fig, ax = plt.subplots()
 	ax.plot(x, y, colour)
 	plt.xlabel("x")
-	plt.axis([min(x), max(x), min(y), 1.2*max(y)])
+	
+	
+	xMax = max(x)
+	for xVal in sorted(x):
+		if((xVal <= threshold)and(xVal < xMax)):
+			xMax = xVal
+		else:
+			break
+	xMax *= 1.2	
+	
+	
+	plt.axis([min(x), xMax, min(y), 1.2*max(y)])
 	plt.show()
 	plt.close()
 
@@ -25,7 +36,7 @@ def graphFourierTransform(x, y):
 	xf = np.linspace(0.0, 1.0/(4.0*T), N/2)
 	print "xf, len %i, [%f, %f]" % ( len(xf), min(xf), max(xf))
 	graph2dData(x, y, 'g')
-	graph2dData(xf, 2.0/N * np.abs(yf[:N//2]), 'b')
+	graph2dData(xf, 2.0/N * np.abs(yf[:N//2]), 'b', True)
 
 	
 def boxcar(x):
@@ -53,7 +64,7 @@ def getSampleXYRanges(yFunc, numSamplePoints, rangeWidth, rangeCentre, xComp=1.0
 	x = np.linspace(rangeCentre-(N*T)/2.0, rangeCentre+(N*T)/2.0, N)
 	##y = np.sin(50.0 * 2.0*np.pi*x) + 0.5*np.sin(80.0 * 2.0*np.pi*x)
 	y = [yFunc(xComp*xVal) for xVal in x]
-
+	return x, y
 
 
 if(__name__ == "__main__"):
