@@ -2,7 +2,7 @@
 ## an object wrapper for all of the params that scrap needs ####################
 ## in order to run #############################################################
 ################################################################################
-
+from outputs import *
 
 class scrapParams(object):
 	def __init__(self, leagueId, levelId, playoffTeamsOnly=False, teamNames=[], runMode="Linear"):

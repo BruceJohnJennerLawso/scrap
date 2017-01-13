@@ -6,6 +6,9 @@
 
 from statContainer import *
 
+
+
+
 	
 def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, debugInfo=False):
 	

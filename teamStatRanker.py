@@ -4,7 +4,7 @@
 
 
 from sys import argv
-from outputs import *
+from scrapParam import *
 
 import statSelect
 

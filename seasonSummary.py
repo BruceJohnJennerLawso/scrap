@@ -3,7 +3,7 @@
 ################################################################################
 
 from sys import argv
-from outputs import *
+from scrapParam import *
 import team
 from distStats import *
 from scipy.stats import norm

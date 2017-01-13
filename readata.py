@@ -10,7 +10,7 @@ import matplotlib
 from sys import argv
 import time
 import sys
-from outputs import *
+from scrapParam import *
 import multiprocessing as mp
 
 ## I cant remember exactly what this was needed for, its some very specific

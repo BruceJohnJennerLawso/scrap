@@ -3,7 +3,7 @@
 ################################################################################
 
 from sys import argv
-from outputs import *
+from scrapParam import *
 
 from collections import Counter
 

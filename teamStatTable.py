@@ -5,7 +5,7 @@
 
 
 from sys import argv
-from outputs import *
+from scrapParam import *
 
 
 def moduleId():

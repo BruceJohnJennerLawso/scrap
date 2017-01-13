@@ -2,13 +2,13 @@
 ## the scrap console: imported in the standard python interpreter ##############
 ################################################################################
 from sys import argv
-from outputs import *
+from scrapParam import *
 
 import team
 
 from distStats import *
 from scipy.stats import norm
-from scrapParam import *
+
 
 import statSelect
 
@@ -53,7 +53,7 @@ if(__name__ == "scrap"):
 	seasons = []
 	##seasons += getAllSeasons('watMu', 'beginner') + getAllSeasons('watMu', 'intermediate') + getAllSeasons('watMu', 'advanced') + getAllSeasons('watMu', 'allstar')		
 	##seasons += getAllSeasons('wha', 'everything')
-	seasons += getAllSeasons('nhl', 'the2010s')
+	seasons += getAllSeasons('nhl', '2017')
 	
 	params = scrapParams('nhl', 'everything')
 	clearTerminal()

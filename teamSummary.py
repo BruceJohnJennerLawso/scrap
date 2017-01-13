@@ -4,10 +4,13 @@
 ################################################################################
 
 from sys import argv
-from outputs import *
+from scrapParam import *
 
 def moduleId():
 	return "teamSummary"
+
+
+
 
 if(__name__ == "__main__"):
 		
