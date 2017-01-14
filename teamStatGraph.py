@@ -12,6 +12,26 @@ import statSelect
 def moduleId():
 	return "teamStatGraph"
 
+
+def task(seasons, parameters):
+	
+	if(parameters.getPlayoffTeamsOnly()):
+		thing = 'PlayoffTeam'
+	else:
+		thing = 'Total'
+	
+	independent = statSelect.getTargetStatContainer(parameters.getIndependentStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
+	print "Independent"
+	independent.printStatBounds()
+	dependent = statSelect.getTargetStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
+	print "Dependent"
+	dependent.printStatBounds()
+	for var in [independent, dependent]:
+		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(parameters.getPlayoffTeamsOnly()),'./results/%s/%s/histograms' % (parameters.getLeagueId(), parameters.getLevelId()), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
+	plotScatterplot(independent.getShortStatName(), dependent.getShortStatName(), '%s\nby %s\nfor %s, %s' % (dependent.getLongStatName(), independent.getLongStatName(), parameters.getLeagueId(), parameters.getLevelId()), independent.getStat(parameters.getPlayoffTeamsOnly()), dependent.getStat(parameters.getPlayoffTeamsOnly()), './results/%s/%s/%sBy' % (parameters.getLeagueId(), parameters.getLevelId(), dependent.getShortStatName()), '%s' % independent.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), independent.getShortStatName()))		
+
+
+
 if(__name__ == "__main__"):
 	leagueId = argv[1]
 	## ie 'watMu'
@@ -42,17 +62,6 @@ if(__name__ == "__main__"):
 
 	seasonIndexList = getSeasonIndexList(leagueId)
 
-	##for season in seasons:
-	##	for team in season.Teams:
-	##		if(team.getTeamName() == teamName):
-	##			print "%i,%.3f" % (int(season.seasonId),team.getCPQI())
+	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], dependentStat, independentStat)
 
-	independent = statSelect.getTargetStatContainer(independentStat, seasons, leagueId, levelId)
-	print "Independent"
-	independent.printStatBounds()
-	dependent = statSelect.getTargetStatContainer(dependentStat, seasons, leagueId, levelId)
-	print "Dependent"
-	dependent.printStatBounds()
-	for var in [independent, dependent]:
-		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(playoffTeamsOnly),'./results/%s/%s/histograms' % (leagueId, levelId), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
-	plotScatterplot(independent.getShortStatName(), dependent.getShortStatName(), '%s\nby %s\nfor %s, %s' % (dependent.getLongStatName(), independent.getLongStatName(), leagueId, levelId), independent.getStat(playoffTeamsOnly), dependent.getStat(playoffTeamsOnly), './results/%s/%s/%sBy' % (leagueId, levelId, dependent.getShortStatName()), '%s' % independent.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), independent.getShortStatName()))		
+	task(seasons, parameters)

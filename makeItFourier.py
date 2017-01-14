@@ -7,6 +7,8 @@ import scipy.fftpack
 
 import math
 
+import scrap
+
 def graph2dData(x, y, colour, zoomXAxis=False, threshold=0.001):
 	fig, ax = plt.subplots()
 	ax.plot(x, y, colour)

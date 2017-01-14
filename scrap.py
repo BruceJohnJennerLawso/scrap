@@ -6,6 +6,8 @@ from scrapParam import *
 
 import team
 
+import __main__
+
 from distStats import *
 from scipy.stats import norm
 
@@ -40,26 +42,40 @@ def getModuleByName(moduleName):
 def getModuleDescription(module):
 	pass
 
+def task(module):
+	module.task(seasons, params)
+
+def info():
+	print "Scrap Version %s" % ("blah")
+	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
+	print "Currently loaded %i seasons in %i leagues with %i teams\n" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))	
+
 def help():
 	## Oh wont you pleaaaaaase pleaaaaaaaaaaase help meeeee
-	print "Scrap Version %s" % ("blah")
-	
-	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
-	
-	print "Currently loaded %i seasons in %i leagues with %i teams" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))
-	print ""
+
+	print "Scrap Parameters are stored in scrap.params, run scrap.params.info()"
+	print "for information about the params\n"
+	print "Run scrap.printModulesList() for a list of the available task modules\n"
+	print "scrap.[module name].getModuleDescription() for information on what"
+	print "each module does\n"
+	print "scrap.task([module name]) will run whatever that module is supposed to do"
 
 if(__name__ == "scrap"):
 	printTitleBox("The Scrap Project")
 	seasons = []
 	##seasons += getAllSeasons('watMu', 'beginner') + getAllSeasons('watMu', 'intermediate') + getAllSeasons('watMu', 'advanced') + getAllSeasons('watMu', 'allstar')		
 	##seasons += getAllSeasons('wha', 'everything')
-	seasons += getAllSeasons('nhl', '2017')
+	seasons += getAllSeasons('nhl', 'postLockout')
 	
 	params = scrapParams('nhl', 'everything')
-	clearTerminal()
-	printTitleBox("The Scrap Project")
-	print "type scrap.help() for information on how to use this module\n"	
+	
+	if(hasattr(__main__, '__file__')):
+		print "scrap imported in external module"
+		clearTerminal()
+	else:
+		clearTerminal()
+		printTitleBox("The Scrap Project")
+		print "type scrap.help() for information on how to use this module\nscrap.info() for diagnostics"	
 	
 	
 elif(__name__ == "__main__"):
