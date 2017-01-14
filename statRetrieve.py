@@ -63,7 +63,8 @@ def getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, indep
 		dependentContainer.printContainer()		 	
 	
 	modelDiffsContainer = independentContainer.getModelDiffs(dependentContainer)
-	
-	return modelDiffsContainer	
-
+	if(consistencyCheck(independentContainer, dependentContainer)):
+		return modelDiffsContainer	
+	else:
+		print "Consistency check for model diffs container %s*%s failed" % (independentContainer.getShortStatName(), dependentContainer.getShortStatName())
 

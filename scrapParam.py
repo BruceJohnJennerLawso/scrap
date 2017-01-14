@@ -26,3 +26,11 @@ class scrapParams(object):
 		
 	def getRunMode(self):
 		return self.runMode
+
+	def getOutputType(self):
+		try:
+			with open('./data/%s/%s/seasons.csv' % (self.leagueId, self.levelId), 'rb') as foo:
+				outputType = "generic"
+		except IOError:		
+			outputType = "detailed"	
+		return outputType

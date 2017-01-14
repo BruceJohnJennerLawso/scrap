@@ -47,6 +47,7 @@ def help():
 	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
 	
 	print "Currently loaded %i seasons in %i leagues with %i teams" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))
+	print ""
 
 if(__name__ == "scrap"):
 	printTitleBox("The Scrap Project")

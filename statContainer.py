@@ -28,6 +28,9 @@ class statContainer:
 		for i in range(0, len(statList)):
 			statRow = [statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]]
 			self.dataPoints.append(statRow)
+		self.sortDataPointsByStandard()
+
+	def sortDataPointsByStandard(self):
 		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[1])
 		## first sort by the teamID, ie 'TOR', 'MTL, alphabetically'
 		self.dataPoints = sorted(self.dataPoints, key=lambda list: list[2])
@@ -48,6 +51,7 @@ class statContainer:
 		## this is so that when we retrieve the data to analyze relative to a
 		## different set of data about the team, data points about a particular
 		## team will map one to one with the other data set
+
 
 	def getModelDiffs(self, dependentContainer, playoffTeamsOnly=False):
 		## so generate our model here based on the data provided in each
@@ -87,16 +91,16 @@ class statContainer:
 
 	def printContainer(self):
 		print "[",
-		for i in self.dataPoints:
+		for i in self.getDataPoints():
 			print i
 		print "]"
 
 	def printDataPoint(self, pt):
 		print "%.3f " % pt[0], pt[1:]
 
-	def printSortedContainer(self, onlyPlayoffTeams=False, teamsFilter=[]):
+	def printSortedContainer(self, onlyPlayoffTeams=False):
 		print "[",
-		for i in sorted(self.dataPoints, key=lambda list: list[0]):
+		for i in sorted(self.getDataPoints(), key=lambda list: list[0]):
 			if(onlyPlayoffTeams == True):
 				if(i[4] == True):
 					self.printDataPoint(i)
