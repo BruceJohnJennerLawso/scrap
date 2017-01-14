@@ -22,7 +22,7 @@ class scrapParams(object):
 		print "playoffTeamsOnly = %r" % (self.getPlayoffTeamsOnly())
 		print "teamNames = ", self.getTeamNames()
 		print "runMode = %s" % (self.getRunMode())
-		print "targetStatName = %s" %s (self.getTargetStatName())
+		print "targetStatName = %s" % (self.getTargetStatName())
 		
 	def getLeagueId(self):
 		return self.leagueId
