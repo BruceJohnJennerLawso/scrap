@@ -10,6 +10,8 @@ from team import *
 def getStatInformation(targetStatName):
 	if(targetStatName == "PlusMinus"):
 		return (Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential')
+	elif(targetStatName == "Wins"):
+		return (Team.getSeasonWinsTotal, 'Wins', 'Season Wins')		
 	elif(targetStatName == "GDA"):
 		return (Team.getSeasonGoalDifferentialAverage, 'GDA', 'Season Goal Differential Average')
 	elif(targetStatName == "AOQI"):
@@ -57,7 +59,7 @@ def getStatInformation(targetStatName):
 		raise TypeError("Unable to find stat type for name %s" % targetStatName)
 
 def getSeasonStatNames():
-	seasonStats = ["PlusMinus", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI",\
+	seasonStats = ["PlusMinus", "Wins", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI",\
 	"MaAPQI", "Points", "Offence", "Defence", "DQM", "CPQI", "ODQSplit",\
 	"FBS", "GDA"]
 	return seasonStats

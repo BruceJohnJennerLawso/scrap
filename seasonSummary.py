@@ -12,28 +12,11 @@ import math
 def moduleId():
 	return "seasonSummary"
 
-if(__name__ == "__main__"):
-		
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
-	
-	
-	##teamNames = 0
-	##if(len(argv) > 3):
-	##	teamNames = argv[3:len(argv)]
-	
-	## ids needed to open the proper folders and csv files contained within
-	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	franchises = False
-
-	seasonIndexList = getSeasonIndexList(leagueId)
+def task(seasons, parameters):
+	##seasonIndexList = getSeasonIndexList(leagueId)
 
 	print "################################################################################"
-	print "%s#############################################################" % levelId
+	print "%s#############################################################" % parameters.getLevelId()
 	print "################################################################################\n"		
 	
 	predictedTotal = 0
@@ -51,3 +34,28 @@ if(__name__ == "__main__"):
 		actualTotal += actual
 		
 	print "%s oneGoal Team totals: predicted %i, actual %i" % (levelId, predictedTotal, actualTotal)
+
+
+
+
+if(__name__ == "__main__"):
+		
+	leagueId = argv[1]
+	## ie 'watMu'
+	levelId = argv[2]
+	## ie 'beginner'
+	
+	
+	##teamNames = 0
+	##if(len(argv) > 3):
+	##	teamNames = argv[3:len(argv)]
+	
+	## ids needed to open the proper folders and csv files contained within
+	seasons = getAllSeasons(leagueId, levelId)
+	## retrieve list of seasons from the manifest for this level
+	##franchises = getFranchiseList(leagueId, levelId)
+	franchises = False
+	
+	parameters = scrapParams(leagueId, levelId)
+	
+	task(seasons, parameters)

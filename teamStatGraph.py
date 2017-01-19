@@ -15,6 +15,8 @@ def moduleId():
 
 def task(seasons, parameters):
 	
+	parameters.info()
+	
 	if(parameters.getPlayoffTeamsOnly()):
 		thing = 'PlayoffTeam'
 	else:
@@ -62,6 +64,6 @@ if(__name__ == "__main__"):
 
 	seasonIndexList = getSeasonIndexList(leagueId)
 
-	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], dependentStat, independentStat)
+	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], dependentStat, independentStatName=independentStat)
 
 	task(seasons, parameters)
