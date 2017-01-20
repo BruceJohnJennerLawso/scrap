@@ -7,7 +7,9 @@ import scipy.fftpack
 
 import math
 
-import scrap
+##import scrap
+
+from scrapParam import *
 
 def graph2dData(x, y, colour, zoomXAxis=False, threshold=0.001):
 	fig, ax = plt.subplots()
@@ -68,6 +70,8 @@ def getSampleXYRanges(yFunc, numSamplePoints, rangeWidth, rangeCentre, xComp=1.0
 	y = [yFunc(xComp*xVal) for xVal in x]
 	return x, y
 
+
+def getScrapCPQI
 
 if(__name__ == "__main__"):
 

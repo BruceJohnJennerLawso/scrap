@@ -47,7 +47,7 @@ if(__name__ == "__main__"):
 	##franchises = False
 
 	##seasonIndexList = getSeasonIndexList(leagueId)
-	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], targetStatName, independentStatName="None", sortOrder=_sortOrder)
+	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], "Linear", targetStatName, independentStatName="None", sortOrder=_sortOrder)
 	task(seasons, parameters)
 	
 		

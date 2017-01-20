@@ -29,7 +29,8 @@ def task(seasons, parameters):
 					if(team.getTeamName() == teamName):
 						print team.getDescriptionString(), "\n"			
 						
-						if(parameters.getOutputType() == "detailed"):
+						##if(parameters.getOutputType() == "detailed"):
+						if(False):							
 							i = 1
 							print team.getSeasonGames()
 							for gm in team.getSeasonGames():
