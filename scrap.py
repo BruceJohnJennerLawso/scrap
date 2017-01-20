@@ -25,11 +25,12 @@ import playerSummary
 import seasonSummary
 
 def getModulesList():
-	return [teamStatTable, teamStatGraph, teamSummary, readata, teamStatRanker, playerData, seasonSummary]
+	return [teamStatTable, teamStatGraph, teamSummary, readata, teamStatRanker, playerSummary, seasonSummary]
 
 def printModulesList():
 	for module in getModulesList():
-		print module.__name__, module
+		print module.__name__
+		print module
 		##print module.moduleId()
 
 def getModuleByName(moduleName):
@@ -40,9 +41,19 @@ def getModuleByName(moduleName):
 	return []
 	## intentional crash here
 
-def getModuleDescription(module):
-	pass
+def printModuleDescription(module):
+	print module.description()
 
+def modules():
+	for module in getModulesList():
+		print module.__name__
+		
+def modulesInfo():
+	for module in getModulesList():
+		print module.__name__
+		print module
+		printModuleDescription(module)		
+		
 def task(module):
 	module.task(seasons, params)
 
@@ -50,13 +61,15 @@ def info():
 	print "Scrap Version %s" % ("blah")
 	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
 	print "Currently loaded %i seasons in %i leagues with %i teams\n" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))	
+	print "Available task modules:\n"
+	modules()
 
 def help():
 	## Oh wont you pleaaaaaase pleaaaaaaaaaaase help meeeee
 
 	print "Scrap Parameters are stored in scrap.params, run scrap.params.info()"
 	print "for information about the params\n"
-	print "Run scrap.printModulesList() for a list of the available task modules\n"
+	print "Run scrap.modules() for a list of the available task modules\n"
 	print "scrap.[module name].getModuleDescription() for information on what"
 	print "each module does\n"
 	print "scrap.task([module name]) will run whatever that module is supposed to do"

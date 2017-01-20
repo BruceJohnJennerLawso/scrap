@@ -11,6 +11,17 @@ import statSelect
 def moduleId():
 	return "teamStatRanker"
 
+def description():
+	output = "The teamStatRanker module is used to obtain a list of the team stat values\n"
+	output += "for a given stat, sort the list by stat value, and print the list in\n"
+	output += "a prettified form to the console\n"
+	return output
+
+def exampleCommand():
+	output = "python teamStatRanker.py nhl everything desc False CPQI\n"
+	output += "python teamStatRanker.py nhl everything desc True POT\n"
+	return output
+
 def task(seasons, parameters):
 	seasons = filterSeasonsByParams(seasons, parameters)
 	
@@ -23,33 +34,31 @@ def task(seasons, parameters):
 
 
 if(__name__ == "__main__"):
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
-	_sortOrder = argv[3]
-	if(_sortOrder not in ['asc', 'desc']):
-		print "Bad sort order argument %s supplied, must be either asc or desc" % _sortOrder
 	
-	playoffTeamsOnly = argv[4]
-	if(playoffTeamsOnly == "True"):
-		playoffTeamsOnly = True
-	elif(playoffTeamsOnly == "False"):
-		playoffTeamsOnly = False
-	else:
-		print "Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly	
+	try:
+		leagueId = argv[1]
+		## ie 'watMu'
+		levelId = argv[2]
+		## ie 'beginner'
+		_sortOrder = argv[3]
+		if(_sortOrder not in ['asc', 'desc']):
+			print "Bad sort order argument %s supplied, must be either asc or desc" % _sortOrder
 	
-	targetStatName = argv[5]
+		playoffTeamsOnly = argv[4]
+		if(playoffTeamsOnly == "True"):
+			playoffTeamsOnly = True
+		elif(playoffTeamsOnly == "False"):
+			playoffTeamsOnly = False
+		else:
+			print "Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly	
 	
+		targetStatName = argv[5]
+	except IndexError:
+		print exampleCommand()
+		exit()
 	
-	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	##franchises = False
-
-	##seasonIndexList = getSeasonIndexList(leagueId)
-	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], "Linear", targetStatName, independentStatName="None", sortOrder=_sortOrder)
+	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], [], "Linear", targetStatName, independentStatName="None", sortOrder=_sortOrder)
 	task(seasons, parameters)
 	
 		

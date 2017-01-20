@@ -10,43 +10,56 @@ from collections import Counter
 def moduleId():
 	return "playerSummary"
 
+def description():
+	output = "The playerSummary module is used to print the team description string\n"
+	output += "to console for every team that the player provided can be found on the\n"
+	output += "roster, along with an average of the players teams stats over his/her\n"
+	output += "career\n"
+	return output
+
+def exampleCommand():
+	output = "python playerSummary.py pro 'Jacques Plante'\n"
+	output += "python playerSummary.py watMu 'Evan Brotherston'"
+	return output
+
 def task(seasons, parameters):
 	
 	##seasons = filterSeasonsByParams(seasons, parameters)
 	## NOT going to filter here, because we want complete data about a player
+	for playerName in parameters.getPlayerNames():
+		if(parameters.getLeagueId() == 'watMu'):
+			playah = watMuPlayer(playerName, seasons)
+		else:
+			playah = nhlPlayer(playerName, seasons)		
 	
-	if(parameters.getLeagueId() == 'watMu'):
-		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
-		playah = watMuPlayer(playerName, seasons)
-	else:
-		##seasons = getAllSeasons(leagueId, 'everything')
-		seasons = getAllSeasons('wha', 'everything') + getAllSeasons('nhl', 'everything')
-		playah = nhlPlayer(playerName, seasons)		
+		print playah.getStatsLine(), '\n\n'
 	
-	print playah.getStatsLine(), '\n\n'
-	
-	for team in reversed(playah.playedFor):
-		print team.getDescriptionString(), '\n'
+		for team in reversed(playah.playedFor):
+			print team.getDescriptionString(), '\n'
 
 if(__name__ == "__main__"):
-		
-	leagueId = argv[1]
-	## ie 'watMu'
 	
-	playerName = argv[2]
-	## ie 'Jim Brooks'
+	
+	try:	
+		leagueId = argv[1]
+		## ie 'watMu'
+	
+		playerName = argv[2]
+		## ie 'Jim Brooks'
+	except IndexError:
+		print exampleCommand()
+		exit()
+	
 	
 	if(leagueId == 'watMu'):
 		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
-		playah = watMuPlayer(playerName, seasons)
+	elif(leagueId == 'all'):
+		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar') +getAllSeasons('wha', 'everything') + getAllSeasons('nhl', 'everything')			
+		## uber experimental, cannot reccomend trying this just yet
 	else:
 		##seasons = getAllSeasons(leagueId, 'everything')
 		seasons = getAllSeasons('wha', 'everything') + getAllSeasons('nhl', 'everything')
-		playah = nhlPlayer(playerName, seasons)		
 	
-	print playah.getStatsLine(), '\n\n'
-	
-	for team in reversed(playah.playedFor):
-		print team.getDescriptionString(), '\n'
-
+	parameters = scrapParams(leagueId, 'everything', False, [], [playerName])
+	task(seasons, parameters)
 	

@@ -12,6 +12,17 @@ import math
 def moduleId():
 	return "seasonSummary"
 
+def description():
+	output = "The seasonSummary module is used to list league-wide season-by-season\n"
+	output += "stats and display them in the console."
+	output += "Predicted vs Actual 1 goal quality teams are listed for each season,\n"
+	output += "and the overall total based on the season distribution of CPQI (assumed normal)\n"
+	return output
+
+def exampleCommand():
+	output = "python seasonSummary.py nhl everything"
+	return output
+
 def task(seasons, parameters):
 	##seasonIndexList = getSeasonIndexList(leagueId)
 

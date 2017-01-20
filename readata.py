@@ -20,6 +20,18 @@ import multiprocessing as mp
 def moduleId():
 	return "readata"
 
+def description():
+	output = "The readata module outputs a full spread of graphs for playoff data\n"
+	output += "as predicted by regular season data. Very slow (nearly 1 hour run time\n"
+	output += "on an x86 quad core i3 for only one seasons data)\n"
+	output += "readata is ideally on the way towards being phased out of the project,\n"
+	output += "Mostly due to those performance issues\n"
+	return output
+
+def exampleCommand():
+	output = "python readata.py nhl everything Linear"
+	return output
+
 def getDependentStatContainers(seasons, leagueId, levelId):
 	return [getStatContainer(Team.getPlayoffAverageGoalDifferential, 'playoffAvgPlusMinus', 'Playoff Average Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPlayoffSuccessRating, 'playoffSuccess', 'Playoff Success', seasons, leagueId, levelId),\
@@ -190,17 +202,22 @@ def task(seasons, parameters):
 
 if(__name__ == "__main__"):
 	
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
-	runMode = argv[3]
+	
+	try:
+		leagueId = argv[1]
+		## ie 'watMu'
+		levelId = argv[2]
+		## ie 'beginner'
+		runMode = argv[3]
+	except IndexError:
+		print exampleCommand()
+		exit()
 
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level
 	##franchises = getFranchiseList(leagueId, levelId)
-	parameters = scrapParams(leagueId, levelId, False, [], runMode)
+	parameters = scrapParams(leagueId, levelId, False, [], [], runMode)
 	
 	task(seasons, parameters)
 

@@ -12,6 +12,15 @@ import statSelect
 def moduleId():
 	return "teamStatGraph"
 
+def description():
+	output = "The teamStatGraph module is used to create an on-demand graph of a given\n"
+	output += "pair of stats for the range of seasons &/or teams specified\n"
+	return output
+
+def exampleCommand():
+	output = "python teamStatGraph.py nhl everything True PGDT CPQI*GDA\n"
+	output += "(where PGDT is dependent, CPQI*GDA is independent)"
+	return output
 
 def task(seasons, parameters):
 	
@@ -37,35 +46,30 @@ def task(seasons, parameters):
 
 
 if(__name__ == "__main__"):
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
-	independentStat = argv[4]
 	
-	dependentStat = argv[5]
+	try:
+		leagueId = argv[1]
+		## ie 'watMu'
+		levelId = argv[2]
+		## ie 'beginner'
 	
-	playoffTeamsOnly = argv[3]
-	if(playoffTeamsOnly == "True"):
-		playoffTeamsOnly = True
-	elif(playoffTeamsOnly == "False"):
-		playoffTeamsOnly = False
-	else:
-		print "Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly
+		dependentStat = argv[4]
 	
-	if(playoffTeamsOnly):
-		thing = 'PlayoffTeam'
-	else:
-		thing = 'Total'
+		independentStat = argv[5]
 	
-	## ids needed to open the proper folders and csv files contained within
+		playoffTeamsOnly = argv[3]
+		if(playoffTeamsOnly == "True"):
+			playoffTeamsOnly = True
+		elif(playoffTeamsOnly == "False"):
+			playoffTeamsOnly = False
+		else:
+			print "Unable to parse third option 'playoffTeamsOnly' provided as %s" % playoffTeamsOnly
+			raise IndexError
+	except IndexError:
+		print exampleCommand()
+		
 	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	franchises = False
 
-	seasonIndexList = getSeasonIndexList(leagueId)
-
-	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], "Linear", dependentStat, independentStatName=independentStat)
+	parameters = scrapParams(leagueId, levelId, playoffTeamsOnly, [], [], "Linear", dependentStat, independentStatName=independentStat)
 
 	task(seasons, parameters)

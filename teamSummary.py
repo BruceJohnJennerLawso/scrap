@@ -9,6 +9,20 @@ from scrapParam import *
 def moduleId():
 	return "teamSummary"
 
+def description():
+	output = "The teamSummary module is used to print the team description string\n"
+	output += "to console for the spread of teams defined. The most common uses are\n"
+	output += "to display the team description for all teams in a given season, or to\n"
+	output += "display a teams description string over multiple seasons\n"
+	return output
+
+def exampleCommand():
+	output = "python teamSummary.py nhl everything\n"
+	output += "python teamSummary.py nhl 2016\n"
+	output += "python teamSummary.py nhl originalSix 'Montreal Canadiens' 'Toronto Maple Leafs'\n"
+	return output
+	
+	
 def task(seasons, parameters):
 
 	print parameters.getOutputType()
@@ -26,7 +40,7 @@ def task(seasons, parameters):
 				print team.getDescriptionString(), "\n"
 		
 		elif(parameters.getTeamNames() != []):
-			for teamName in teamNames:
+			for teamName in parameters.getTeamNames():
 				for team in season.Teams:
 					if(team.getTeamName() == teamName):
 						print team.getDescriptionString(), "\n"			
@@ -42,25 +56,21 @@ def task(seasons, parameters):
 						
 
 if(__name__ == "__main__"):
-		
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
 	
+	try:	
+		leagueId = argv[1]
+		## ie 'watMu'
+		levelId = argv[2]
+		## ie 'beginner'
+		teamNames = []
+		if(len(argv) > 3):
+			teamNames = argv[3:len(argv)]
 	
-	teamNames = []
-	if(len(argv) > 3):
-		teamNames = argv[3:len(argv)]
+	except IndexError:
+		print exampleCommand()
+		exit()
+	
 	
 	parameters = scrapParams(leagueId, levelId, False, teamNames)
-	
-	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	franchises = False
-
-	seasonIndexList = getSeasonIndexList(leagueId)
-	
 	task(seasons, parameters)
