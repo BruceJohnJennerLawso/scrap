@@ -9,18 +9,14 @@ from collections import Counter
 def moduleId():
 	return "playerData"
 
-if(__name__ == "__main__"):
-		
-	leagueId = argv[1]
-	## ie 'watMu'
-	
+def task(seasons, parameters):
 	## ids needed to open the proper folders and csv files contained within
-	seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
+
 	## retrieve list of seasons from the manifest for this level
 	##franchises = getFranchiseList(leagueId, levelId)
 	franchises = False
 	
-	seasonIndexList = getSeasonIndexList(leagueId)
+	##seasonIndexList = getSeasonIndexList(leagueId)
 	for season in seasons:
 		if(season.getSeasonId() == seasonId):
 			for team in season.Teams:
@@ -38,3 +34,17 @@ if(__name__ == "__main__"):
 					teamExpectedMawquee /= float(len(team.getPlayers()))
 					print "Team expected MaAWQI %.3f, Actual %.3f, diff %.3f" % (teamExpectedMawquee, team.getMaAWQI(), (team.getMaAWQI()-teamExpectedMawquee))
 					
+
+
+if(__name__ == "__main__"):
+		
+	leagueId = argv[1]
+	## ie 'watMu'
+	if(leagueId == "watMu"):
+		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
+	else:
+		seasons = getAllSeasons('nhl', 'everything') + getAllSeasons('wha', 'everything')
+
+	parameters = scrapParams(leagueId, levelId='everything')
+
+	task(seasons, parameters)

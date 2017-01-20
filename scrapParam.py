@@ -5,7 +5,7 @@
 from outputs import *
 
 class scrapParams(object):
-	def __init__(self, leagueId, levelId, playoffTeamsOnly=False, teamNames=[], runMode="Linear", targetStatName="CPQI", independentStatName="GDA"):
+	def __init__(self, leagueId, levelId, playoffTeamsOnly=False, teamNames=[], runMode="Linear", targetStatName="CPQI", independentStatName="GDA", sortOrder='desc'):
 		self.leagueId = leagueId
 		self.levelId = levelId
 		self.playoffTeamsOnly = playoffTeamsOnly
@@ -13,7 +13,7 @@ class scrapParams(object):
 		self.runMode = runMode
 		self.targetStatName = targetStatName
 		self.independentStatName = independentStatName
-	
+		self.sortOrder = sortOrder
 	
 	def info(self):
 		print "scrapParams object:"
@@ -23,6 +23,7 @@ class scrapParams(object):
 		print "teamNames = ", self.getTeamNames()
 		print "runMode = %s" % (self.getRunMode())
 		print "targetStatName = %s" % (self.getTargetStatName())
+		print "sortOrder = %s" % (self.getSortOrder())
 		
 	def getLeagueId(self):
 		return self.leagueId
@@ -48,6 +49,12 @@ class scrapParams(object):
 	def setIndependentStatName(self, newIndependentStatName):
 		self.independentStatName = newIndependentStatName
 	
+	def getSortOrder(self):
+		return self.sortOrder
+		
+	def setSortOrder(self, newSortOrder):
+		self.sortOrder = newSortOrder
+
 		
 	def getPlayoffTeamsOnly(self):
 		return self.playoffTeamsOnly

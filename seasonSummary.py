@@ -47,16 +47,9 @@ if(__name__ == "__main__"):
 	levelId = argv[2]
 	## ie 'beginner'
 	
-	
-	##teamNames = 0
-	##if(len(argv) > 3):
-	##	teamNames = argv[3:len(argv)]
-	
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	franchises = False
 	
 	parameters = scrapParams(leagueId, levelId)
 	
