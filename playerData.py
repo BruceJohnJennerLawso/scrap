@@ -11,10 +11,15 @@ def moduleId():
 
 def task(seasons, parameters):
 	## ids needed to open the proper folders and csv files contained within
+	
+	##seasons = filterSeasonsByParams(seasons, parameters)
+	## NOT going to do this, because we want alllll of the data
 
 	## retrieve list of seasons from the manifest for this level
 	##franchises = getFranchiseList(leagueId, levelId)
 	franchises = False
+	
+	
 	
 	##seasonIndexList = getSeasonIndexList(leagueId)
 	for season in seasons:

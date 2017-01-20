@@ -12,6 +12,8 @@ def moduleId():
 	return "teamStatRanker"
 
 def task(seasons, parameters):
+	seasons = filterSeasonsByParams(seasons, parameters)
+	
 	stat = statSelect.getTargetStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
 	if(parameters.getSortOrder() == 'asc'):
 		stat.printSortedContainer(parameters.getPlayoffTeamsOnly())

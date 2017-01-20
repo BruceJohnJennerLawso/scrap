@@ -15,6 +15,8 @@ def moduleId():
 
 def task(seasons, parameters):
 	
+	seasons = filterSeasonsByParams(seasons, parameters)
+	
 	parameters.info()
 	
 	if(parameters.getPlayoffTeamsOnly()):

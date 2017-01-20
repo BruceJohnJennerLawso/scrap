@@ -11,6 +11,10 @@ def moduleId():
 	return "playerSummary"
 
 def task(seasons, parameters):
+	
+	##seasons = filterSeasonsByParams(seasons, parameters)
+	## NOT going to filter here, because we want complete data about a player
+	
 	if(parameters.getLeagueId() == 'watMu'):
 		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
 		playah = watMuPlayer(playerName, seasons)

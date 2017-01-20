@@ -15,6 +15,8 @@ def moduleId():
 def task(seasons, parameters):
 	##seasonIndexList = getSeasonIndexList(leagueId)
 
+	seasons = filterSeasonsByParams(seasons, parameters)
+
 	printTitleBox(parameters.getLevelId())
 
 	##print "################################################################################"

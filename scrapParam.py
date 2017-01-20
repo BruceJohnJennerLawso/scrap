@@ -76,6 +76,9 @@ class scrapParams(object):
 def watMuLevels():
 	return ['beginner', 'intermediate', 'advanced', 'allstar']
 
+def proLeagues():
+	return ['wha', 'nhl']
+
 def filterSeasonsByParams(seasons, parameters):
 	output = []
 	
@@ -97,7 +100,7 @@ def filterSeasonsByParams(seasons, parameters):
 						outputs += [season]
 			if(len(output) > 0):
 				return output
-	else:
+	elif(parameters.getLeagueId() in proLeagues()):
 		## nhl, wha, what have you
 		
 		seasonIdList = []
@@ -116,7 +119,7 @@ def filterSeasonsByParams(seasons, parameters):
 			## check to see if the levelId supplied can be matched to a seasonId
 			## in the index list
 			levelIdIsSeason = False
-			with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
+			with open('./data/%s/seasonIndex.csv' % (parameters.getLeagueId()), 'rb') as foo:
 				if(parameters.getLevelId() in [f.rstrip() for f in foo]):
 					levelIdIsSeason = True
 			
@@ -130,3 +133,5 @@ def filterSeasonsByParams(seasons, parameters):
 			else:
 				print "Unable to make parameter set work with seasons, params:"
 				params.info()
+	elif(parameters.getLeagueId() == "all"):
+		return seasons
