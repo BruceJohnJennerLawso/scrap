@@ -15,9 +15,11 @@ def moduleId():
 def task(seasons, parameters):
 	##seasonIndexList = getSeasonIndexList(leagueId)
 
-	print "################################################################################"
-	print "%s#############################################################" % parameters.getLevelId()
-	print "################################################################################\n"		
+	printTitleBox(parameters.getLevelId())
+
+	##print "################################################################################"
+	##print "%s#############################################################" % parameters.getLevelId()
+	##print "################################################################################\n"		
 	
 	predictedTotal = 0
 	actualTotal = 0
@@ -33,7 +35,7 @@ def task(seasons, parameters):
 		predictedTotal += prediction
 		actualTotal += actual
 		
-	print "%s oneGoal Team totals: predicted %i, actual %i" % (levelId, predictedTotal, actualTotal)
+	print "%s oneGoal Team totals: predicted %i, actual %i" % (parameters.getLevelId(), predictedTotal, actualTotal)
 
 
 
