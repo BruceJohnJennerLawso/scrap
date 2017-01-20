@@ -50,12 +50,16 @@ def task(seasons, parameters):
 
 
 if(__name__ == "__main__"):
-		
-	leagueId = argv[1]
-	## ie 'watMu'
-	levelId = argv[2]
-	## ie 'beginner'
 	
+	try:	
+		leagueId = argv[1]
+		## ie 'watMu'
+		levelId = argv[2]
+		## ie 'beginner'
+	except IndexError:
+		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
+		print exampleCommand()
+		exit()
 	## ids needed to open the proper folders and csv files contained within
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level

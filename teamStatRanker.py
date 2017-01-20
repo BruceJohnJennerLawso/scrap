@@ -54,6 +54,7 @@ if(__name__ == "__main__"):
 	
 		targetStatName = argv[5]
 	except IndexError:
+		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
 		print exampleCommand()
 		exit()
 	

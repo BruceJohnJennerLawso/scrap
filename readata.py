@@ -210,6 +210,7 @@ if(__name__ == "__main__"):
 		## ie 'beginner'
 		runMode = argv[3]
 	except IndexError:
+		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
 		print exampleCommand()
 		exit()
 

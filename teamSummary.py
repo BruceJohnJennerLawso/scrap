@@ -67,6 +67,7 @@ if(__name__ == "__main__"):
 			teamNames = argv[3:len(argv)]
 	
 	except IndexError:
+		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
 		print exampleCommand()
 		exit()
 	
