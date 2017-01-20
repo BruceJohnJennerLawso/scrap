@@ -13,6 +13,8 @@ def task(seasons, parameters):
 
 	print parameters.getOutputType()
 
+	seasons = filterSeasonsByParams(seasons, parameters)
+
 	for season in seasons:
 		if(parameters.getTeamNames() == []):	
 			
@@ -29,8 +31,7 @@ def task(seasons, parameters):
 					if(team.getTeamName() == teamName):
 						print team.getDescriptionString(), "\n"			
 						
-						##if(parameters.getOutputType() == "detailed"):
-						if(False):							
+						if(parameters.getOutputType() == "detailed"):
 							i = 1
 							print team.getSeasonGames()
 							for gm in team.getSeasonGames():

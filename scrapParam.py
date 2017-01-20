@@ -72,3 +72,61 @@ class scrapParams(object):
 		except IOError:		
 			outputType = "detailed"	
 		return outputType
+
+def watMuLevels():
+	return ['beginner', 'intermediate', 'advanced', 'allstar']
+
+def filterSeasonsByParams(seasons, parameters):
+	output = []
+	
+	if(parameters.getLeagueId() == "watMu"):
+		if(parameters.getLevelId() in watMuLevels()):
+			for season in seasons:
+				if(season.getLeagueId() == "watMu"):
+					if(season.getLevelId() == parameters.getLevelId()):
+						outputs += [season]
+						## if the level is correct, and the league is right
+						## (remember watMu seasons will be mixed with nhl & wha)
+						## append it to our output
+			if(len(output) > 0):
+				return output
+		else:
+			for season in seasons:
+				if(season.getLeagueId() == "watMu"):
+					if(season.getSeasonId() == parameters.getLevelId()):
+						outputs += [season]
+			if(len(output) > 0):
+				return output
+	else:
+		## nhl, wha, what have you
+		
+		seasonIdList = []
+		
+		try:
+			with open('./data/%s/%s/seasons.csv' % (parameters.getLeagueId(), parameters.getLevelId()), 'rb') as foo:
+				seasonIdList += [f.rstrip() for f in foo]
+			for season in seasons:
+				if(season.getLeagueId() == parameters.getLeagueId()):
+					if(season.getSeasonId() in seasonIdList):
+						output += [season]
+			if(len(output) > 0):
+				return output
+		except IOError:
+			## couldnt find a seasons manifest for what was supplied, so next we
+			## check to see if the levelId supplied can be matched to a seasonId
+			## in the index list
+			levelIdIsSeason = False
+			with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
+				if(parameters.getLevelId() in [f.rstrip() for f in foo]):
+					levelIdIsSeason = True
+			
+			if(levelIdIsSeason):
+				for season in seasons:
+					if(season.getLeagueId() == parameters.getLeagueId()):
+						if(season.getSeasonId() == parameters.getLevelId()):
+							output += [season]
+				if(len(output) > 0):
+					return output
+			else:
+				print "Unable to make parameter set work with seasons, params:"
+				params.info()

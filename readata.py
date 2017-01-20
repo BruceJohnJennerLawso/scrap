@@ -181,6 +181,15 @@ def runLinear(seasons, leagueId, levelId):
 	##graphPlayoffDefenceRelations(seasons, leagueId, levelId)
 
 
+def task(seasons, parameters):
+	if(parameters.getRunMode() == "Multithread"):
+		runMultithreaded(seasons, parameters.getLeagueId(), parameters.getLevelId())
+	elif(parameters.getRunMode() == "Linear"):
+		runLinear(seasons, parameters.getLeagueId(), parameters.getLevelId())
+	else:
+		print "Unable to parse runMode argument %s, exiting" % parameters.getRunMode()
+	
+
 if(__name__ == "__main__"):
 	
 	leagueId = argv[1]
@@ -193,13 +202,10 @@ if(__name__ == "__main__"):
 	seasons = getAllSeasons(leagueId, levelId)
 	## retrieve list of seasons from the manifest for this level
 	##franchises = getFranchiseList(leagueId, levelId)
+	parameters = scrapParams(leagueId, levelId, False, [], runMode)
 	
-	if(runMode == "Multithread"):
-		runMultithreaded(seasons, leagueId, levelId)
-	elif(runMode == "Linear"):
-		runLinear(seasons, leagueId, levelId)
-	else:
-		print "Unable to parse runMode argument %s, exiting" % runMode
+	task(seasons, parameters)
+
 
 
 

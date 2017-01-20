@@ -10,6 +10,20 @@ from collections import Counter
 def moduleId():
 	return "playerSummary"
 
+def task(seasons, parameters):
+	if(parameters.getLeagueId() == 'watMu'):
+		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
+		playah = watMuPlayer(playerName, seasons)
+	else:
+		##seasons = getAllSeasons(leagueId, 'everything')
+		seasons = getAllSeasons('wha', 'everything') + getAllSeasons('nhl', 'everything')
+		playah = nhlPlayer(playerName, seasons)		
+	
+	print playah.getStatsLine(), '\n\n'
+	
+	for team in reversed(playah.playedFor):
+		print team.getDescriptionString(), '\n'
+
 if(__name__ == "__main__"):
 		
 	leagueId = argv[1]
@@ -28,7 +42,6 @@ if(__name__ == "__main__"):
 	
 	seasonIndexList = getSeasonIndexList(leagueId)
 	
-	
 	if(leagueId == 'watMu'):
 		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
 		playah = watMuPlayer(playerName, seasons)
@@ -41,4 +54,5 @@ if(__name__ == "__main__"):
 	
 	for team in reversed(playah.playedFor):
 		print team.getDescriptionString(), '\n'
+
 	

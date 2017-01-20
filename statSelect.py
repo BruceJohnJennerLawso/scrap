@@ -7,7 +7,7 @@ from statRetrieve import *
 from team import *
 
 
-def getStatInformation(targetStatName):
+def getTeamStatInformation(targetStatName):
 	if(targetStatName == "PlusMinus"):
 		return (Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential')
 	elif(targetStatName == "Wins"):
@@ -58,33 +58,33 @@ def getStatInformation(targetStatName):
 	else:
 		raise TypeError("Unable to find stat type for name %s" % targetStatName)
 
-def getSeasonStatNames():
+def getTeamSeasonStatNames():
 	seasonStats = ["PlusMinus", "Wins", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI",\
 	"MaAPQI", "Points", "Offence", "Defence", "DQM", "CPQI", "ODQSplit",\
 	"FBS", "GDA"]
 	return seasonStats
 
-def getPlayoffStatNames():
+def getTeamPlayoffStatNames():
 	playoffStats = ["POT", "PDT", "PGDT", "PlayoffOffence", "PlayoffDefence", "PlayoffSuccess"]	
 	return playoffStats
 
-def getStatNames():
-	return getSeasonStatNames()+getPlayoffStatNames()
+def getTeamStatNames():
+	return getTeamSeasonStatNames()+getTeamPlayoffStatNames()
 
 def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 	
-	statNames = getStatNames()
+	statNames = getTeamStatNames()
 	
 	try:
-		statCall, shortStatName, longStatName = getStatInformation(targetStatName)
+		statCall, shortStatName, longStatName = getTeamStatInformation(targetStatName)
 		return getStatContainer(statCall, shortStatName, longStatName, seasons, leagueId, levelId)
 	except TypeError:
 		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
 		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
 		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
 			## wordy, but its a rather specific requirement
-			dependentStatCall, dependentShortStatName, dependentLongStatName = getStatInformation(targetStatName.rsplit('*')[0])
-			independentStatCall, independentShortStatName, independentLongStatName = getStatInformation(targetStatName.rsplit('*')[1])
+			dependentStatCall, dependentShortStatName, dependentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[0])
+			independentStatCall, independentShortStatName, independentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[1])
 			return getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortStatName, independentLongStatName, dependentStatCall, dependentShortStatName, dependentLongStatName)
 		else:
 			print "Stat name %s not found, available options are:\n\n" % targetStatName

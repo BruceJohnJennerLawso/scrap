@@ -66,7 +66,7 @@ if(__name__ == "scrap"):
 	seasons = []
 	##seasons += getAllSeasons('watMu', 'beginner') + getAllSeasons('watMu', 'intermediate') + getAllSeasons('watMu', 'advanced') + getAllSeasons('watMu', 'allstar')		
 	##seasons += getAllSeasons('wha', 'everything')
-	seasons += getAllSeasons('nhl', 'postLockout')
+	seasons += getAllSeasons('nhl', 'postLockoutCurrent')
 	
 	params = scrapParams('nhl', 'everything')
 	
