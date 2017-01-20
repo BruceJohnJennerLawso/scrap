@@ -77,9 +77,18 @@ def help():
 if(__name__ == "scrap"):
 	printTitleBox("The Scrap Project")
 	seasons = []
+	
+	loadParams = []
+	with open('./data/consoleLoadManifest.csv', 'rb') as foo:
+		loadParams = [[line.split(',')[0], line.split(',')[1].rstrip()] for line in foo]
+		print loadParams
+	for seasonBlock in loadParams:
+		seasons += getAllSeasons(seasonBlock[0], seasonBlock[1])	
+	
+	
 	##seasons += getAllSeasons('watMu', 'beginner') + getAllSeasons('watMu', 'intermediate') + getAllSeasons('watMu', 'advanced') + getAllSeasons('watMu', 'allstar')		
 	##seasons += getAllSeasons('wha', 'everything')
-	seasons += getAllSeasons('nhl', 'postLockoutCurrent')
+	##seasons += getAllSeasons('nhl', 'current')
 	
 	params = scrapParams('nhl', 'everything')
 	
