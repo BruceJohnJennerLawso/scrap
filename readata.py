@@ -3,7 +3,7 @@
 ## and make sure everything is there and comprehensible ########################
 ################################################################################
 
-import matplotlib
+##import matplotlib
 
 ## begone ye horrible display environment errors
 
@@ -34,14 +34,12 @@ def getIndependentStatContainers(seasons, leagueId, levelId):
 	return [getStatContainer(Team.getSeasonGoalsForAverage, 'Offence', 'Average Goals For Per Game', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonGoalsAgainstAverage, 'Defence', 'Average Goals Against Per Game', seasons, leagueId, levelId),\
 	getStatContainer(Team.getAGCI, 'AGCI', 'Average Game Closeness Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADQI, 'MaADQI', 'Mean Adjusted Average Defence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAOQI, 'MaAOQI', 'Mean Adjusted Average Offence Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaADiffQI, 'MaADiffQI', 'Mean Adjusted Average Goal Differential Offence Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getADQI, 'ADQI', 'Average Defence Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getAOQI, 'AOQI', 'Average Offence Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getCPQI, 'CPQI', 'Complete Play Quality Index', seasons, leagueId, levelId),\
-	getStatContainer(Team.getMaAQualAboveDiff, 'MaAQualAboveDiff', 'Mean Adjusted Average Goal Differential Offence Quality Index above Goal Differential', seasons, leagueId, levelId),\
 	getStatContainer(Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index', seasons, leagueId, levelId),\
 	getStatContainer(Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential (+/-)', seasons, leagueId, levelId),\
-	getStatContainer(Team.getSQI, 'SQI', 'Situation Quality Index', seasons, leagueId, levelId),\
+	getStatContainer(Team.getDQM, 'DQM', 'Diff Quality Margin', seasons, leagueId, levelId),\
 	getStatContainer(Team.getPointsPercentage, 'PtsPct', 'Points Percentage', seasons, leagueId, levelId)]			 	
 
 def graphPlayoffSuccessRelations(seasons, leagueId, levelId):

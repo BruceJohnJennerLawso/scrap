@@ -36,16 +36,6 @@ if(__name__ == "__main__"):
 	playerName = argv[2]
 	## ie 'Jim Brooks'
 	
-	## ids needed to open the proper folders and csv files contained within
-	##seasons = getAllSeasons(leagueId, levelId)
-	## retrieve list of seasons from the manifest for this level
-	##franchises = getFranchiseList(leagueId, levelId)
-	
-	
-	franchises = False
-	
-	seasonIndexList = getSeasonIndexList(leagueId)
-	
 	if(leagueId == 'watMu'):
 		seasons = getAllSeasons(leagueId, 'beginner') + getAllSeasons(leagueId, 'intermediate') + getAllSeasons(leagueId, 'advanced') + getAllSeasons(leagueId, 'allstar')		
 		playah = watMuPlayer(playerName, seasons)

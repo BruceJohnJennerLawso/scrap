@@ -62,6 +62,9 @@ class scrapParams(object):
 	def getTeamNames(self):
 		return self.teamNames
 		
+	def setTeamNames(self, newTeamNames):
+		self.teamNames = newTeamNames
+	
 	def getRunMode(self):
 		return self.runMode
 

@@ -4,11 +4,11 @@
 ## generate smaller subsets of the graphs at once ##############################
 ################################################################################
 
+
+from statSelect import *
 from seasonWatMu import *
 from seasonNhl import *
 from graphtools import *
-
-from statRetrieve import *
 
 import sys  
 import time

@@ -21,7 +21,7 @@ import teamStatGraph
 import teamSummary
 import readata
 import teamStatRanker
-import playerData
+import playerSummary
 import seasonSummary
 
 def getModulesList():

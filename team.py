@@ -11,8 +11,6 @@ import game
 import gameNhl
 import gameWatMu
 
-import seasonParts
-
 def getSeasonIndexList(leagueId, debugInfo=False):
 	## opens up the file containing the names of every season in our data and
 	## assigns an  integer to each one so that we can keep the order straight,

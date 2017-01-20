@@ -5,7 +5,7 @@
 from sys import argv
 from scrapParam import *
 import team
-from distStats import *
+##from distStats import *
 from scipy.stats import norm
 import math
 
@@ -19,10 +19,6 @@ def task(seasons, parameters):
 
 	printTitleBox(parameters.getLevelId())
 
-	##print "################################################################################"
-	##print "%s#############################################################" % parameters.getLevelId()
-	##print "################################################################################\n"		
-	
 	predictedTotal = 0
 	actualTotal = 0
 	for season in seasons:	

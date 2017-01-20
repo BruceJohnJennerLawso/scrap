@@ -11,6 +11,12 @@ from scrapParam import *
 def moduleId():
 	return "teamStatTable"
 
+def task(seasons, parameters):
+	for season in seasons:
+		for team in season.Teams:
+			if(team.getTeamName() in parameters.getTeamNames()):
+				print "%i,%.3f" % (int(season.seasonId),team.getCPQI())
+
 if(__name__ == "__main__"):
 	leagueId = argv[1]
 	## ie 'watMu'
@@ -26,7 +32,5 @@ if(__name__ == "__main__"):
 
 	seasonIndexList = getSeasonIndexList(leagueId)
 
-	for season in seasons:
-		for team in season.Teams:
-			if(team.getTeamName() == teamName):
-				print "%i,%.3f" % (int(season.seasonId),team.getCPQI())
+	parameters = scrapParams(leagueId, levelId, False, [teamName])
+	task(seasons, parameters)
