@@ -14,6 +14,7 @@ from gameProcessing import *
 
 from multiprocessing import Process
 
+import numpy
 
 def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, seasonGames, playoffRoundLengths, playoffGames, rosterSize, rosterRows):
 	## once we have the data about the team in question, usually in string form,

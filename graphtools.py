@@ -63,6 +63,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 	_output = "%s/%s/corrs.csv" % (output_path, output_directory)	
 	
 	try:
+
 		corrmat.to_csv(_output)
 	except IOError:
 		print "Oh Well"
@@ -161,11 +162,12 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.axvline(x=distMedian, ymin=0.0, ymax = plotMax, linewidth=1, color='r', alpha=0.8)
 	plt.axvline(x=distVar, ymin=0.0, ymax = plotMax, linewidth=1, color='g', alpha=0.8)		
 	
-	n, bins, patches = plt.hist(values, binCount, normed=0, facecolor='blue', alpha = 0.55)
+	n, bins, patches = plt.hist(values, binCount, normed=1, facecolor='blue', alpha = 0.55)
 	## bins are the endpoints of bins
 	
 	## n are the respective counts for those bins
 	
+
 	plotMax = snapToNearestTen(max(n))
 	
 	
@@ -325,6 +327,20 @@ if(__name__ == "__main__"):
 	print testValues
 	print "[%.3f, %.3f]" % (lower, upper)
 	
+	bullshitValues = []
+	for i in range(0, 1000000):
+		##bullshitValues.append(np.random.weibull(a=1.0))
+		bullshitValues.append((1.0/5.1)*np.random.weibull(a=1.0, size=(10,50) ))
+	
+	
+	
+	for val in bullshitValues:
+		val *= 1.0
+	print type(bullshitValues)
+	##print bullshitValues
+	
+	plotHistogram('value', 'count', 'histogram of weibull distribution, n = 10000', bullshitValues, './results', 'weibull', 'bullshit.png')
+	
 def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
 	n=len(x_values)
@@ -349,7 +365,6 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	##print "x values ", x_values, "End of x values\n\n"
 	##print "y values", y_values, "End of y values"
 	modifiers =  [0.5, 1.0, 1.50]
-	
 	
 	for k in modifiers:
 		for l in modifiers:
