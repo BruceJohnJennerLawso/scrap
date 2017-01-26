@@ -327,19 +327,115 @@ if(__name__ == "__main__"):
 	print testValues
 	print "[%.3f, %.3f]" % (lower, upper)
 	
+	
+	
+	
+	
+	
+	
+	def weibullDist(x, a, lam):
+		output = (a/lam)
+		output *= (x/lam)**(a-1.0)
+		output *= exp((x/lam)**a)
+		
+		return output
+	
+	
+	def expDist(x, a, x0, sigma):
+		return a*(exp(-(x/x0))/x0)
+	
+	xPdf = [1.0, 3.0, 9.0, 10.0, 20.0, 30.0, 40.0, 60.0,120.0]
+	yPdf = [0.05,0.04, 0.03,0.0285, 0.024, 0.0215, 0.02001, 0.0176, 0.015]
+	
+	
+	
+	a=1.1
+	x0 = 0.0
+	sigma = 1.0
+	
+	#lam = 0.1
+	
+	ableToFit = True
+	try:
+		popt,pcov = curve_fit(expDist,xPdf, yPdf, p0=[a,x0, sigma])
+		##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
+		print "Fitted exponential curve to data with params, ", popt
+	except RuntimeError:	
+		print "Unable to fit curve"
+		ableToFit = False
+		
+	print len(popt)
+	
+	##lam *= 0.5
+	##lam = (1.0/5.1)
+	
+		
+	plt.plot(xPdf, yPdf, 'rs')
+
+	print "a %f, lambda %f" % (popt[0], popt[1])
+
+	
+	print popt, len(popt), type(popt), type(popt[0]), popt[0], popt[1]
+	print xPdf
+	print yPdf
+	print [expDist(xVal, popt[0], popt[1], popt[2]) for xVal in xPdf]
+
+
+
+	xSamples = np.arange(0.1, 120, 200)
+	##print xSamples
+	plt.plot(xSamples, [expDist(xVal, *popt) for xVal in xSamples], 'c')
+	
+	plt.xlabel('value')
+	plt.ylabel('pdf')
+	plt.title('About as simple as it gets, folks')
+	plt.grid(True)
+	plt.savefig("./results/weibull/weibullfit.png")
+	plt.show()
+	plt.close()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	bullshitValues = []
-	for i in range(0, 1000000):
-		##bullshitValues.append(np.random.weibull(a=1.0))
-		bullshitValues.append((1.0/5.1)*np.random.weibull(a=1.0, size=(10,50) ))
 	
 	
+	aVal = 100
+	sigmaVal = 4.0
 	
-	for val in bullshitValues:
-		val *= 1.0
-	print type(bullshitValues)
+	for i in range(0, 10000):
+		bullshitValues.append(aVal*np.random.exponential(1.0/sigmaVal))
+		##bullshitValues.append(popt[1]*np.random.weibull(popt[0]))	
+	nparr = np.array(bullshitValues)
+	print nparr.shape
+	
+	##for i in range(len(a)-1):
+	##	bullshitValues = [val for sublist in bullshitValues for val in sublist]
+	##	nparr = np.array(bullshitValues)
+	##	print "Flattened values by 1 dimension, current array dimensions are now ",
+	##	print nparr.shape	
+	##print type(bullshitValues)
 	##print bullshitValues
 	
-	plotHistogram('value', 'count', 'histogram of weibull distribution, n = 10000', bullshitValues, './results', 'weibull', 'bullshit.png')
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	plotHistogram('value', 'count', 'histogram of weibull distribution', bullshitValues, './results', 'weibull', 'bullshit.png')
 	
 def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, output_directory, output_filename, minShow='foo', maxShow='bar', binCount=39):
 	## TLDR, takes a set of values and histograms them, whoop whop
