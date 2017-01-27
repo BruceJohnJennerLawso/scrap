@@ -19,7 +19,7 @@ import math
 
 import pylab
 import distStats
-from distStats import *
+from distModel import *
 
 import pandas as pd
 import seaborn as sns
