@@ -3,10 +3,14 @@
 ## data set by curve fitting ###################################################
 ################################################################################
 import matplotlib
-##matplotlib.use('Agg')
+if(__name__ != "__main__"):
+	matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
+
+from scipy.optimize import curve_fit
+from scipy import asarray as ar,exp
 
 
 import math
@@ -41,50 +45,71 @@ class distributionModel(object):
 		
 class uniformModel(distributionModel):
 	def __init__(self, data):
-		super(uniformModel, self).init(data)
+		super(uniformModel, self).__init__(data)
 
 		mean = Mean(self.getDataSet())		
 		sigma = standardDeviation(self.getDataSet())
 		
+		b = max(self.getDataSet())
+		a = min(self.getDataSet())
+		
+		
+		##def uniDist(x, a, b):
+		##	if(type(x) == list):
+		##		pass
+		##	if((x >= a)and(x <= b)):
+		##		return float(1.0/float(b-a))
+		##	else:
+		##		return 0.000
+				
+		def uniDist(x, a, b):
+			return scipy.where((a<=x) & (x<=b), 1.0/float(b-a), 0.0)
+		
 		try:
+			
+			
+			
 			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-			popt,pcov = curve_fit(gaus,self.bins[:-1], self.n, p0=[1,mean])
+			popt,pcov = curve_fit(uniDist,self.bins[:-1], self.n, p0=[a, b])
 			##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-			print "Fitted gaussian curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], sigma)
+			print "Fitted uniform distribution pdf curve to data with params a %f, b %f, sigma %f" % (popt[0], popt[1], sigma)
 			self.a = popt[0]
-			self.x0 = popt[1]
+			self.b = popt[1]
 			##self.sigma = popt[2]
 			
 			self.fitted = True
 		except RuntimeError:
-			print "Unable to fit data to exponential curve"
+			print "Unable to fit data to uniform distribution pdf curve"
 			
 	def getModelpdf(self, x):
-		return self.a*(exp(-(x/self.x0))/self.x0)
-		
-	def getx0Value(self):
-		return self.x0
+		if((x >= self.a)and(x <= self.b)):
+			return float(1.0/float(self.b-self.a))
+		else:
+			return 0.000
 	
 	def getaValue(self):
 		return self.a
 		
-	def getLambdaValue(self):
-		return 1.0/float(self.getx0Value())
+	def getbValue(self):
+		return self.b	
+		
 	
 	def sampleFromDistribution(self):
-		return np.random.exponential(self.getx0Value())		
+		return np.random.uniform(a, b)	
 		
+	def distributionDescription(self):
+		return "Uniform distribution model, a = %.3f, b = %.3f" % (self.a, self.b)	
 		
 class exponentialModel(distributionModel):
 	def __init__(self, data):
-		super(exponentialModel, self).init(data)
+		super(exponentialModel, self).__init__(data)
 
 		mean = Mean(self.getDataSet())		
 		sigma = standardDeviation(self.getDataSet())
 		
 		try:
 			
-			def expDist(x, a, x0, sigma):
+			def expDist(x, a, x0):
 				return a*(exp(-(x/x0))/x0)
 			
 			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
@@ -114,23 +139,41 @@ class exponentialModel(distributionModel):
 	def sampleFromDistribution(self):
 		return np.random.exponential(self.getx0Value())
 		
-		
-		
+	def distributionDescription(self):		
+		return "Exponential model with rate parameter %.3f, mean at %.3f, a value of %.3f" % (self.getLambdaValue(), self.getx0Value(), self.getaValue())
 		
 if(__name__ == "__main__"):
 	import numpy as np
 	import scipy.stats as st
+	import random
 
-	
 
-	##data = [np.random.weibull(5.0) for i in range(10000)]
+	def expDist(x, a, x0):
+		return a*(exp(-(x/x0))/x0)
 
-	##data = [np.random.uniform(5.0, 10.0) for i in range(1000)]
+	##print type(expDist([1.0,2.0,3.0], 1.0, 0.03))
 
-	data = [np.random.exponential(0.03) for i in range(1000)]
+	choices = [0,1]
+	currentChoice = random.choice(choices)
 
-	print type(data)
-	distributions = [st.laplace, st.norm, st.exponweib, st.dweibull, st.invweibull, st.lognorm]
+
+	if(currentChoice == 0):
+		
+		generatedAValue = random.random()*5.0
+		generatedBValue = generatedAValue + (1.0 + random.random()*5.0)
+		print "generating uniform distribution, a=%f, b=%f" % (generatedAValue, generatedBValue)
+		
+		data = [np.random.uniform(5.0, 10.0) for i in range(4000)]
+	elif(currentChoice == 1):
+		generatedExponentialMean = 0.01 + random.random()*0.4
+		generatedAValue = random.random()*2.0
+		print "generating exponential distribution, mean=%.3f, a=%.3f" % (generatedExponentialMean, generatedAValue)
+		data = [generatedAValue*np.random.exponential(generatedExponentialMean) for i in range(20000)]		
+		
+	##data = [np.random.weibull(5.0) for i in range(4000)]
+
+
+	distributions = [st.laplace, st.norm, st.expon, st.dweibull, st.invweibull, st.lognorm, st.uniform]
 	mles = []
 
 	for distribution in distributions:
@@ -145,7 +188,16 @@ if(__name__ == "__main__"):
 	best_fit = sorted(zip(distributions, mles), key=lambda d: d[1])[0]
 	print 'Best fit reached using {}, MLE value: {}'.format(best_fit[0].name, best_fit[1])			
 
-
+	
+	if(best_fit[0].name == "uniform"):
+		print "Best fit uniform, building model..."
+		model = uniformModel(data)
+	elif(best_fit[0].name == "expon"):
+		print "Best fit exponential, building model..."
+		model = exponentialModel(data)
+	
+	print model.distributionDescription()
+	
 	n, bins, patches = plt.hist(data, len(data)/10, normed=1, facecolor='blue', alpha=0.75)
 
 	# add a 'best fit' line
