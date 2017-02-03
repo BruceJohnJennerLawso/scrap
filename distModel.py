@@ -41,7 +41,21 @@ class distributionModel(object):
 		
 	def modelWasFitted(self):
 		return self.fitted	
+
+
+	def getBinProb(self, x, binwidth):
+		## simple integral over [x,x+binwidth]
+		left = x
+		right = x+binwidth
 		
+		output = 0.0
+		
+		pdfVals = [self.getModelpdf(left), self.getModelpdf(right)]
+		
+		output += binwidth*min(pdfVals)
+		output += 0.5*binwidth*(max(pdfVals) - min(pdfVals))		
+		
+		return output
 		
 class uniformModel(distributionModel):
 	def __init__(self, data):
@@ -87,6 +101,9 @@ class uniformModel(distributionModel):
 		else:
 			return 0.000
 	
+		
+		
+	
 	def getaValue(self):
 		return self.a
 		
@@ -109,15 +126,14 @@ class exponentialModel(distributionModel):
 		
 		try:
 			
-			def expDist(x, a, x0):
-				return a*(exp(-(x/x0))/x0)
+			def expDist(x, x0):
+				return (exp(-(x/x0))/x0)
 			
 			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-			popt,pcov = curve_fit(expDist,self.bins[:-1], self.n, p0=[1,mean])
+			popt,pcov = curve_fit(expDist,self.bins[:-1], self.n, p0=[mean])
 			##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-			print "Fitted gaussian curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], sigma)
-			self.a = popt[0]
-			self.x0 = popt[1]
+			print "Fitted gaussian curve to data with params x0 %f, sigma %f" % (popt[0], sigma)
+			self.x0 = popt[0]
 			##self.sigma = popt[2]
 			
 			self.fitted = True
@@ -125,13 +141,10 @@ class exponentialModel(distributionModel):
 			print "Unable to fit data to exponential curve"
 			
 	def getModelpdf(self, x):
-		return self.a*(exp(-(x/self.x0))/self.x0)
+		return (exp(-(x/self.x0))/self.x0)
 		
 	def getx0Value(self):
 		return self.x0
-	
-	def getaValue(self):
-		return self.a
 		
 	def getLambdaValue(self):
 		return 1.0/float(self.getx0Value())
@@ -140,7 +153,9 @@ class exponentialModel(distributionModel):
 		return np.random.exponential(self.getx0Value())
 		
 	def distributionDescription(self):		
-		return "Exponential model with rate parameter %.3f, mean at %.3f, a value of %.3f" % (self.getLambdaValue(), self.getx0Value(), self.getaValue())
+		return "Exponential model with rate parameter %.3f, mean at %.3f" % (self.getLambdaValue(), self.getx0Value())
+	
+	
 		
 if(__name__ == "__main__"):
 	import numpy as np
@@ -157,21 +172,26 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
+	samples = 6400
+
+	currentChoice = 0
+
 	if(currentChoice == 0):
 		
 		generatedAValue = random.random()*5.0
 		generatedBValue = generatedAValue + (1.0 + random.random()*5.0)
 		print "generating uniform distribution, a=%f, b=%f" % (generatedAValue, generatedBValue)
 		
-		data = [np.random.uniform(5.0, 10.0) for i in range(4000)]
+		data = [np.random.uniform(generatedAValue, generatedBValue) for i in range(samples)]
 	elif(currentChoice == 1):
 		generatedExponentialMean = 0.01 + random.random()*0.4
-		generatedAValue = random.random()*2.0
+		##generatedAValue = random.random()*2.0
+		generatedAValue = 1.00
 		print "generating exponential distribution, mean=%.3f, a=%.3f" % (generatedExponentialMean, generatedAValue)
-		data = [generatedAValue*np.random.exponential(generatedExponentialMean) for i in range(20000)]		
+		data = [generatedAValue*np.random.exponential(generatedExponentialMean) for i in range(samples)]		
 		
 	##data = [np.random.weibull(5.0) for i in range(4000)]
-
+	print [min(data), max(data)]
 
 	distributions = [st.laplace, st.norm, st.expon, st.dweibull, st.invweibull, st.lognorm, st.uniform]
 	mles = []
@@ -198,7 +218,7 @@ if(__name__ == "__main__"):
 	
 	print model.distributionDescription()
 	
-	n, bins, patches = plt.hist(data, len(data)/10, normed=1, facecolor='blue', alpha=0.75)
+	n, bins, patches = plt.hist(data, len(data)/10, normed=0, facecolor='blue', alpha=0.75)
 
 	# add a 'best fit' line
 	##l = plt.plot(bins, n)
@@ -209,7 +229,39 @@ if(__name__ == "__main__"):
 	bounds = sorted([Mean(data) + 1.2*(min(data) - Mean(data)), Mean(data) + 1.2*(max(data)  - Mean(data))])
 	print "Absolute data bounds ", [min(data), max(data)]
 	print "Adjusted data bounds ", bounds
-	plt.axis([bounds[0], bounds[1], 0, max(n)*2.0])	
+	plt.axis([bounds[0], bounds[1], -0.1, max(n)*2.0])	
 	plt.grid(True)
 
+	def expDist(x, x0):
+		return (exp(-(x/x0))/x0)
+
+	def uniDist(x, a, b):
+		return scipy.where((a<=x) & (x<=b), 1.0/float(b-a), 0.0)
+
+	print model.getDatasetSize()
+	
+	binwidth = model.bins[:-1][1] - model.bins[:-1][0]	
+	
+	modelPrediction = [model.getDatasetSize()*model.getBinProb(binVal, binwidth) for binVal in bins[:-1]]
+	
+	plt.plot(model.bins[:-1], modelPrediction,'c-',label="Model Curve", alpha=0.75, linewidth=2)
+	
+	## hoping this is actually true
+	
+	
+	fivePt = [(min(model.bins[:-1]) + k*(max(model.bins[:-1]) - min(model.bins[:-1]))) for k in [0.0,0.25,0.50,0.75, 1.0] ]
+	print fivePt
+	print [model.getModelpdf(x) for x in fivePt]
+	if(currentChoice == 1):
+		## an exponential distribution was detected
+		generatedPrediction = [(0.5*binwidth*model.getDatasetSize()*(expDist(binVal, generatedExponentialMean) + expDist(binVal+binwidth, generatedExponentialMean))) for binVal in bins[:-1]]
+		
+		print "Exponential predicted min/max: ", [min(generatedPrediction), max(generatedPrediction), max(n for n in generatedPrediction if n!=max(generatedPrediction))]
+		plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
+	elif(currentChoice == 0):
+		generatedPrediction = [binwidth*model.getDatasetSize()*uniDist(binVal, generatedAValue, generatedBValue) for binVal in bins[:-1]]
+		
+		print "Uniform predicted min/max: ", [min(generatedPrediction), max(generatedPrediction)]
+		plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
+	plt.legend()
 	plt.show()
