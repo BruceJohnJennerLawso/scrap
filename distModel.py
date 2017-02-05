@@ -24,6 +24,7 @@ from distStats import *
 import scipy.stats as st
 import random
 
+np.seterr(all='warn')
 
 
 def gaus(x,a,x0,sigma):
@@ -75,9 +76,20 @@ class distributionModel(object):
 		output += 0.5*binwidth*(max(pdfVals) - min(pdfVals))		
 		output *= self.getDatasetSize()
 		return output		
+
+
+	def getpValue(self, test):
+		if(test == "K-S"):
+			if(self.getDistributionScipyId() == 'lognorm'):
+				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getSigmaValue(),))[1]		
+			else:
+				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId())[1]
+
 		
 class uniformModel(distributionModel):
-	def __init__(self, data, fitParameters=True, a=False, b=False):
+	
+	
+	def __init__(self, data, mleValue, fitParameters=True, a=False, b=False):
 		super(uniformModel, self).__init__(data)
 
 		mean = Mean(self.getDataSet())		
@@ -85,7 +97,7 @@ class uniformModel(distributionModel):
 		
 		self.b = max(self.getDataSet())
 		self.a = min(self.getDataSet())
-		
+		self.MLE = mleValue
 		
 		if(False in [a,b]):
 			fitParameters = True
@@ -110,6 +122,8 @@ class uniformModel(distributionModel):
 			except RuntimeError:
 				print "Unable to fit data to uniform distribution pdf curve"
 				raise
+			except Warning:
+				raise RuntimeError
 		else:
 			self.a = a
 			self.b = b		
@@ -121,7 +135,8 @@ class uniformModel(distributionModel):
 		else:
 			return 0.000
 	
-		
+	def getDistributionScipyId(self):
+		return 'uniform'	
 		
 	
 	def getaValue(self):
@@ -135,31 +150,44 @@ class uniformModel(distributionModel):
 		return np.random.uniform(a, b)	
 		
 	def distributionDescription(self):
-		return "Uniform distribution model, a = %.3f, b = %.3f" % (self.a, self.b)	
+		return "Uniform distribution model, a = %.3f, b = %.3f, p=%.7f" % (self.a, self.b, self.getpValue("K-S"))	
 		
 class exponentialModel(distributionModel):
-	def __init__(self, data):
+	def __init__(self, data, mleValue, fitParameters=True, mean=False):
 		super(exponentialModel, self).__init__(data)
 
 		mean = Mean(self.getDataSet())		
-		sigma = standardDeviation(self.getDataSet())
+		self.MLE = mleValue
 		
-		try:
+		if(False in [mean]):
+			fitParameters = True
 			
-			def expDist(x, x0):
-				return (exp(-(x/x0))/x0)
-			
-			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-			popt,pcov = curve_fit(expDist,self.bins[:-1], self.n, p0=[mean])
-			##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-			print "Fitted gaussian curve to data with params x0 %f, sigma %f" % (popt[0], sigma)
-			self.x0 = popt[0]
-			##self.sigma = popt[2]
-			
-			self.fitted = True
-		except RuntimeError:
-			print "Unable to fit data to exponential curve"
-			raise
+		if(fitParameters):
+		
+			try:
+					
+				def expDist(x, x0):
+					return (exp(-(x/x0))/x0)
+				
+				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
+				popt,pcov = curve_fit(expDist,self.bins[:-1], self.n, p0=[mean])
+				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
+				print "Fitted gaussian curve to data with params x0 %f" % (popt[0])
+				self.x0 = popt[0]
+				##self.sigma = popt[2]
+				
+				self.fitted = True
+			except RuntimeError:
+				print "Unable to fit data to exponential curve"
+				raise
+			except Warning:
+				raise RuntimeError
+
+
+	def getDistributionScipyId(self):
+		return 'expon'	
+	
+	
 	def getModelpdf(self, x):
 		return (exp(-(x/self.x0))/self.x0)
 		
@@ -173,37 +201,51 @@ class exponentialModel(distributionModel):
 		return np.random.exponential(self.getx0Value())
 		
 	def distributionDescription(self):		
-		return "Exponential model with rate parameter %.3f, mean at %.3f" % (self.getLambdaValue(), self.getx0Value())
+		return "Exponential model with rate parameter %.3f, mean at %.3f, p=%.7f" % (self.getLambdaValue(), self.getx0Value(), self.getpValue("K-S"))
 	
 	
 
 
 
 class normalModel(distributionModel):
-	def __init__(self, data):
+	def __init__(self, data, mleValue, fitParameters=True, mean=False, sigma=False):
 		super(normalModel, self).__init__(data)
 
 		mean = Mean(self.getDataSet())		
 		sigma = standardDeviation(self.getDataSet())
 		
-		try:
+		self.MLE = mleValue
+		
+		if(False in [mean, sigma]):
+			fitParameters=True
+		if(fitParameters):
 			
-			def normDist(x, x0, sigma):
-				output = 1.0/np.sqrt(2*np.pi*(sigma**2))
-				output *= np.exp(-0.5*((x - x0)/sigma)**2)
-				return output
-			
-			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-			popt,pcov = curve_fit(normDist,self.bins[:-1], self.n, p0=[mean, sigma])
-			##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-			print "Fitted gaussian curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
-			self.x0 = popt[0]
-			self.sigma = popt[1]
-			
-			self.fitted = True
-		except RuntimeError:
-			print "Unable to fit data to normal curve"
-			raise
+			try:
+				
+				def normDist(x, x0, sigma):
+					output = 1.0/np.sqrt(2*np.pi*(sigma**2))
+					output *= np.exp(-0.5*((x - x0)/sigma)**2)
+					return output
+				
+				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
+				popt,pcov = curve_fit(normDist,self.bins[:-1], self.n, p0=[mean, sigma])
+				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
+				print "Fitted gaussian curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
+				self.x0 = popt[0]
+				self.sigma = popt[1]
+				
+				self.fitted = True
+			except RuntimeError:
+				print "Unable to fit data to normal curve, runtime error"
+				raise
+			except Warning:
+				raise RuntimeError
+
+
+	def getDistributionScipyId(self):
+		return 'norm'	
+
+
 	def getModelpdf(self, x):
 		output = 1.0/math.sqrt(2*np.pi*(self.getSigmaValue()**2))
 		output *= math.exp(-0.5*((x - self.getx0Value())/self.getSigmaValue())**2)
@@ -219,36 +261,50 @@ class normalModel(distributionModel):
 		return np.random.normal(self.getx0Value(), self.getSigmaValue())
 		
 	def distributionDescription(self):		
-		return "Normal model with Mean %.3f, Sigma %.3f" % (self.getx0Value(), self.getSigmaValue())
+		return "Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
 	
 	
 
 
 class logNormalModel(distributionModel):
-	def __init__(self, data):
+	def __init__(self, data, mleValue, fitParameters=True, mean=False, sigma=False):
 		super(logNormalModel, self).__init__(data)
 
+		self.MLE = mleValue
+	
 		mean = Mean(self.getDataSet())		
 		sigma = standardDeviation(self.getDataSet())
 		
-		try:
+		if(False in [mean, sigma]):
+			fitParameters = True
+		if(fitParameters):
 			
-			def lognormDist(x, x0, sigma):
-				output = 1.0/(  (x*sigma)*np.sqrt(2*np.pi) )
-				output *= np.exp(-0.5*((np.log(x)- x0)/sigma)**2)
-				return output
 			
-			self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-			popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma])
-			##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-			print "Fitted lognormal curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
-			self.x0 = popt[0]
-			self.sigma = popt[1]
-			
-			self.fitted = True
-		except RuntimeError:
-			print "Unable to fit data to log-normal curve"
-			raise
+			try:
+				
+				def lognormDist(x, x0, sigma):
+					output = 1.0/(  (x*sigma)*np.sqrt(2*np.pi) )
+					output *= np.exp(-0.5*((np.log(x)- x0)/sigma)**2)
+					return output
+				
+				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
+				popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma])
+				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
+				print "Fitted lognormal curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
+				self.x0 = popt[0]
+				self.sigma = popt[1]
+				
+				self.fitted = True
+			except RuntimeError:
+				print "Unable to fit data to log-normal curve"
+				raise
+			except Warning:
+				raise RuntimeError
+
+	def getDistributionScipyId(self):
+		return 'lognorm'	
+
+
 	def getModelpdf(self, x):
 		output = 1.0/(  (x*self.getSigmaValue())*np.sqrt(2*np.pi) )
 		output *= np.exp(-0.5*((np.log(x)- self.getx0Value())/self.getSigmaValue())**2)
@@ -264,11 +320,8 @@ class logNormalModel(distributionModel):
 		return np.random.normal(self.getx0Value(), self.getSigmaValue())
 		
 	def distributionDescription(self):		
-		return "Log-Normal model with Mean %.3f, Sigma %.3f" % (self.getx0Value(), self.getSigmaValue())
+		return "Log-Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
 	
-
-
-
 
 
 
@@ -409,9 +462,9 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 6400
+	samples = 800
 
-	##currentChoice = 4
+	currentChoice = 4
 
 
 
@@ -419,7 +472,11 @@ if(__name__ == "__main__"):
 	##data = [np.random.weibull(5.0) for i in range(4000)]
 	print [min(data), max(data)]
 
-	distributions = [st.laplace, st.norm, st.expon, st.dweibull, st.invweibull, st.lognorm, st.uniform]
+	
+	##distributions = [st.laplace, st.norm, st.expon, st.dweibull, st.invweibull, st.lognorm, st.uniform]
+
+	distributions = [st.norm, st.expon, st.lognorm, st.uniform]
+	
 	distributionPairs = [[modelA.name, modelB.name] for modelA in distributions for modelB in distributions]
 	##print distributionPairs
 	##exit()
@@ -445,16 +502,16 @@ if(__name__ == "__main__"):
 	
 	if(best_fit[0].name == "uniform"):
 		print "Best fit uniform, building model..."
-		model = uniformModel(data)
+		model = uniformModel(data, best_fit[1])
 	elif(best_fit[0].name == "expon"):
 		print "Best fit exponential, building model..."
-		model = exponentialModel(data)
+		model = exponentialModel(data, best_fit[1])
 	elif(best_fit[0].name == "norm"):
 		print "Best fit normal, building model..."
-		model = normalModel(data)		
+		model = normalModel(data, best_fit[1])		
 	elif(best_fit[0].name == "lognorm"):
 		print "Best fit lognormal, building model..."
-		model = logNormalModel(data)				
+		model = logNormalModel(data, best_fit[1])				
 	else:
 		print "Fitted unknown model '%s'" % (best_fit[0].name)
 		ableToFit = False
@@ -506,7 +563,10 @@ if(__name__ == "__main__"):
 	
 		modelPrediction = [model.getExpectedBinCount(binVal, binwidth) for binVal in bins[:-1]]
 	
-		plt.plot(model.bins[:-1], modelPrediction,'c-',label="Model Curve", alpha=0.75, linewidth=2)
+		r = lambda: random.randint(0,255)
+		hexCo = '#%02X%02X%02X' % (r(),r(),r())
+	
+		plt.plot(model.bins[:-1], modelPrediction,'-',label="Model Curve", alpha=0.75, linewidth=2, color='%s' % hexCo)
 	
 		## hoping this is actually true
 	
@@ -540,7 +600,7 @@ if(__name__ == "__main__"):
 			#print "Log Normal predicted min/max: ", [min(generatedPrediction), max(generatedPrediction)]
 			#plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
 
-
+	print scipy.stats.kstest(np.asarray(model.getDataSet()), 'norm')
 
 	plt.legend()
 	plt.show()
