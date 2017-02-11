@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 
 from scipy.optimize import curve_fit
-from scipy import asarray as ar,exp
+from scipy import asarray as ar,exp,log,sqrt
 
 
 import math
@@ -34,7 +34,7 @@ class distributionModel(object):
 	def __init__(self, data):
 		self.data = data
 		self.fitted = False
-		
+		self.sampledCount = 0
 		
 	def getDataTypes(self):
 		return [ty for ty in set([type(el) for el in self.data])]
@@ -63,7 +63,7 @@ class distributionModel(object):
 		
 		return output
 		
-	def getExpectedBinCount(self, x, binwidth):
+	def getExpectedBinCount(self, x, binwidth, customSampleSize=False):
 		## simple integral over [x,x+binwidth]
 		left = x
 		right = x+binwidth
@@ -74,7 +74,10 @@ class distributionModel(object):
 		
 		output += binwidth*min(pdfVals)
 		output += 0.5*binwidth*(max(pdfVals) - min(pdfVals))		
-		output *= self.getDatasetSize()
+		if(customSampleSize == False):
+			output *= self.getDatasetSize()
+		else:
+			output *= customSampleSize	
 		return output		
 
 
@@ -85,24 +88,34 @@ class distributionModel(object):
 			else:
 				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId())[1]
 
+	def chosen(self):
+		self.sampledCount += 1
+		
+	def getSampleProportion(self,sampleSize):
+		return float(self.sampledCount/float(sampleSize))
+
+
+##class multiModalModel(distributionModel):
+##	def __init__(self, data, distributionPairs):
+		
 		
 class uniformModel(distributionModel):
 	
 	
-	def __init__(self, data, mleValue, fitParameters=True, a=False, b=False):
+	def __init__(self, data, mleValue, fitParameters=True, a=None, b=None):
 		super(uniformModel, self).__init__(data)
 
-		mean = Mean(self.getDataSet())		
-		sigma = standardDeviation(self.getDataSet())
 		
-		self.b = max(self.getDataSet())
-		self.a = min(self.getDataSet())
+
 		self.MLE = mleValue
 		
-		if(False in [a,b]):
+		if(None in [a,b]):
 			fitParameters = True
 		
 		if(fitParameters):
+			self.b = max(self.getDataSet())
+			self.a = min(self.getDataSet())
+			
 			def uniDist(x, a, b):
 				return scipy.where((a<=x) & (x<=b), 1.0/float(b-a), 0.0)
 			
@@ -113,7 +126,7 @@ class uniformModel(distributionModel):
 				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
 				popt,pcov = curve_fit(uniDist,self.bins[:-1], self.n, p0=[self.a, self.b])
 				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-				print "Fitted uniform distribution pdf curve to data with params a %f, b %f, sigma %f" % (popt[0], popt[1], sigma)
+				print "Fitted uniform distribution pdf curve to data with params a %f, b %f" % (popt[0], popt[1])
 				self.a = popt[0]
 				self.b = popt[1]
 				##self.sigma = popt[2]
@@ -147,23 +160,25 @@ class uniformModel(distributionModel):
 		
 	
 	def sampleFromDistribution(self):
-		return np.random.uniform(a, b)	
+		self.chosen()
+		return np.random.uniform(self.a, self.b)	
+
+		
 		
 	def distributionDescription(self):
 		return "Uniform distribution model, a = %.3f, b = %.3f, p=%.7f" % (self.a, self.b, self.getpValue("K-S"))	
 		
 class exponentialModel(distributionModel):
-	def __init__(self, data, mleValue, fitParameters=True, mean=False):
+	def __init__(self, data, mleValue, fitParameters=True, mean=None):
 		super(exponentialModel, self).__init__(data)
 
-		mean = Mean(self.getDataSet())		
 		self.MLE = mleValue
 		
-		if(False in [mean]):
+		if(None in [mean]):
 			fitParameters = True
 			
 		if(fitParameters):
-		
+			mean = Mean(self.getDataSet())		
 			try:
 					
 				def expDist(x, x0):
@@ -182,7 +197,8 @@ class exponentialModel(distributionModel):
 				raise
 			except Warning:
 				raise RuntimeError
-
+		else:
+			self.x0 = mean
 
 	def getDistributionScipyId(self):
 		return 'expon'	
@@ -198,7 +214,9 @@ class exponentialModel(distributionModel):
 		return 1.0/float(self.getx0Value())
 	
 	def sampleFromDistribution(self):
+		self.chosen()
 		return np.random.exponential(self.getx0Value())
+		
 		
 	def distributionDescription(self):		
 		return "Exponential model with rate parameter %.3f, mean at %.3f, p=%.7f" % (self.getLambdaValue(), self.getx0Value(), self.getpValue("K-S"))
@@ -208,23 +226,24 @@ class exponentialModel(distributionModel):
 
 
 class normalModel(distributionModel):
-	def __init__(self, data, mleValue, fitParameters=True, mean=False, sigma=False):
+	def __init__(self, data, mleValue, fitParameters=True, mean=None, sigma=None):
 		super(normalModel, self).__init__(data)
 
-		mean = Mean(self.getDataSet())		
-		sigma = standardDeviation(self.getDataSet())
+
+
 		
 		self.MLE = mleValue
 		
-		if(False in [mean, sigma]):
+		if(None in [mean, sigma]):
 			fitParameters=True
 		if(fitParameters):
-			
+			mean = Mean(self.getDataSet())		
+			sigma = standardDeviation(self.getDataSet())
 			try:
 				
 				def normDist(x, x0, sigma):
-					output = 1.0/np.sqrt(2*np.pi*(sigma**2))
-					output *= np.exp(-0.5*((x - x0)/sigma)**2)
+					output = 1.0/sqrt(2*np.pi*(sigma**2))
+					output *= exp(-0.5*((x - x0)/sigma)**2)
 					return output
 				
 				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
@@ -240,7 +259,9 @@ class normalModel(distributionModel):
 				raise
 			except Warning:
 				raise RuntimeError
-
+		else:
+			self.x0 = mean
+			self.sigma = sigma
 
 	def getDistributionScipyId(self):
 		return 'norm'	
@@ -258,7 +279,9 @@ class normalModel(distributionModel):
 		return self.sigma
 	
 	def sampleFromDistribution(self):
+		self.chosen()
 		return np.random.normal(self.getx0Value(), self.getSigmaValue())
+		
 		
 	def distributionDescription(self):		
 		return "Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
@@ -267,28 +290,36 @@ class normalModel(distributionModel):
 
 
 class logNormalModel(distributionModel):
-	def __init__(self, data, mleValue, fitParameters=True, mean=False, sigma=False):
+	def __init__(self, data, mleValue, fitParameters=True, mean=None, sigma=None):
 		super(logNormalModel, self).__init__(data)
 
 		self.MLE = mleValue
-	
-		mean = Mean(self.getDataSet())		
-		sigma = standardDeviation(self.getDataSet())
 		
-		if(False in [mean, sigma]):
-			fitParameters = True
-		if(fitParameters):
+		
+		if(None in [mean, sigma]):
 			
+			fitParameters = True
+		
+		
+		if(fitParameters):
+					
+			mean = Mean(self.getDataSet())		
+			sigma = standardDeviation(self.getDataSet())
 			
 			try:
 				
 				def lognormDist(x, x0, sigma):
-					output = 1.0/(  (x*sigma)*np.sqrt(2*np.pi) )
-					output *= np.exp(-0.5*((np.log(x)- x0)/sigma)**2)
-					return output
+					
+					output = 1.0/(  (x*sigma)*sqrt(2*np.pi) )
+					output *= exp(-0.5*((log(x)- x0)/sigma)**2)
+					
+					
+					return scipy.where((x<0), 0.0, output)
+					
 				
+				param_bounds=([0,-np.inf],[np.inf,np.inf])
 				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-				popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma])
+				popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma], bounds=param_bounds)
 				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
 				print "Fitted lognormal curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
 				self.x0 = popt[0]
@@ -300,15 +331,22 @@ class logNormalModel(distributionModel):
 				raise
 			except Warning:
 				raise RuntimeError
-
+		else:
+			self.x0 = mean
+			self.sigma = sigma
+		
+		
 	def getDistributionScipyId(self):
 		return 'lognorm'	
 
 
 	def getModelpdf(self, x):
-		output = 1.0/(  (x*self.getSigmaValue())*np.sqrt(2*np.pi) )
-		output *= np.exp(-0.5*((np.log(x)- self.getx0Value())/self.getSigmaValue())**2)
-		return output
+		if(x>=0):
+			output = 1.0/(  (x*self.getSigmaValue())*sqrt(2*np.pi) )
+			output *= exp(-0.5*((log(x)- self.getx0Value())/self.getSigmaValue())**2)
+					
+					
+		return scipy.where((x<0), 0.0, output)
 		
 	def getx0Value(self):
 		return self.x0
@@ -317,7 +355,8 @@ class logNormalModel(distributionModel):
 		return self.sigma
 	
 	def sampleFromDistribution(self):
-		return np.random.normal(self.getx0Value(), self.getSigmaValue())
+		self.chosen()
+		return np.random.lognormal(self.getx0Value(), self.getSigmaValue())
 		
 	def distributionDescription(self):		
 		return "Log-Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
@@ -420,39 +459,78 @@ class dataModelSet(object):
 		
 	
 
-def generateRandomData(currentChoice):
+def generateRandomDistribution(currentChoice):
 	if(currentChoice == 0):
 		
 		generatedAValue = random.random()*5.0
 		generatedBValue = generatedAValue + (1.0 + random.random()*5.0)
 		print "generating uniform distribution, a=%f, b=%f" % (generatedAValue, generatedBValue)
 		
-		data = [np.random.uniform(generatedAValue, generatedBValue) for i in range(samples)]
-		return data
+		##data = [np.random.uniform(generatedAValue, generatedBValue) for i in range(samples)]
+		model = uniformModel([], 0.0, False, generatedAValue, generatedBValue)
+		
+		return model
 	elif(currentChoice == 1):
 		generatedExponentialMean = 0.01 + random.random()*0.4
 		##generatedAValue = random.random()*2.0
 		print "generating exponential distribution, mean=%.3f, rate=%.3f" % (generatedExponentialMean, 1.0/generatedExponentialMean)
-		data = [np.random.exponential(generatedExponentialMean) for i in range(samples)]		
-		return data
+		
+		model = exponentialModel([], 0.0, False, generatedExponentialMean)
+		##data = [np.random.exponential(generatedExponentialMean) for i in range(samples)]		
+		return model
 	elif(currentChoice == 2):	
 		generatedMean = -1.5 + random.random()*3.0
 		generatedSigma = 0.1 + random.random()*1.9
 		print "generating normal distribution with mean=%.3f, sigma %.3f" % (generatedMean, generatedSigma)
-		data = [np.random.normal(generatedMean, generatedSigma) for i in range(samples)]
-		return data
+		##data = [np.random.normal(generatedMean, generatedSigma) for i in range(samples)]
+		model = normalModel([], 0.0, False, generatedMean, generatedSigma)
+		
+		return model
 	elif(currentChoice == 3):	
-		generatedMean = -1.5 + random.random()*3.0
+		generatedMean = 0.0 + random.random()*3.0
 		generatedSigma = 0.1 + random.random()*1.9
 		print "generating lognormal distribution with mean=%.3f, sigma %.3f" % (generatedMean, generatedSigma)
-		data = [np.random.lognormal(generatedMean, generatedSigma) for i in range(samples)]		
-		return data
+		##data = [np.random.lognormal(generatedMean, generatedSigma) for i in range(samples)]		
+		
+		model = logNormalModel([], 0.0, False, generatedMean, generatedSigma)
+		
+		return model
 	elif(currentChoice == 4):
-		##bimodal
+		## bimodal
 		choices = [0,1,2,3]
 		firstChoice = random.choice(choices)
 		secondChoice = random.choice(choices)
-		return generateRandomData(firstChoice) + generateRandomData(secondChoice)
+		return [generateRandomDistribution(firstChoice), generateRandomDistribution(secondChoice)]
+
+	elif(currentChoice == 5):
+		## getting really interesting now
+		choices = [0,1,2,3]
+		
+		multipleDists = []
+		for i in range(0, 3+int(2*random.random())):
+			thisChoice = random.choice(choices)
+			multipleDists.append(generateRandomDistribution(thisChoice))
+		return multipleDists	
+
+	elif(currentChoice == 6):
+		## bimodal
+		choices = [2]
+		firstChoice = random.choice(choices)
+		secondChoice = random.choice(choices)
+		return [generateRandomDistribution(firstChoice), generateRandomDistribution(secondChoice)]
+
+	elif(currentChoice == 7):	
+		generatedMean = 0.0
+		generatedSigma = 1.0
+		print "generating lognormal distribution with mean=%.3f, sigma %.3f" % (generatedMean, generatedSigma)
+		##data = [np.random.lognormal(generatedMean, generatedSigma) for i in range(samples)]		
+		
+		model = logNormalModel([], 0.0, False, generatedMean, generatedSigma)
+		
+		return model
+
+
+
 
 
 if(__name__ == "__main__"):
@@ -462,14 +540,28 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 800
+	samples = 4000
 
-	currentChoice = 4
+	currentChoice = 5
 
 
+	initialModel = generateRandomDistribution(currentChoice)
 
-	data = generateRandomData(currentChoice)
-	##data = [np.random.weibull(5.0) for i in range(4000)]
+
+	multimodal = False
+	if(type(initialModel) == list):
+		multimodal = True
+		
+	if(multimodal):
+		data = []		
+		for i in range(samples):
+			chosenModel = random.choice(initialModel)
+			##print chosenModel.sampledCount
+			data.append(chosenModel.sampleFromDistribution())
+			
+	else:	
+		data = [initialModel.sampleFromDistribution() for i in range(samples)]
+	
 	print [min(data), max(data)]
 
 	
@@ -540,33 +632,21 @@ if(__name__ == "__main__"):
 	plt.axis([bounds[0], bounds[1], -0.1, max(n)*2.0])	
 	plt.grid(True)
 
-	def expDist(x, x0):
-		return (exp(-(x/x0))/x0)
 
-	def uniDist(x, a, b):
-		return scipy.where((a<=x) & (x<=b), 1.0/float(b-a), 0.0)
-
-	def normDist(x, x0, sigma):
-		output = 1.0/math.sqrt(2*np.pi*(sigma**2))
-		output *= math.exp(-0.5*((x - x0)/sigma)**2)
-		return output
-
-	def lognormDist(x, x0, sigma):
-		output = 1.0/(  (x*sigma)*np.sqrt(2*np.pi) )
-		output *= np.exp(-0.5*((np.log(x)- x0)/sigma)**2)
-		return output
 
 	if(ableToFit):
 		print model.getDatasetSize()
 	
 		binwidth = model.bins[:-1][1] - model.bins[:-1][0]	
-	
+		
+		trueBins = [(binstart+(0.5*binwidth)) for binstart in model.bins[:-1]]
+		
 		modelPrediction = [model.getExpectedBinCount(binVal, binwidth) for binVal in bins[:-1]]
 	
 		r = lambda: random.randint(0,255)
 		hexCo = '#%02X%02X%02X' % (r(),r(),r())
 	
-		plt.plot(model.bins[:-1], modelPrediction,'-',label="Model Curve", alpha=0.75, linewidth=2, color='%s' % hexCo)
+		plt.plot(trueBins, modelPrediction,'o-',label="Model Curve", alpha=0.75, linewidth=2, color='%s' % hexCo, markersize=2)
 	
 		## hoping this is actually true
 	
@@ -577,30 +657,15 @@ if(__name__ == "__main__"):
 
 
 
-		#if(currentChoice == 1):
-			### an exponential distribution was detected
-			#generatedPrediction = [(0.5*binwidth*model.getDatasetSize()*(expDist(binVal, generatedExponentialMean) + expDist(binVal+binwidth, generatedExponentialMean))) for binVal in bins[:-1]]
+		if(not multimodal):
+			## an exponential distribution was detected			
+			plt.plot(trueBins, [initialModel.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'ro-',label="Target Curve", alpha=0.75, linewidth=2, markersize=2)
+		else:
+			for mod in initialModel:
+				plt.plot(trueBins, [mod.getExpectedBinCount(xval, binwidth, samples*mod.getSampleProportion(samples)) for xval in model.bins[:-1]],'ro-',label="Target Curve %i (%s), sample bias %.3f" % ((initialModel.index(mod) +1), mod.getDistributionScipyId(), (mod.sampledCount/float(samples))), alpha=0.60 + 0.2*float(1.0/len(initialModel)), linewidth=2, markersize=2)			
 			
-			#print "Exponential predicted min/max: ", [min(generatedPrediction), max(generatedPrediction), max(n for n in generatedPrediction if n!=max(generatedPrediction))]
-			#plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
-		#elif(currentChoice == 0):
-			### uniform model detected
-			#generatedPrediction = [binwidth*model.getDatasetSize()*uniDist(binVal, generatedAValue, generatedBValue) for binVal in bins[:-1]]
-		
-			#print "Uniform predicted min/max: ", [min(generatedPrediction), max(generatedPrediction)]
-			#plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
-		#elif(currentChoice == 2):
-			#generatedPrediction = [(0.5*binwidth*model.getDatasetSize()*(normDist(binVal, generatedMean, generatedSigma) + normDist(binVal+binwidth, generatedMean, generatedSigma))) for binVal in bins[:-1]]
-		
-			#print "Normal predicted min/max: ", [min(generatedPrediction), max(generatedPrediction)]
-			#plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
-		#elif(currentChoice == 3):
-			#generatedPrediction = [(0.5*binwidth*model.getDatasetSize()*(lognormDist(binVal, generatedMean, generatedSigma) + lognormDist(binVal+binwidth, generatedMean, generatedSigma))) for binVal in bins[:-1]]
-		
-			#print "Log Normal predicted min/max: ", [min(generatedPrediction), max(generatedPrediction)]
-			#plt.plot(model.bins[:-1], [val for val in generatedPrediction],'m-',label="Target Curve", alpha=0.75, linewidth=2)
-
+			plt.plot(trueBins, [samples*sum([mod.getBinProb(xval, binwidth)*mod.getSampleProportion(samples) for mod in initialModel]) for xval in model.bins[:-1]],'co-',label="Target Curve Net pdf", alpha=0.75, linewidth=2, markersize=2)					
 	print scipy.stats.kstest(np.asarray(model.getDataSet()), 'norm')
 
-	plt.legend()
+	plt.legend(loc=2,prop={'size':10})
 	plt.show()
