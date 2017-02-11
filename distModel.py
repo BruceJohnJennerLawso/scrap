@@ -309,12 +309,7 @@ class logNormalModel(distributionModel):
 			try:
 				
 				def lognormDist(x, x0, sigma):
-					
-					output = 1.0/(  (x*sigma)*sqrt(2*np.pi) )
-					output *= exp(-0.5*((log(x)- x0)/sigma)**2)
-					
-					
-					return scipy.where((x<0), 0.0, output)
+					return scipy.where((x<0), 0.0, (1.0/(  (x*sigma)*sqrt(2*np.pi) ))*exp(-0.5*((log(x)- x0)/sigma)**2))
 					
 				
 				param_bounds=([0,-np.inf],[np.inf,np.inf])
@@ -344,7 +339,8 @@ class logNormalModel(distributionModel):
 		if(x>=0):
 			output = 1.0/(  (x*self.getSigmaValue())*sqrt(2*np.pi) )
 			output *= exp(-0.5*((log(x)- self.getx0Value())/self.getSigmaValue())**2)
-					
+		else:
+			output = x		
 					
 		return scipy.where((x<0), 0.0, output)
 		
@@ -386,16 +382,17 @@ class logNormalModel(distributionModel):
 def getAvailableDistributionsByScipyIds():
 	return ["uniform", "normal", "lognorm", "expon"]
 
-def getDistributionByScipyId(distId, data):
+def getDistributionByScipyId(distId, data, mle):
 	if(distId == "uniform"):
-		return uniformModel(data)
-	elif(distId == "normal"):
-		return normalModel(data)
+		return uniformModel(data, mle)
+	elif((distId == "normal")or(distId == "norm")):
+		return normalModel(data, mle)
 	elif(distId == "lognorm"):
-		return logNormalModel(data)	
+		return logNormalModel(data, mle)	
 	elif(distId == "expon"):
-		return exponentialModel(data)
-
+		return exponentialModel(data, mle)
+	else:
+		print "Unable to identify '%s' distribution provided, returning none, gonna crash" % distId
 
 
 
@@ -540,9 +537,9 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 4000
+	samples = 800
 
-	currentChoice = 5
+	currentChoice = 6
 
 
 	initialModel = generateRandomDistribution(currentChoice)
@@ -592,22 +589,39 @@ if(__name__ == "__main__"):
 	
 	ableToFit = True
 	
-	if(best_fit[0].name == "uniform"):
-		print "Best fit uniform, building model..."
-		model = uniformModel(data, best_fit[1])
-	elif(best_fit[0].name == "expon"):
-		print "Best fit exponential, building model..."
-		model = exponentialModel(data, best_fit[1])
-	elif(best_fit[0].name == "norm"):
-		print "Best fit normal, building model..."
-		model = normalModel(data, best_fit[1])		
-	elif(best_fit[0].name == "lognorm"):
-		print "Best fit lognormal, building model..."
-		model = logNormalModel(data, best_fit[1])				
-	else:
-		print "Fitted unknown model '%s'" % (best_fit[0].name)
-		ableToFit = False
-		##exit()
+	
+	distList = sorted(zip(distributions, mles), key=lambda d: d[1])
+	
+
+	nthBestDistributionChosen = 0
+	
+	model = None
+	
+	while(True):
+		print nthBestDistributionChosen, nthBestDistributionChosen+1, len(distList)
+		
+		currentDistribution = distList[nthBestDistributionChosen]
+		print "Best fit %s, building model..." % currentDistribution[0].name
+		
+		try:
+			model = getDistributionByScipyId(currentDistribution[0].name, data, currentDistribution[1])
+		except ValueError:
+			## we tried to fit, but the fitter coughed up a hairball, likely because
+			## the distribution we got wasnt actually that great of a fit for the
+			## data
+			
+			nthBestDistributionChosen += 1
+			
+			
+			if(nthBestDistributionChosen > len(distList)):
+				continue
+			else:
+				## ran out of distributions to fit to the data, giving up on
+				## life
+				print "Unable to fit model to data"
+				ableToFit = False	
+				break
+		break
 	
 	if(ableToFit):
 		print model.distributionDescription()
@@ -662,9 +676,46 @@ if(__name__ == "__main__"):
 			plt.plot(trueBins, [initialModel.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'ro-',label="Target Curve", alpha=0.75, linewidth=2, markersize=2)
 		else:
 			for mod in initialModel:
-				plt.plot(trueBins, [mod.getExpectedBinCount(xval, binwidth, samples*mod.getSampleProportion(samples)) for xval in model.bins[:-1]],'ro-',label="Target Curve %i (%s), sample bias %.3f" % ((initialModel.index(mod) +1), mod.getDistributionScipyId(), (mod.sampledCount/float(samples))), alpha=0.60 + 0.2*float(1.0/len(initialModel)), linewidth=2, markersize=2)			
+				plt.plot(trueBins, [mod.getExpectedBinCount(xval, binwidth, samples*mod.getSampleProportion(samples)) for xval in model.bins[:-1]],'ro-',label="Target Curve %i (%s), sample proportion %.3f" % ((initialModel.index(mod) +1), mod.getDistributionScipyId(), (mod.sampledCount/float(samples))), alpha=0.60 + 0.2*float(1.0/len(initialModel)), linewidth=2, markersize=2)			
 			
 			plt.plot(trueBins, [samples*sum([mod.getBinProb(xval, binwidth)*mod.getSampleProportion(samples) for mod in initialModel]) for xval in model.bins[:-1]],'co-',label="Target Curve Net pdf", alpha=0.75, linewidth=2, markersize=2)					
+	
+	if(currentChoice == 6):
+		data = np.asarray(data)
+		
+		mu1 = -1
+		sigma1 = 1
+
+		mu2 = 1
+		sigma2 = 1
+
+		#criterion to stop iteration
+		epsilon = 0.1
+		stop = False
+
+		while  not stop :  
+			#step1
+			classification = np.zeros(len(data))
+			classification[st.norm.pdf(data, mu1, sigma1) > st.norm.pdf(data, mu2, sigma2)] = 1
+	
+			mu1_old, mu2_old, sigma1_old, sigma2_old = mu1, mu2, sigma1, sigma2
+		
+			#step2
+			pars1 = st.norm.fit(data[classification == 1])
+			mu1, sigma1 = pars1
+			pars2 = st.norm.fit(data[classification == 0])
+			mu2, sigma2 = pars2
+	
+			#stopping criterion
+			stop = ((mu1_old - mu1)**2 + (mu2_old - mu2)**2 +(sigma1_old - sigma1)**2 +(sigma2_old - sigma2)**2) < epsilon
+
+		#result    
+		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % ( mu1, sigma1)
+		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % (mu2, sigma2)
+		print("A rate of ", np.mean(classification), "is classified in the first density")
+
+	
+	
 	print scipy.stats.kstest(np.asarray(model.getDataSet()), 'norm')
 
 	plt.legend(loc=2,prop={'size':10})
