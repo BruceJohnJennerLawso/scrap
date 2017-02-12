@@ -159,7 +159,9 @@ class uniformModel(distributionModel):
 		
 	def getbValue(self):
 		return self.b	
-		
+
+	def getIntervalWidth(self):
+		return (self.b - self.a)
 	
 	def sampleFromDistribution(self):
 		self.chosen()
@@ -167,7 +169,7 @@ class uniformModel(distributionModel):
 
 	def getTestStatistic(self, test):
 		if(test == "K-S"):
-			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getaValue(),self.getbValue()))	
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getaValue(),self.getIntervalWidth()))	
 		
 	def distributionDescription(self):
 		return "Uniform distribution model, a = %.3f, b = %.3f, p=%.7f" % (self.a, self.b, self.getpValue("K-S"))	
@@ -224,7 +226,7 @@ class exponentialModel(distributionModel):
 		
 	def getTestStatistic(self, test):
 		if(test == "K-S"):
-			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),))			
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(0.0,self.getx0Value()))			
 		
 	def distributionDescription(self):		
 		return "Exponential model with rate parameter %.3f, mean at %.3f, p=%.7f" % (self.getLambdaValue(), self.getx0Value(), self.getpValue("K-S"))
@@ -558,7 +560,7 @@ if(__name__ == "__main__"):
 
 	samples = 4600
 
-	currentChoice = 6
+	currentChoice = 3
 
 
 	initialModel = generateRandomDistribution(currentChoice)
