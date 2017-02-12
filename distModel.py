@@ -84,9 +84,11 @@ class distributionModel(object):
 	def getpValue(self, test):
 		if(test == "K-S"):
 			if(self.getDistributionScipyId() == 'lognorm'):
-				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getSigmaValue(),))[1]		
+				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getSigmaValue(),))[0]		
+			elif(self.getDistributionScipyId() == 'norm'):
+				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),self.getSigmaValue()))[0]						
 			else:
-				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId())[1]
+				return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId())[0]
 
 	def chosen(self):
 		self.sampledCount += 1
@@ -163,7 +165,9 @@ class uniformModel(distributionModel):
 		self.chosen()
 		return np.random.uniform(self.a, self.b)	
 
-		
+	def getTestStatistic(self, test):
+		if(test == "K-S"):
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getaValue(),self.getbValue()))	
 		
 	def distributionDescription(self):
 		return "Uniform distribution model, a = %.3f, b = %.3f, p=%.7f" % (self.a, self.b, self.getpValue("K-S"))	
@@ -217,6 +221,10 @@ class exponentialModel(distributionModel):
 		self.chosen()
 		return np.random.exponential(self.getx0Value())
 		
+		
+	def getTestStatistic(self, test):
+		if(test == "K-S"):
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),))			
 		
 	def distributionDescription(self):		
 		return "Exponential model with rate parameter %.3f, mean at %.3f, p=%.7f" % (self.getLambdaValue(), self.getx0Value(), self.getpValue("K-S"))
@@ -282,6 +290,12 @@ class normalModel(distributionModel):
 		self.chosen()
 		return np.random.normal(self.getx0Value(), self.getSigmaValue())
 		
+
+	def getTestStatistic(self, test):
+		if(test == "K-S"):
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),self.getSigmaValue()))			
+
+
 		
 	def distributionDescription(self):		
 		return "Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
@@ -312,7 +326,7 @@ class logNormalModel(distributionModel):
 					return scipy.where((x<0), 0.0, (1.0/(  (x*sigma)*sqrt(2*np.pi) ))*exp(-0.5*((log(x)- x0)/sigma)**2))
 					
 				
-				param_bounds=([0,-np.inf],[np.inf,np.inf])
+				param_bounds=([0,-np.inf],[0.0,np.inf])
 				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
 				popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma], bounds=param_bounds)
 				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
@@ -353,6 +367,11 @@ class logNormalModel(distributionModel):
 	def sampleFromDistribution(self):
 		self.chosen()
 		return np.random.lognormal(self.getx0Value(), self.getSigmaValue())
+	
+	def getTestStatistic(self, test):
+		if(test == "K-S"):
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),self.getSigmaValue()))			
+	
 		
 	def distributionDescription(self):		
 		return "Log-Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
@@ -476,8 +495,8 @@ def generateRandomDistribution(currentChoice):
 		##data = [np.random.exponential(generatedExponentialMean) for i in range(samples)]		
 		return model
 	elif(currentChoice == 2):	
-		generatedMean = -1.5 + random.random()*3.0
-		generatedSigma = 0.1 + random.random()*1.9
+		generatedMean = -2.5 + random.random()*5.0
+		generatedSigma = 0.1 + random.random()*0.4
 		print "generating normal distribution with mean=%.3f, sigma %.3f" % (generatedMean, generatedSigma)
 		##data = [np.random.normal(generatedMean, generatedSigma) for i in range(samples)]
 		model = normalModel([], 0.0, False, generatedMean, generatedSigma)
@@ -525,8 +544,8 @@ def generateRandomDistribution(currentChoice):
 		model = logNormalModel([], 0.0, False, generatedMean, generatedSigma)
 		
 		return model
-
-
+	elif(currentChoice == 8):	
+		return [normalModel([], 0.0, False, 1.443, 0.255), normalModel([], 0.0, False, -1.681, 0.273), exponentialModel([], 0.0, False, 0.078)]
 
 
 
@@ -537,7 +556,7 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 800
+	samples = 4600
 
 	currentChoice = 6
 
@@ -613,7 +632,7 @@ if(__name__ == "__main__"):
 			nthBestDistributionChosen += 1
 			
 			
-			if(nthBestDistributionChosen > len(distList)):
+			if(nthBestDistributionChosen < len(distList)):
 				continue
 			else:
 				## ran out of distributions to fit to the data, giving up on
@@ -675,22 +694,23 @@ if(__name__ == "__main__"):
 			## an exponential distribution was detected			
 			plt.plot(trueBins, [initialModel.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'ro-',label="Target Curve", alpha=0.75, linewidth=2, markersize=2)
 		else:
+			plt.plot(trueBins, [samples*sum([mod.getBinProb(xval, binwidth)*mod.getSampleProportion(samples) for mod in initialModel]) for xval in model.bins[:-1]],'co-',label="Target Curve Net pdf", alpha=0.75, linewidth=2, markersize=2)					
+			
 			for mod in initialModel:
 				plt.plot(trueBins, [mod.getExpectedBinCount(xval, binwidth, samples*mod.getSampleProportion(samples)) for xval in model.bins[:-1]],'ro-',label="Target Curve %i (%s), sample proportion %.3f" % ((initialModel.index(mod) +1), mod.getDistributionScipyId(), (mod.sampledCount/float(samples))), alpha=0.60 + 0.2*float(1.0/len(initialModel)), linewidth=2, markersize=2)			
 			
-			plt.plot(trueBins, [samples*sum([mod.getBinProb(xval, binwidth)*mod.getSampleProportion(samples) for mod in initialModel]) for xval in model.bins[:-1]],'co-',label="Target Curve Net pdf", alpha=0.75, linewidth=2, markersize=2)					
-	
-	if(currentChoice == 6):
+			
+	if(True):
 		data = np.asarray(data)
 		
-		mu1 = -1
+		mu1 = min(bounds)
 		sigma1 = 1
 
-		mu2 = 1
+		mu2 = max(bounds)
 		sigma2 = 1
 
 		#criterion to stop iteration
-		epsilon = 0.1
+		epsilon = 20.5
 		stop = False
 
 		while  not stop :  
@@ -713,10 +733,42 @@ if(__name__ == "__main__"):
 		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % ( mu1, sigma1)
 		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % (mu2, sigma2)
 		print("A rate of ", np.mean(classification), "is classified in the first density")
+		estMod1 = normalModel([], 1.0, False, mu1, sigma1)
+		
+		rate1 = np.mean(classification)
+		rate2 = 1.0 - rate1
+		
+		estMod2 = normalModel([], 1.0, False, mu2, sigma2)
+		
+		
+		binwidth = model.bins[:-1][1] - model.bins[:-1][0]	
+		
+		trueBins = [(binstart+(0.5*binwidth)) for binstart in model.bins[:-1]]
+		
+		plt.plot(trueBins, [estMod1.getExpectedBinCount(xval, binwidth, samples*rate1) + estMod2.getExpectedBinCount(xval, binwidth, samples*rate2) for xval in model.bins[:-1]],'c--',label="Fitted Total Curve in Bimodal Case", alpha=0.75, linewidth=2, markersize=2)			
+		for mod in [1, 2]:
+			if(mod == 1):
+				rate = rate1
+				currentModel = estMod1
+			elif(mod == 2):
+				rate = rate2
+				currentModel = estMod2	
+			plt.plot(trueBins, [currentModel.getExpectedBinCount(xval, binwidth, samples*rate) for xval in model.bins[:-1]],'r--',label="Fitted Normal Curve in Bimodal Case", alpha=0.75, linewidth=2, markersize=2)
+		print min(data[classification == 0]), max(data[classification == 0])		
+		
+		print min(data[classification == 1]), max(data[classification == 1])
 
+	ks0 = scipy.stats.kstest(np.asarray(data[classification == 0]), 'norm', args=(mu2, sigma2))
+	ks1 = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm', args=(mu1, sigma1))	
+	kswhatever = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm')	
+	print ks0 
+	print ks1
+	print kswhatever
+	print "Product, ", (ks0[0]*ks1[0])
+	print "Sum, ", (ks0[0]+ks1[0])	
 	
-	
-	print scipy.stats.kstest(np.asarray(model.getDataSet()), 'norm')
+	print model.getTestStatistic("K-S")
+
 
 	plt.legend(loc=2,prop={'size':10})
 	plt.show()
