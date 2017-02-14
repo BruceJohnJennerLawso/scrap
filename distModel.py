@@ -330,11 +330,20 @@ class logNormalModel(distributionModel):
 				
 				param_bounds=([0,-np.inf],[0.0,np.inf])
 				self.n, self.bins, patches = plt.hist(self.getDataSet(), self.getDatasetSize()/10, normed=1, facecolor='blue', alpha = 0.55)
-				popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma], bounds=param_bounds)
+				##popt,pcov = curve_fit(lognormDist,self.bins[:-1], self.n, p0=[mean, sigma], bounds=param_bounds)
 				##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-				print "Fitted lognormal curve to data with params x0 %f, sigma %f" % (popt[0], popt[1])
-				self.x0 = popt[0]
-				self.sigma = popt[1]
+				
+				self.x0 = 0.0
+				self.sigma = sigma
+				
+				
+				##for i in range(10):
+				self.x0, self.sigma = st.norm.fit(self.getDataSet(), loc = self.x0, scale =self.sigma)
+				
+				
+				print "Fitted lognormal curve to data with params x0 %f, sigma %f" % (self.x0, self.sigma)
+				##self.x0 = popt[0]
+				##self.sigma = popt[1]
 				
 				self.fitted = True
 			except RuntimeError:
@@ -372,8 +381,8 @@ class logNormalModel(distributionModel):
 	
 	def getTestStatistic(self, test):
 		if(test == "K-S"):
-			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),self.getSigmaValue()))			
-	
+			##return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(self.getx0Value(),self.getSigmaValue()))			
+			return scipy.stats.kstest(np.asarray(self.getDataSet()), 'lognorm', args=(self.getx0Value(),self.getSigmaValue()))				
 		
 	def distributionDescription(self):		
 		return "Log-Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
@@ -561,7 +570,7 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 800
+	samples = 4800
 
 	currentChoice = 3
 
@@ -818,7 +827,7 @@ if(__name__ == "__main__"):
 	print "Sum, ", (ks0[0]+ks1[0])	
 	
 	print model.getTestStatistic("K-S")
-
+	print model.distributionDescription()
 
 	plt.legend(loc=2,prop={'size':10})
 	plt.show()
