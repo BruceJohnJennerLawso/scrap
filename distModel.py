@@ -548,7 +548,10 @@ def generateRandomDistribution(currentChoice):
 		return model
 	elif(currentChoice == 8):	
 		return [normalModel([], 0.0, False, 1.443, 0.255), normalModel([], 0.0, False, -1.681, 0.273), exponentialModel([], 0.0, False, 0.078)]
-
+	elif(currentChoice == 9):	
+		return [normalModel([], 0.0, False, 4.443, 0.255), normalModel([], 0.0, False, 8.681, 0.273), normalModel([], 0.0, False, 12.844, 0.290)]
+	elif(currentChoice == 10):	
+		return [normalModel([], 0.0, False, 4.443, 0.255), normalModel([], 0.0, False, 4.481, 2.273)]
 
 
 if(__name__ == "__main__"):
@@ -558,7 +561,7 @@ if(__name__ == "__main__"):
 	currentChoice = random.choice(choices)
 
 
-	samples = 4600
+	samples = 800
 
 	currentChoice = 3
 
@@ -681,7 +684,7 @@ if(__name__ == "__main__"):
 		r = lambda: random.randint(0,255)
 		hexCo = '#%02X%02X%02X' % (r(),r(),r())
 	
-		plt.plot(trueBins, modelPrediction,'o-',label="Model Curve", alpha=0.75, linewidth=2, color='%s' % hexCo, markersize=2)
+		plt.plot(trueBins, modelPrediction,'go-',label="Model Curve", alpha=0.75, linewidth=2, color='g', markersize=2)
 	
 		## hoping this is actually true
 	
@@ -706,17 +709,33 @@ if(__name__ == "__main__"):
 		data = np.asarray(data)
 		
 		mu1 = min(bounds)
-		sigma1 = 1
+		sigma1 = (1/3.0)*(max(bounds)-min(bounds))
 
 		mu2 = max(bounds)
-		sigma2 = 1
-
+		sigma2 = sqrt(sigma1)
+	
 		#criterion to stop iteration
-		epsilon = 20.5
+		epsilon = sqrt(max(bounds)-min(bounds))
+		epsilon = 0.0005
+
+
+		mu1 = min(bounds) + (max(bounds)-min(bounds))/2.0
+		mu2 = min(bounds) + (max(bounds)-min(bounds))/2.0		
+		
+
+		print "epsilon, ", epsilon
+		print "dist1, ", mu1, sigma1
+		print "dist2, ", mu2, sigma2
 		stop = False
+
+		totalParamshift = -1
+
+		bimodalLoops = 0
 
 		while  not stop :  
 			#step1
+			bimodalLoops +=1
+			
 			classification = np.zeros(len(data))
 			classification[st.norm.pdf(data, mu1, sigma1) > st.norm.pdf(data, mu2, sigma2)] = 1
 	
@@ -728,13 +747,40 @@ if(__name__ == "__main__"):
 			pars2 = st.norm.fit(data[classification == 0])
 			mu2, sigma2 = pars2
 	
+	
+			estMod1 = normalModel([], 1.0, False, mu1, sigma1)
+		
+			rate1 = np.mean(classification)
+			rate2 = 1.0 - rate1
+			
+			estMod2 = normalModel([], 1.0, False, mu2, sigma2)	
+	
 			#stopping criterion
-			stop = ((mu1_old - mu1)**2 + (mu2_old - mu2)**2 +(sigma1_old - sigma1)**2 +(sigma2_old - sigma2)**2) < epsilon
-
+			paramshift = ((mu1_old - mu1)**2 + (mu2_old - mu2)**2 +(sigma1_old - sigma1)**2 +(sigma2_old - sigma2)**2)
+			if(totalParamshift == -1):
+				totalParamshift = paramshift - epsilon
+				plt.plot(trueBins, [estMod1.getExpectedBinCount(xval, binwidth, samples*rate1) for xval in model.bins[:-1]],'m', alpha=(0.75*(0.5)), linewidth=2, markersize=2)			
+				plt.plot(trueBins, [estMod2.getExpectedBinCount(xval, binwidth, samples*rate2) for xval in model.bins[:-1]],'y', alpha=(0.75*(0.5)), linewidth=2, markersize=2)								
+			
+			else:
+				prog = ((paramshift - epsilon)/totalParamshift)
+				if(prog < 0):
+					prog = 0.00
+				print paramshift, epsilon, prog
+			
+				plt.plot(trueBins, [estMod1.getExpectedBinCount(xval, binwidth, samples*rate1) for xval in model.bins[:-1]],'m_', alpha=(0.75*(0.5 + 0.5*prog)), linewidth=2, markersize=2)			
+				plt.plot(trueBins, [estMod2.getExpectedBinCount(xval, binwidth, samples*rate2) for xval in model.bins[:-1]],'y_', alpha=(0.75*(0.5 + 0.5*prog)), linewidth=2, markersize=2)					
+			stop = paramshift < epsilon
+			if(stop):
+				print "Finished fitting bimodal case"
 		#result    
-		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % ( mu1, sigma1)
-		print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % (mu2, sigma2)
+		##print "The first density is gaussian, mean=%.3f, sigma=%.3f :" % ( mu1, sigma1)
+		##print "The second density is gaussian, mean=%.3f, sigma=%.3f :" % (mu2, sigma2)
 		print("A rate of ", np.mean(classification), "is classified in the first density")
+		print "epsilon, ", epsilon
+		print "dist1, ", mu1, sigma1
+		print "dist2, ", mu2, sigma2
+		print "%i Loops run to fit bimodal case" % bimodalLoops
 		estMod1 = normalModel([], 1.0, False, mu1, sigma1)
 		
 		rate1 = np.mean(classification)
@@ -752,10 +798,12 @@ if(__name__ == "__main__"):
 			if(mod == 1):
 				rate = rate1
 				currentModel = estMod1
+				colo = 'm'
 			elif(mod == 2):
 				rate = rate2
 				currentModel = estMod2	
-			plt.plot(trueBins, [currentModel.getExpectedBinCount(xval, binwidth, samples*rate) for xval in model.bins[:-1]],'r--',label="Fitted Normal Curve in Bimodal Case", alpha=0.75, linewidth=2, markersize=2)
+				colo = 'y'
+			plt.plot(trueBins, [currentModel.getExpectedBinCount(xval, binwidth, samples*rate) for xval in model.bins[:-1]],'%s--' % colo,label="Fitted Normal Curve in Bimodal Case", alpha=0.75, linewidth=2, markersize=2)
 		print min(data[classification == 0]), max(data[classification == 0])		
 		
 		print min(data[classification == 1]), max(data[classification == 1])
