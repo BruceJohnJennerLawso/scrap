@@ -97,8 +97,15 @@ class distributionModel(object):
 		return float(self.sampledCount/float(sampleSize))
 
 
-##class multiModalModel(distributionModel):
-##	def __init__(self, data, distributionPairs):
+class multiModalModel(distributionModel):
+	def __init__(self, data, distributionTypes):
+		## distribution types here are the ids of the distributions to be fitted
+		## ie ['expon', 'norm', 'norm']
+		self.subDistributions = []
+		
+		for distType in distributionTypes:
+			if(distType == 'norm'):
+				self.subDistributions.append(normalModel(
 		
 		
 class uniformModel(distributionModel):
