@@ -84,7 +84,7 @@ class multiModalModel(distributionModel):
 				normCount += 1	
 			elif(distType == 'expon'):
 				exponCount += 1
-				subDistributions.append(exponentialModel([], 0.0, False, mu2*exponCount))	
+				subDistributions.append(exponentialModel([], 0.0, False, 1.0/mu2))	
 				## I have not yet tested this at all, so as usual, Im going to
 				## try placing an exponential in the 'wrongest' position I can
 				## imagine, hoping that it will migrate aggressively towards
@@ -108,12 +108,16 @@ class multiModalModel(distributionModel):
 
 		while  not stop :  
 			#step1
-			bimodalLoops +=1
+			fittingLoops +=1
 			
 			classification = np.zeros(len(data))
 			for i in range(len(subDistributions)):
-	
-				classification[subDistributions[i].getModelpdf(data) > np.asarray([max([subDistributions[j].getModelpdf(d) for j in range(len(subDistributions)) if j != i]) for d in data])] = i+1				
+				k = i+1
+				
+				currentModelValues = np.asarray( [subDistributions[i].getModelpdf(d) for d in data])
+				maxOfTheRest = np.asarray([max([subDistributions[j].getModelpdf(d) for j in range(len(subDistributions)) if j != i]) for d in data])
+		
+				classification[currentModelValues > maxOfTheRest] = k			
 				## wordy, but should hopefully work
 				
 				##classification[st.norm.pdf(data, mu1, sigma1) > st.norm.pdf(data, mu2, sigma2)] = 1
@@ -129,12 +133,20 @@ class multiModalModel(distributionModel):
 				
 				
 				distId = subDistributions[i].getDistributionScipyId()
-				
-				pars = getScipyFitById(distId, data[classification == k])
+				if(len(data[classification == k]) > 0):
+					pars = getScipyFitById(distId, data[classification == k])
+				else:
+					print "Empty pars for k = %i" % k
+					for i in range(len(subDistributions)+2):
+						k = i
+						if(len(data[classification == k]) > 0):
+							print k, len(data[classification == k]), min(data[classification == k]), max(data[classification == k])	
+						else:
+							print k, len(data[classification == k])
 				if(distId == "norm"):
 					mu, sigma = pars
 					
-					paramshift += distId = subDistributions[i].getSquareParamShift(mu, sigma)
+					paramshift += subDistributions[i].getSquareParamShift(mu, sigma)
 					
 					subDistributions[i].x0 = mu
 					subDistributions[i].sigma = sigma
@@ -144,7 +156,7 @@ class multiModalModel(distributionModel):
 				elif(distId == "uniform"):
 					a, w = pars
 
-					paramshift += distId = subDistributions[i].getSquareParamShift(a, a+w)
+					paramshift += subDistributions[i].getSquareParamShift(a, a+w)
 
 					subDistributions[i].a = a
 					subDistributions[i].b = a+w
@@ -152,9 +164,9 @@ class multiModalModel(distributionModel):
 					
 					
 				else:
-					x0 = pars
+					x0 = pars[0]
 					
-					paramshift += distId = subDistributions[i].getSquareParamShift(x0)
+					paramshift += subDistributions[i].getSquareParamShift(x0)
 					
 					subDistributions[i].x0 = x0
 	
@@ -172,14 +184,15 @@ class multiModalModel(distributionModel):
 				## paramshift for a given run under epsilon
 				if(prog < 0):
 					prog = 0.00
-				print paramshift, epsilon, prog
+				print fittingLoops, paramshift, epsilon, prog
 			
 				##plt.plot(trueBins, [estMod1.getExpectedBinCount(xval, binwidth, samples*rate1) for xval in model.bins[:-1]],'m_', alpha=(0.75*(0.5 + 0.5*prog)), linewidth=2, markersize=2)			
 				##plt.plot(trueBins, [estMod2.getExpectedBinCount(xval, binwidth, samples*rate2) for xval in model.bins[:-1]],'y_', alpha=(0.75*(0.5 + 0.5*prog)), linewidth=2, markersize=2)					
 			stop = paramshift < epsilon
 			if(stop):
 				print "Finished fitting bimodal case"
-		
+			if(fittingLoops > 40):
+				stop =True
 		
 		## now that the fitter is finished working, we use the fact that the
 		## data set is now sorted into classifications to fit the distributions
@@ -191,15 +204,15 @@ class multiModalModel(distributionModel):
 			distType = subDistributions[i].getDistributionScipyId()
 			
 			if(distType == "norm"):
-				self.subDistributions.append(normalModel(data[classification == k]))
+				self.subDistributions.append(normalModel(data[classification == k], 1.0))
 			elif(distType == "expon"):
-				self.subDistributions.append(exponentialModel(data[classification == k]))	
+				self.subDistributions.append(exponentialModel(data[classification == k], 1.0))	
 			elif(distType == "uniform"):
-				self.subDistributions.append(uniformModel(data[classification == k]))		
+				self.subDistributions.append(uniformModel(data[classification == k], 1.0))		
 		
 		#result    
 		print "epsilon, ", epsilon
-		print "%i Loops run to fit %i-modal case" % (bimodalLoops, len(distributionTypes))
+		print "%i Loops run to fit %i-modal case" % (fittingLoops, len(distributionTypes))
 		
 		for i in range(len(self.subDistributions)):
 			k = i+1
@@ -222,11 +235,11 @@ class multiModalModel(distributionModel):
 				return subDist.sampleFromDistribution()
 	
 	def getTestStatistic(self, test):
-		return sum([mod.getTestStatistic(test) for mod in self.subDistributions])			
+		return sum([mod.getTestStatistic(test)[0] for mod in self.subDistributions])			
 
 		
 	def distributionDescription(self):		
-		output = "Multimodal Distribution with %i modes, p=%.3f\n" % (len(self.subDistributions), self.getTestStatistic("K-S"))
+		output = "Multimodal Distribution with %i modes, p=%.3f\n" % (len(self.subDistributions), self.getTestStatistic("K-S"), )
 		for subDist in self.subDistributions:
-			output += "-%s" % subDist.distributionDescription()
+			output += "-%s, sample proportion %.3f\n" % (subDist.distributionDescription(), subDist.getFractionOfTotalDataset(self.getDatasetSize()))
 		return output

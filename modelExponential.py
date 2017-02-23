@@ -61,7 +61,7 @@ class exponentialModel(distributionModel):
 			return scipy.stats.kstest(np.asarray(self.getDataSet()), self.getDistributionScipyId(), args=(0.0,self.getx0Value()))			
 		
 	def getSquareParamShift(self, new_mu):
-		return (2.0*(self.getx0Value() - new_mu)**2)	
+		return (2.0*((self.getx0Value() - new_mu)**2))	
 		## double up on this because theres only one parameter to shift in an
 		## exponential, and we dont want the fitting loop to exit too early
 		## while the exponential is still fitting

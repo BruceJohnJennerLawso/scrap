@@ -180,7 +180,7 @@ if(__name__ == "__main__"):
 
 	samples = 4800
 
-	currentChoice = 11
+	currentChoice = 9
 
 
 	initialModel = generateRandomDistribution(currentChoice)
@@ -320,9 +320,18 @@ if(__name__ == "__main__"):
 			
 			for mod in initialModel:
 				plt.plot(trueBins, [mod.getExpectedBinCount(xval, binwidth, samples*mod.getSampleProportion(samples)) for xval in model.bins[:-1]],'ro-',label="Target Curve %i (%s), sample proportion %.3f" % ((initialModel.index(mod) +1), mod.getDistributionScipyId(), (mod.sampledCount/float(samples))), alpha=0.60 + 0.2*float(1.0/len(initialModel)), linewidth=2, markersize=2)			
-			
-			
-	if(True):
+
+	if(currentChoice == 9):
+		trimodDist = multiModalModel(data, ['norm', 'norm', 'norm'])
+		
+		print trimodDist.distributionDescription()
+		plt.plot(trueBins, [trimodDist.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'c--',label="Fitted Total Curve in Multimodal Case", alpha=0.75, linewidth=2, markersize=2)							
+	if(currentChoice == 11):
+		trimodDist = multiModalModel(data, ['norm', 'norm', 'expon'])
+		
+		print trimodDist.distributionDescription()
+		plt.plot(trueBins, [trimodDist.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'c--',label="Fitted Total Curve in Multimodal Case", alpha=0.75, linewidth=2, markersize=2)				
+	else:
 		data = np.asarray(data)
 		
 		mu1 = min(bounds)
@@ -425,16 +434,17 @@ if(__name__ == "__main__"):
 		
 		print min(data[classification == 1]), max(data[classification == 1])
 
-	ks0 = scipy.stats.kstest(np.asarray(data[classification == 0]), 'norm', args=(mu2, sigma2))
-	ks1 = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm', args=(mu1, sigma1))	
-	kswhatever = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm')	
-	print ks0 
-	print ks1
-	print kswhatever
-	print "Product, ", (ks0[0]*ks1[0])
-	print "Sum, ", (ks0[0]+ks1[0])	
+		ks0 = scipy.stats.kstest(np.asarray(data[classification == 0]), 'norm', args=(mu2, sigma2))
+		ks1 = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm', args=(mu1, sigma1))	
+		kswhatever = scipy.stats.kstest(np.asarray(data[classification == 1]), 'norm')	
+		print ks0 
+		print ks1
+		print kswhatever
+		print "Product, ", (ks0[0]*ks1[0])
+		print "Sum, ", (ks0[0]+ks1[0])	
 	
 	print model.getTestStatistic("K-S")
+		
 	print model.distributionDescription()
 
 	plt.legend(loc=2,prop={'size':10})
