@@ -64,12 +64,12 @@ class multiModalModel(distributionModel):
 			if(distType == 'norm'):
 				
 				
-				if((normCount%2) == 0):
+				if(normCount == 0):
 					## even case starts from the low mean, high sigma case
 					subDistributions.append(normalModel([], 0.0, False, mu1, sigma1))
-				elif((normCount%3) == 0):
+				elif(normCount == 1):
 					subDistributions.append(normalModel([], 0.0, False, mu1, sigma2))
-				elif((normCount%4) == 0):
+				elif(normCount >= 2):
 					subDistributions.append(normalModel([], 0.0, False, mu2, sigma1))										
 				else:
 					subDistributions.append(normalModel([], 0.0, False, mu2, sigma2))		
@@ -114,6 +114,11 @@ class multiModalModel(distributionModel):
 			for i in range(len(subDistributions)):
 				k = i+1
 				
+				print "Current distribution, k=%i: " % k
+				print (i, subDistributions[i].distributionDescription())
+				print "Comparison distributions: "
+				print [(j, subDistributions[j].distributionDescription()) for j in range(len(subDistributions)) if j != i]
+				print "\n"
 				currentModelValues = np.asarray( [subDistributions[i].getModelpdf(d) for d in data])
 				maxOfTheRest = np.asarray([max([subDistributions[j].getModelpdf(d) for j in range(len(subDistributions)) if j != i]) for d in data])
 		

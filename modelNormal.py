@@ -76,5 +76,7 @@ class normalModel(distributionModel):
 
 		
 	def distributionDescription(self):		
-		return "Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
-	
+		if(self.getDatasetSize() > 0):
+			return "Normal model with Mean %.3f, Sigma %.3f, p=%.7f" % (self.getx0Value(), self.getSigmaValue(), self.getpValue("K-S"))
+		else:
+					return "Normal model with Mean %.3f, Sigma %.3f" % (self.getx0Value(), self.getSigmaValue())
