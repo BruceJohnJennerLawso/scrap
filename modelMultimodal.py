@@ -55,8 +55,9 @@ class multiModalModel(distributionModel):
 		mu2 = max(bounds)
 		sigma2 = sqrt(sigma1)
 		
-		mu1 = min(bounds) + (max(bounds)-min(bounds))/2.0
-		mu2 = min(bounds) + (max(bounds)-min(bounds))/2.0			
+		mu3 = min(bounds) + (max(bounds)-min(bounds))/2.0
+
+
 		
 		normCount = 0
 		exponCount = 0
@@ -66,9 +67,9 @@ class multiModalModel(distributionModel):
 				
 				if(normCount == 0):
 					## even case starts from the low mean, high sigma case
-					subDistributions.append(normalModel([], 0.0, False, mu1, sigma1))
+					subDistributions.append(normalModel([], 0.0, False, mu3, sigma1))
 				elif(normCount == 1):
-					subDistributions.append(normalModel([], 0.0, False, mu1, sigma2))
+					subDistributions.append(normalModel([], 0.0, False, mu3, sigma2))
 				elif(normCount >= 2):
 					subDistributions.append(normalModel([], 0.0, False, mu2, sigma1))										
 				else:
@@ -98,7 +99,7 @@ class multiModalModel(distributionModel):
 	
 		#criterion to stop iteration
 		##epsilon = sqrt(max(bounds)-min(bounds))
-		epsilon = 0.0005
+		epsilon = 0.00005
 		
 		stop = False
 
@@ -241,7 +242,7 @@ class multiModalModel(distributionModel):
 	
 	def getTestStatistic(self, test):
 		return sum([mod.getTestStatistic(test)[0] for mod in self.subDistributions])			
-
+		##return scipy.stats.kstest(np.asarray(self.getDataSet()), 'lognorm', args=(self.getx0Value(),self.getSigmaValue()))		
 		
 	def distributionDescription(self):		
 		output = "Multimodal Distribution with %i modes, p=%.3f\n" % (len(self.subDistributions), self.getTestStatistic("K-S"), )

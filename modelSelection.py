@@ -169,18 +169,19 @@ def generateRandomDistribution(currentChoice):
 		return [normalModel([], 0.0, False, 4.443, 0.255), normalModel([], 0.0, False, 4.481, 2.273)]
 	elif(currentChoice == 11):	
 		return [normalModel([], 0.0, False, 4.443, 0.255), normalModel([], 0.0, False, 4.481, 2.273), exponentialModel([], 0.0, False, 0.401,)]		
-
+	elif(currentChoice == 12):	
+		return [normalModel([], 0.0, False, 0.443, 0.255), normalModel([], 0.0, False, 4.481, 0.273)]
 
 if(__name__ == "__main__"):
 
 
-	choices = [0,1,2,3,4]
+	choices = [2,10,12]
 	currentChoice = random.choice(choices)
 
 
 	samples = 4800
 
-	currentChoice = 9
+	##currentChoice = 9
 
 
 	initialModel = generateRandomDistribution(currentChoice)
@@ -331,6 +332,12 @@ if(__name__ == "__main__"):
 		
 		print trimodDist.distributionDescription()
 		plt.plot(trueBins, [trimodDist.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'c--',label="Fitted Total Curve in Multimodal Case", alpha=0.75, linewidth=2, markersize=2)				
+
+	if((currentChoice == 10)or(currentChoice == 12)):
+		bimodDist = multiModalModel(data, ['norm', 'norm'])
+		
+		print bimodDist.distributionDescription()
+		plt.plot(trueBins, [bimodDist.getExpectedBinCount(xval, binwidth, samples) for xval in model.bins[:-1]],'c--',label="Fitted Total Curve in Multimodal Case", alpha=0.75, linewidth=2, markersize=2)									
 	else:
 		data = np.asarray(data)
 		
