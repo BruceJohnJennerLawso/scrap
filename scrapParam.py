@@ -98,7 +98,7 @@ def filterSeasonsByParams(seasons, parameters):
 			for season in seasons:
 				if(season.getLeagueId() == "watMu"):
 					if(season.getLevelId() == parameters.getLevelId()):
-						outputs += [season]
+						output += [season]
 						## if the level is correct, and the league is right
 						## (remember watMu seasons will be mixed with nhl & wha)
 						## append it to our output
@@ -108,7 +108,7 @@ def filterSeasonsByParams(seasons, parameters):
 			for season in seasons:
 				if(season.getLeagueId() == "watMu"):
 					if(season.getSeasonId() == parameters.getLevelId()):
-						outputs += [season]
+						output += [season]
 			if(len(output) > 0):
 				return output
 	elif(parameters.getLeagueId() in proLeagues()):
