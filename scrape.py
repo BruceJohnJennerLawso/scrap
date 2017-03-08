@@ -8,7 +8,23 @@ import csv
 import watMuScraper
 import nhlScraper
 	
+import perfectlyNormalUser
+import time	
+	
+	
+class scrapeTeamParams(object):
+	def __init__(self, leagueId, levelId, seasonId, teamId)	
+		self.leagueId = leagueId
+		self.levelId = levelId
+		self.seasonId = seasonId
+		self.teamId = teamId
+	
 def scrapeListedTeams(debugInfo, leagueId, levelId):
+	lastTime = time.time()
+	deltaTime = 0.0
+
+	
+	## indicates this is the first loop of the scraper
 	if((leagueId == 'nhl')or(leagueId == 'wha')):
 		## everything else besides watMu teams
 		with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
@@ -23,12 +39,15 @@ def scrapeListedTeams(debugInfo, leagueId, levelId):
 					## be scraped
 					reading = csv.reader(bar)
 					for teamId in reading:
+						
 						if(len(teamId) == 1):
 							nhlScraper.scrapeTeamData(teamId[0], debugInfo, row[0], False, leagueId)		
+							deltaTime = time.time() - lastTime
+							lastTime = time.time()
+							
 						else:
 							if(teamId[1] == 'NoScrape'):
 								print "Skipping %s team %s %s" % (leagueId, teamId[0], row[0])
-								##exit() 
 								continue
 							
 						

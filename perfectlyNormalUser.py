@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 import math
 import heapq
 
-def getWebPageWeibullPdfSample():
-	return [[2,0.05],[3,0.04],[5,0.035],[7,0.03],[10,0.028],[15,0.025],[20,0.024],[30,0.021],[40,0.020],[50,0.019],[60,0.018]]
 
 def interpolateFromPdfSamples(pdfSamples, x):
 	
@@ -74,7 +72,11 @@ def normalPdf(x):
 	output *= 1.0/np.sqrt(2*np.pi*(sigma**2))
 	return output
 
-if(__name__ == "__main__"):
+def getWebPageWeibullPdfSample():
+	return [[2,0.05],[3,0.04],[5,0.035],[7,0.03],[10,0.028],[15,0.025],[20,0.024],[30,0.021],[40,0.020],[50,0.019],[60,0.018]]
+
+
+def sampleWebPageVisitLength():
 	weibullPts = getWebPageWeibullPdfSample()
 	
 	class my_pdf(st.rv_continuous):
@@ -82,15 +84,20 @@ if(__name__ == "__main__"):
 			##return normalPdf(x)  # Normalized over its range, in this case [0,1]
 			return interpolateFromPdfSamples(weibullPts, x)
 	my_cv = my_pdf(a=0, b=100.0, name='my_pdf')
+
+	return my_cv.rvs()
+
+if(__name__ == "__main__"):
 	
 	samples = []
 	print "generating samples.."
 	for i in range(2000):
-		sample = my_cv.rvs()
+		sample = sampleWebPageVisitLength()
 		print i, sample
-		samples.append(samples)
+		samples.append(sample)
 	print "graphing data"
 	hist, bins = np.histogram(samples, bins=20, normed = 1)
+	print "finished binning data, plotting"
 	width = 0.7 * (bins[1] - bins[0])
 	center = (bins[:-1] + bins[1:]) / 2
 	plt.bar(center, hist, align='center', width=width)

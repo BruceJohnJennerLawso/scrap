@@ -16,6 +16,8 @@ from multiprocessing import Process
 
 import numpy
 
+
+
 def saveScrapedTeamData(teamName, teamId, seasonName, seasonId, leagueId, regularSeasonLength, seasonGames, playoffRoundLengths, playoffGames, rosterSize, rosterRows):
 	## once we have the data about the team in question, usually in string form,
 	## we should save it in string format so its more convenient to access
@@ -65,12 +67,6 @@ def overtimeIds():
 
 def scrapeTeamData(teamId, debugInfo, seasonId, inProgressSeason, leagueId):
 	
-	##teamName = 'Toronto Maple Leafs'
-	##teamId = 'TOR'
-	##seasonName = '2015-16'
-	##seasonId = '2016'
-	##leagueId = 'nhl'
-	##debugInfo = True
 	
 	page = requests.get('http://www.hockey-reference.com/teams/%s/%s_games.html' % (teamId, seasonId))
 	tree = html.fromstring(page.content)
