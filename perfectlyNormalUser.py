@@ -83,12 +83,12 @@ def sampleWebPageVisitLength():
 		def _pdf(self,x):
 			##return normalPdf(x)  # Normalized over its range, in this case [0,1]
 			return interpolateFromPdfSamples(weibullPts, x)
-	my_cv = my_pdf(a=0, b=100.0, name='my_pdf')
+	my_cv = my_pdf(a=0, b=190.0, name='my_pdf')
 
 	return my_cv.rvs()
 
 if(__name__ == "__main__"):
-	
+	weibullPts = getWebPageWeibullPdfSample()
 	samples = []
 	print "generating samples.."
 	for i in range(2000):
