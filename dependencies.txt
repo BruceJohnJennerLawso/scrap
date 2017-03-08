@@ -13,6 +13,9 @@ python-scipy
 ## things
 python-requests
 ## used by the web scraper to acquire our data from the web
+python-pygit2
+## just a nice touch in the scrap console that shows what the current git branch
+## is
 python-pandas
 python-seaborn
 ## these are awesome voodoo that seem to work with matplotlib to
