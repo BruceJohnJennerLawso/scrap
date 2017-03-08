@@ -54,6 +54,8 @@ class multiModalModel(distributionModel):
 
 		mu2 = max(bounds)
 		sigma2 = sqrt(sigma1)
+
+		sigma3 = sqrt(sigma2)
 		
 		mu3 = min(bounds) + (max(bounds)-min(bounds))/2.0
 
@@ -70,8 +72,8 @@ class multiModalModel(distributionModel):
 					subDistributions.append(normalModel([], 0.0, False, mu3, sigma1))
 				elif(normCount == 1):
 					subDistributions.append(normalModel([], 0.0, False, mu3, sigma2))
-				elif(normCount >= 2):
-					subDistributions.append(normalModel([], 0.0, False, mu2, sigma1))										
+				elif(normCount == 2):
+					subDistributions.append(normalModel([], 0.0, False, mu3, sigma3))										
 				else:
 					subDistributions.append(normalModel([], 0.0, False, mu2, sigma2))		
 				## basically what is happenning here, is we are trying to lay out the 
