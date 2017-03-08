@@ -11,6 +11,8 @@ import __main__
 from distStats import *
 from scipy.stats import norm
 
+from pygit2 import Repository
+
 
 import statSelect
 
@@ -58,7 +60,9 @@ def task(module):
 	module.task(seasons, params)
 
 def info():
-	print "Scrap Version %s" % ("blah")
+	
+	currentBranch = Repository('.').head.shorthand
+	print "Scrap Version %s on branch %s" % ("blah", currentBranch)
 	flatTeams = [individualTeam for yearTeamList in [season.Teams for season in seasons] for individualTeam in yearTeamList]
 	print "Currently loaded %i seasons in %i leagues with %i teams\n" % (len(seasons), len(set([ssn.getLeagueId() for ssn in seasons])), len(flatTeams))	
 	print "Available task modules:\n"
