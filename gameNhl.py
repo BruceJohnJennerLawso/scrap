@@ -10,9 +10,11 @@ from game import *
 class nhlGame(Game):
 	def __init__(self, dateString, Location, gameResult, goalsFor, goalsAgainst, opponentName, thisTeamName, gameEndedIn, comparisonSelectCondition, seasonIndex):
 		if(Location == '@'):
+			self.playedAtHome = False
 			gameLocation = '@%s_%s' % (opponentName, dateString)
 		elif(Location == 'H'):
 			gameLocation = '@%s_%s' % (thisTeamName, dateString)
+			self.playedAtHome = True
 		##print "Location, ", Location
 		super(nhlGame, self).__init__(comparisonSelectCondition, seasonIndex)
 		
@@ -29,11 +31,17 @@ class nhlGame(Game):
 		## location gets modified in the object, so only the first
 		## character in the location string is passed to the new object
 	
+	def wasHomeGame(self):
+		return self.playedAtHome
+
+	def wasAwayGame(self):
+		return (not self.playedAtHome)
+	
 	def getGameDescription(self):
 		output = "%s %s %s %s %i-%i %s %s\n" % (self.getDate(), self.getLocation(), self.getThisTeamName(), self.getGameResult(), self.getGoalsFor(), self.getGoalsAgainst(), self.getOpponentName(), self.getExtraTimeString())
-		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
+		output += "OQI %.3f, DQI %.3f, DQM %.3f, CPQI %.3f\n" % (self.getOffenceQualityIndex(), self.getDefenceQualityIndex(), self.getDiffQualMargin(), self.getCPQI())
 		output += self.opponent.getDescriptionString()
-		output += "\n\n"
+		output += "\n"
 		
 		return output
 

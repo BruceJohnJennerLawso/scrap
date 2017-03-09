@@ -17,6 +17,12 @@ class Game(object):
 	def getOne(self):
 		## Just... dont worry about it ok?
 		return 1
+	
+	def wasPlayedAtNeutralLocation(self):
+		if(self.wasHomeGame() == self.wasAwayGame()):
+			return True
+		else:
+			return False	
 		
 	def getComparisonConditions(self):
 		return self.comparisonSelectConditions	

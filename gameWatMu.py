@@ -35,6 +35,11 @@ class watMuGame(Game):
 		
 		return output
 
+	def wasHomeGame(self):
+		return True
+
+	def wasAwayGame(self):
+		return True
 		
 	def setSOC(self, newValue):
 		self.Layers[0][5] = newValue
