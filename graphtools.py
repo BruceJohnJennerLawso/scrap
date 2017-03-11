@@ -150,6 +150,8 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 		minShow = float(int(min(values)))	
 		maxShow = float(int(max(values)))			
 	
+	minShow, maxShow = getGraphBounds(values, 5)
+	
 	distMean = distStats.Mean(values)
 	distMedian = distStats.Median(values)
 	distVar = distStats.Variance(values)
