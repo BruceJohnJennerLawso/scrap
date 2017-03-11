@@ -315,7 +315,7 @@ if(__name__ == "__mainer__"):
 	print 5, valuesMatchFive
 	print 2, valuesMatchTwo
 	
-def getGraphBounds(values, snapToNearest=10):
+def getGraphBounds(values, snapToNearest=10, paddingLayers=0, debugInfo=False):
 	
 
 	## force this to an initial value of 10
@@ -343,8 +343,8 @@ def getGraphBounds(values, snapToNearest=10):
 	upper = max(values)
 	
 	dataSpan = max(values) - min(values)
-	
-	snapToNearest = 10**math.ceil(math.log10(dataSpan/2.0))
+	if((dataSpan/2.0) > 10.0):
+		snapToNearest = 10**math.ceil(math.log10(dataSpan/2.0))
 	## I *think* this should produce a decent power of 10 result
 	mid = (float(lower+ upper))/2.0
 	
@@ -354,7 +354,7 @@ def getGraphBounds(values, snapToNearest=10):
 		
 		## I guess the type will be determined by the original value
 
-	def snapAwayFrom(value, mid, snapToNearest=10):
+	def snapAwayFrom(value, mid, snapToNearest):
 		newValue = int(math.ceil(value /float(snapToNearest)))*snapToNearest
 		if(abs(newValue - mid) < abs(value - mid)):
 			## our value that we determined is actually closer to the
@@ -362,8 +362,8 @@ def getGraphBounds(values, snapToNearest=10):
 			## negative lower bound ended up getting rounded upwards
 			newValue -= snapToNearest
 		
-		if(abs(newValue-min(values)) <= 0.2*snapToNearest):
-			## if we have a value within 20% of our tick away from the
+		if(abs(newValue-min(values)) <= 0.05*snapToNearest):
+			## if we have a value within 5% of our tick away from the
 			## edge of the boundary, thats a bit too close for comfort,
 			## so we tick it one more away
 			newValue += snapToNearest*sign(value-mid)
@@ -373,12 +373,20 @@ def getGraphBounds(values, snapToNearest=10):
 		return newValue
 			
 	
-	
+	boundsSpan = dataSpan
 	
 	viewFilledPercentage = -1.0
-	while(viewFilledPercentage < 0.8):
-		if((viewFilledPercentage != -1.0)and(viewFilledPercentage < 0.8)):
-			print viewFilledPercentage, 0.8, snapToNearest, isPowerOf(snapToNearest, 10), isPowerOf(snapToNearest, 5), isPowerOf(snapToNearest, 2)
+	loopCount = 0
+	cutoff = 0.8
+	stepsDownCount = 0
+	
+	while(viewFilledPercentage < cutoff):
+		if(debugInfo):
+			print loopCount, dataSpan, boundsSpan, viewFilledPercentage, cutoff, snapToNearest, isPowerOf(snapToNearest, 10), isPowerOf(snapToNearest, 5), isPowerOf(snapToNearest, 2), (lower, upper), 10**math.ceil(math.log10(snapToNearest)), isPowerOf(10**math.ceil(math.log10(snapToNearest)), 10), isPowerOf((snapToNearest), 10)
+		if(loopCount >= 100):
+			break
+		loopCount += 1
+		if((viewFilledPercentage != -1.0)and(viewFilledPercentage < cutoff)):
 			## we tried to fit, but the view was too big for the data, 
 			## likely the bounds were too big compared to the data, so we'll try 
 			## changing the snapToNearest parameter downwards in scale until we
@@ -387,7 +395,13 @@ def getGraphBounds(values, snapToNearest=10):
 			## the only danger I can see here is that the algorithm might choose
 			## a super fine tick interval for a dataset with a large span
 			## but it should do exactly what I want most of the time
+			startSnapValue = snapToNearest
 			
+			## need to check here and verify that our value for snapToNearest
+			## hasnt jumped off the rails due to rounding error
+			
+			cutoff -= 0.1+(float(stepsDownCount)*0.1)
+			stepsDownCount += 1
 			if(snapToNearest > 2.0):
 				if((isPowerOf(snapToNearest, 10)) or (isPowerOf(snapToNearest, 2))):
 					snapToNearest *= 0.5
@@ -405,16 +419,28 @@ def getGraphBounds(values, snapToNearest=10):
 					snapToNearest *= 0.5
 				if(isPowerOf(snapToNearest, 5)):
 					snapToNearest *= 0.2
-					
-		lower = snapAwayFrom(lower, mid, snapToNearest)
-		upper = snapAwayFrom(upper, mid, snapToNearest)
-		
+			if(debugInfo):
+				print startSnapValue, " -> ", snapToNearest	
+			if((not isPowerOf(snapToNearest, 10))and(not isPowerOf(snapToNearest, 5))and(not isPowerOf(snapToNearest, 2))):
+				snapToNearest = 10**math.ceil(math.log10(snapToNearest))
+
+		if(debugInfo):
+			print "Snapping..."
+			print (lower, mid, upper)
+		lower = snapAwayFrom(min(values), mid, snapToNearest)
+		upper = snapAwayFrom(max(values), mid, snapToNearest)
+		if(debugInfo):
+			print "Finished snapping"
+			print (lower, mid, upper)		
 		while(lower >= min(values)):
 			## we done goofed, so try brute forcing it away again
 			lower -= snapToNearest
+			if(debugInfo):
+				print (lower, upper)
 		while(upper <= max(values)):
 			upper += snapToNearest	
-		
+			if(debugInfo):
+				print (lower, upper)	
 		boundsSpan = upper - lower
 		viewFilledPercentage = float(dataSpan/boundsSpan)
 		
@@ -426,7 +452,7 @@ if(__name__ == "__main__"):
 	y_values = [2.012, 3.8536]
 	##y_values = [3.583, 0.99]
 	print getGraphBounds(y_values, 5), min(y_values), max(y_values)
-	z_values = [-0.99,-9.09]
+	z_values = [-0.99,-2.09]
 	print getGraphBounds(z_values, 10), min(z_values), max(z_values)
 
 
