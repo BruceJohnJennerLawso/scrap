@@ -31,17 +31,21 @@ if(__name__ == "__main__"):
 	for row in rows:
 		##print row, row.find_all('tr')
 		headerRows.append([val.text.encode('utf8') for val in row.find_all('th')])	
-		outputRows.append([val.text.encode('utf8') for val in row.find_all('td')+row.find_all('th')])		
+		outputRows.append([val.text.encode('utf8') for val in row.find_all('th')+row.find_all('td')])		
 	tableWidth = max([len(row) for row in headerRows])
 	## this is to single out that blasted "meta header" row thats often present
 	## but not always in a teams hockey reference page
-	headerRows = [row for row in headerRows if (len(row)==tableWidth)]
+	##headerRows = [row for row in headerRows if (len(row)==tableWidth)]
 	outputRows = [row for row in outputRows if row not in headerRows]
+	headerRows = [row for row in headerRows if (len(row)==tableWidth)]
+	headerRows = map(list, set(map(tuple,headerRows)))
 	
+	print "## Header Rows ##"
 	for row in headerRows:
 		print row, len(row)
 	i = 0
-	
+
+	print "## Output Rows ##"	
 	for row in outputRows:
 		print i, outputRows.index(row), row, len(row), (len(row) == tableWidth)	, "\n"
 		if(len(row) != tableWidth):
