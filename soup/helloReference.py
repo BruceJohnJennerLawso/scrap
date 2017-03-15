@@ -59,9 +59,10 @@ def getTableInRows(url, tableTarget, debugInfo=False):
 
 if(__name__ == "__main__"):
 
-	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
+	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
 	##url = "http://www.hockey-reference.com/teams/TOR/2017_games.html"
-	##url = "http://www.hockey-reference.com/teams/MTW/1918_games.html"
+	url = "http://www.hockey-reference.com/teams/MTW/1918_games.html"
 	##page = requests.get(url)
-	getTableInRows(url, {"class", "refpays"})
+	##getTableInRows(url, {"class", "refpays"})
+	getTableInRows(url, {"id", "games"})
 	
