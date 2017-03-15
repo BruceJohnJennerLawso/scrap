@@ -26,7 +26,7 @@ def getTableInRows(url, tableTarget, debugInfo=False):
 		##print row, row.find_all('tr')
 		headerRows.append([val.text.encode('utf8') for val in row.find_all('th')])	
 		##outputRows.append([val.text.encode('utf8') for val in row.find_all('th')+row.find_all('td')])
-		outputRows.append([val.text.encode('utf8') for val in row.find_all('td', 'th')])		
+		outputRows.append([val.text.encode('utf8') for val in row.find_all(['td', 'th'])])		
 		## important note here, some evil
 		## tables such as hockey reference like to make data in the first column
 		## (ie game number) a <th> element, like its another header but vertical
@@ -59,10 +59,12 @@ def getTableInRows(url, tableTarget, debugInfo=False):
 
 if(__name__ == "__main__"):
 
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
+	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
 	##url = "http://www.hockey-reference.com/teams/TOR/2017_games.html"
-	url = "http://www.hockey-reference.com/teams/MTW/1918_games.html"
+	##url = "http://www.hockey-reference.com/teams/MTW/1918_games.html"
 	##page = requests.get(url)
 	##getTableInRows(url, {"class", "refpays"})
-	getTableInRows(url, {"id", "games"})
+	##getTableInRows(url, {"id": "games"})
+	getTableInRows(url, {"class": "refpays"})
+	
 	
