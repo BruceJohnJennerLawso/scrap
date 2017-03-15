@@ -42,6 +42,8 @@ def getTeamStatInformation(targetStatName):
 		return (Team.getDQM, 'DiffQualityMargin', 'DiffQualityMargin')	
 	elif(targetStatName == "FBS"):
 		return (Team.getFrontBackSplit, 'CPQI FrontBack Split', 'CPQI FrontBack Split')	
+	elif(targetStatName == "SGP"):
+		return (Team.getSeasonGamesTotal, 'SGP', 'Total Season Games Played')			
 	## playoff stats start here
 	elif(targetStatName == "PlayoffOffence"):
 		return (Team.getPlayoffGoalsForAverage, 'PlayoffOffence', 'PlayoffOffence')	
@@ -61,7 +63,7 @@ def getTeamStatInformation(targetStatName):
 def getTeamSeasonStatNames():
 	seasonStats = ["PlusMinus", "Wins", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI",\
 	"MaAPQI", "Points", "Offence", "Defence", "DQM", "CPQI", "ODQSplit",\
-	"FBS", "GDA"]
+	"FBS", "GDA", "SGP"]
 	return seasonStats
 
 def getTeamPlayoffStatNames():
