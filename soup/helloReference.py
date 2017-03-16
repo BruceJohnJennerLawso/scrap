@@ -1,4 +1,4 @@
-## helloSoup.py ################################################################
+## helloReference.py ###########################################################
 ## just mucking around with beautiful soup to get ##############################
 ## a feel for it ###############################################################
 ################################################################################
@@ -65,6 +65,8 @@ if(__name__ == "__main__"):
 	##page = requests.get(url)
 	##getTableInRows(url, {"class", "refpays"})
 	##getTableInRows(url, {"id": "games"})
+	getTableInRows(url, {"class": "refpays"})
+	
 	getTableInRows(url, {"class": "refpays"})
 	
 	
