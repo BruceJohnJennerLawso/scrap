@@ -4,32 +4,59 @@
 ################################################################################
 
 
-def getTeamName(teamString):
-	if('(Casual)' in teamString):
-		return teamString[12: (len(teamString)-(len('Casual'))) -3]		
-	elif('(Beginner)' in teamString):
-		return teamString[12: (len(teamString)-(len('Beginner'))) -3]
-	elif('(Semi-Competitive)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -1]	
-	elif('(Intermediate)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Intermediate)'))) - 1]	
-	elif('(Competitive)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Competitive)'))) -1]	
-	elif('(Advanced)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Advanced)'))) -1]	
-	elif('(Elite)' in teamString):
-		return teamString[12: (len(teamString)-(len('(Elite)'))) -1]	
-	elif('(All Star)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star)'))) -1]	
-	elif('(All Star Non-Contact)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star Non-Contact)'))) -1]	
-	elif('(All Star Contact)' in teamString):
-		return teamString[12: (len(teamString)-(len('(All Star Contact)'))) -1]	
+#def getTeamName(teamString):
+	#if('(Casual)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Casual)'))) -1]		
+	#elif('(Beginner)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Beginner)'))) -1]
+	#elif('(Semi-Competitive)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Semi-Competitive)'))) -1]	
+	#elif('(Intermediate)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Intermediate)'))) - 1]	
+	#elif('(Competitive)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Competitive)'))) -1]	
+	#elif('(Advanced)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Advanced)'))) -1]	
+	#elif('(Elite)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(Elite)'))) -1]	
+	#elif('(All Star)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(All Star)'))) -1]	
+	#elif('(All Star Non-Contact)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(All Star Non-Contact)'))) -1]	
+	#elif('(All Star Contact)' in teamString):
+		#return teamString[12: (len(teamString)-(len('(All Star Contact)'))) -1]	
 	## This is actually kind of important, cause any extra spaces at the end of
 	## the team name will screw up compares in the schedule
 	
 	## ie 'The Mighty Dads' and 'The Mighty Dads '
 	## will not compare as the same thing
+
+def getTeamName(teamString):
+	levelStrings = ['(Casual)', '(Beginner)','(Semi-Competitive)',\
+	'(Intermediate)', '(Competitive)', '(Advanced)', '(Elite)', '(All Star)',\
+	'(All Star Non-Contact)', '(All Star Contact)', ' (Maradona)', '(Beckham)',\
+	'(Figo)', '(District 1)', '(The Capitol)', ' (Pele)', ' (Ronaldinho)'\
+	' (All Skill Levels)', ' (Jordan)']
+	
+	sportStrings = ['Tournament: 3-on-3 Indoor Soccer: ',\
+	 'Tournament: March Madness: 3-on-3 Basketball: ',\
+	 'Tournament: Hunger Games Residence Dodgeball: ', '7 vs 7 Soccer: ',\
+	 'Ball Hockey: ', 'Basketball: ', 'Dodgeball: ', 'Flag Football: ',\
+	 'Futsal: ', 'Ice Hockey: ', 'Indoor Ultimate: ', 'Slo Pitch: ',\
+	 'Soccer: ', 'Ultimate: ', 'Volleyball: ']
+
+	
+	for levString in levelStrings:
+		for sportString in sportStrings:
+			##print teamString
+			##print levString, levString in teamString
+			##print sportString, sportString in teamString, '\n'
+			if((levString in teamString)and(sportString in teamString)):
+				
+				
+				print len(sportString)
+				return teamString[len(sportString): (len(teamString)-(len(levString)))]	
+	print '\n\n'	
 	
 	
 def seasonLength(val):
