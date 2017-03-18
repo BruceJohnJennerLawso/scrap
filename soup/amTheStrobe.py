@@ -7,7 +7,9 @@ from lxml import html
 import requests
 import numpy as np
 import string
-
+import collections
+import os
+import csv
 
 def convertShortLinkHrefUrlToFull(linkHref):
 	if(linkHref[0] == '/'):
@@ -83,10 +85,27 @@ def getTableInRows(url, tableTarget, debugInfo=False):
 
 if(__name__ == "__main__"):
 
-
-	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 22, 26, 18, 16]
+	sports = {\
+	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
+	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 }
+	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]
 	## logic not included
-	years = range(2007, 2017)
+	years = range(2008, 2017)
 	
 	def getTermById(termId):
 		if(termId == 1):
@@ -139,11 +158,49 @@ if(__name__ == "__main__"):
 								break
 								
 						print lev.getText(), lev.name
+						thisLevelTeamIds = []
 						for teamId in [convertShortLinkToTeamId(l.get('href')) for l in linksAfterLev]:
-							teamIdList = [string.replace(url, "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=", "") for url in getLinkedPagesFromUrl("https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i" % int(teamId))]
+							if(teamId not in thisLevelTeamIds):
+								if(len(thisLevelTeamIds)):
+									print "Top bracket not fully connected to teamId %s" % teamId
+								linkedTeams = getLinkedPagesFromUrl("https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i" % int(teamId))
+								for tm in [string.replace(url, "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=", "") for url in linkedTeams]:
+									thisLevelTeamIds.append(tm)
+								teamIdList = [string.replace(url, "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=", "") for url in linkedTeams]
 							
-							print teamId, teamIdList, len(teamIdList), "\n"
-			
+							print teamId
+						thisLevelTeamIds = [string.replace(url, "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=", "") for url in thisLevelTeamIds]
+						print thisLevelTeamIds, len(thisLevelTeamIds), len([item for item, count in collections.Counter(thisLevelTeamIds).items() if count > 1]), "\n"
+						
+						print "Saving to manifest csv..."
+						sportId = sport
+						sportName = sports[sportId][0]
+						levelId = lev.getText()
+						termName = getTermById(term)
+						
+						leagueSpecifics = "%s-%s-%s" % (sports[sportId][3], sports[sportId][1], sports[sportId][2])
+						
+						if(sports[sportId][4] == "league"):
+							file_path = "./data/%s/watMu/%s/%s%i_%s/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
+						else:
+							file_path = "./data/%s/watMu/%s/%s%i_%s_tournament/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
+						directory = os.path.dirname(file_path)
+						try:
+							os.stat(directory)
+						except:
+							os.makedirs(directory)	
+						f = open(file_path, "wb")
+						writer = csv.writer(f)
+						for row in thisLevelTeamIds:
+							writer.writerow(["%s" % row])
+						f.close()
+						
+						print "...Finished writing manifest csv\n"				
+					print "\n\n"
+
+
+
+	
 	##for elem in levels(text=re.compile(r' #\S{11}')):
 	##	print elem.parent
 	#for row in rows:
