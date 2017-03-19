@@ -36,7 +36,7 @@ def getTeamName(teamString):
 	'(Intermediate)', '(Competitive)', '(Advanced)', '(Elite)', '(All Star)',\
 	'(All Star Non-Contact)', '(All Star Contact)', ' (Maradona)', '(Beckham)',\
 	'(Figo)', '(District 1)', '(The Capitol)', ' (Pele)', ' (Ronaldinho)'\
-	' (All Skill Levels)', ' (Jordan)']
+	' (All Skill Levels)', ' (Jordan)', ' (Kobe Bryant)', ' (LeBron James)']
 	
 	sportStrings = ['Tournament: 3-on-3 Indoor Soccer: ',\
 	 'Tournament: March Madness: 3-on-3 Basketball: ',\
