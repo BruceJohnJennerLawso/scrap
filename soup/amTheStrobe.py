@@ -100,7 +100,7 @@ if(__name__ == "__main__"):
 	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
 	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
 	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
-	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
+	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
 	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]
@@ -109,11 +109,11 @@ if(__name__ == "__main__"):
 	
 	def getTermById(termId):
 		if(termId == 1):
-			return "Winter"
+			return "winter"
 		elif(termId == 2):
-			return "Spring"
+			return "spring"
 		if(termId == 4):
-			return "Fall"						
+			return "fall"						
 	
 	terms = [1,2,4]
 	## it goes winter, spring, fall
@@ -121,6 +121,23 @@ if(__name__ == "__main__"):
 	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
 	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=7627"
 	
+	def convertLevelsToStandard(levelName):
+		newLevelNameMap = {"Casual":"beginner", "Semi-Competitive":"intermediate", "Competitive":"advanced", "Elite":"allstar"}
+		if(levelName in newLevelNameMap):
+			return newLevelNameMap[levelName]
+		oldNamesCaseMap = {"Beginner":"beginner", "Intermediate":"intermediate", "Advanced":"advanced", "All Star":"allstar", "All Star Non-Contact":"allstar", "All Star Contact":"allstarContact"}	
+		if(levelName in oldNamesCaseMap):
+			return oldNamesCaseMap[levelName]
+		
+		randomAssDivisionNames = {'Maradona':"maradona", 'Beckham':"beckham",'Figo':"figo",\
+		'District 1':'any', 'The Capitol':'any', 'Pele':'pele', 'Ronaldinho':'ronaldinho',\
+		'All Skill Levels':'any', 'Jordan':'jordan', 'Kobe Bryant':'kobeBryant', 'LeBron James':'lebronJames'}
+		if(levelName in randomAssDivisionNames):
+			return randomAssDivisionNames[levelName]
+		
+		return levelName
+		
+		
 	for year in years:
 
 		for term in terms:
@@ -175,15 +192,16 @@ if(__name__ == "__main__"):
 						print "Saving to manifest csv..."
 						sportId = sport
 						sportName = sports[sportId][0]
-						levelId = lev.getText()
+						levelId = convertLevelsToStandard(lev.getText())
 						termName = getTermById(term)
 						
-						leagueSpecifics = "%s-%s-%s" % (sports[sportId][3], sports[sportId][1], sports[sportId][2])
+						leagueSpecifics = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
 						
 						if(sports[sportId][4] == "league"):
-							file_path = "./data/%s/watMu/%s/%s%i_%s/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
+							file_path = "./data/%s/%s/watMu/%s/%s%i/teamId.csv" % (sportName, leagueSpecifics, levelId, termName, year)
+							
 						else:
-							file_path = "./data/%s/watMu/%s/%s%i_%s_tournament/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
+							file_path = "./data/%s/%s_%s/watMu/%s/%s%i/teamId.csv" % (sportName, leagueSpecifics, "tournament", levelId, termName, year)
 						directory = os.path.dirname(file_path)
 						try:
 							os.stat(directory)

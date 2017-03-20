@@ -8,10 +8,10 @@ import os
 import csv
 
 def getTeamName(teamString):
-	levelStrings = ['(Casual)', '(Beginner)','(Semi-Competitive)',\
-	'(Intermediate)', '(Competitive)', '(Advanced)', '(Elite)', '(All Star)',\
-	'(All Star Non-Contact)', '(All Star Contact)', ' (Maradona)', '(Beckham)',\
-	'(Figo)', '(District 1)', '(The Capitol)', ' (Pele)', ' (Ronaldinho)'\
+	levelStrings = [' (Casual)', ' (Beginner)',' (Semi-Competitive)',\
+	' (Intermediate)', ' (Competitive)', ' (Advanced)', ' (Elite)', ' (All Star)',\
+	' (All Star Non-Contact)', ' (All Star Contact)', ' (Maradona)', ' (Beckham)',\
+	' (Figo)', ' (District 1)', ' (The Capitol)', ' (Pele)', ' (Ronaldinho)'\
 	' (All Skill Levels)', ' (Jordan)', ' (Kobe Bryant)', ' (LeBron James)']
 	
 	sportStrings = ['Tournament: 3-on-3 Indoor Soccer: ',\
@@ -103,102 +103,42 @@ def getTableInRows(soup, tableTarget, tableDataOnlyUnder="", debugInfo=False):
 
 def getTableOfStrobePlayers(soup):
 	content = soup.find(lambda tag: tag.name=='div', {"id": "primarycontent"}) 
-	roster = content.find(lambda tag: tag.name=='ul') 
+	
+		
+	if(content.find(lambda tag: tag.name=='ul')):
+		roster = content.find(lambda tag: tag.name=='ul') 
+		players = roster.findAll(lambda tag: tag.name=='li')
+		headerRow = [["Player", "Captaincy", "uwaterloo_email"]]
+		outputRows = []
+		for player in players:
+			##print player, player.getText(),
+			if(player.find(lambda tag: tag.name=='a')):
+				outputRows.append([player.getText().encode('utf8')[9:], "(C)", player.find(lambda tag: tag.name=='a').get('href')[7:]])
+				##print "Captain", player.find(lambda tag: tag.name=='a').get('href')[7:]
+			else:
+				outputRows.append([player.getText().encode('utf8'), "", ""])
+				##print ""
+		return (headerRow, outputRows)	
+	else:
+		return ([['Roster Unavailable']], [[]])
 	## pretty sure this should be the only ul in the page, but this makes me
 	## nervous
-	players = roster.findAll(lambda tag: tag.name=='li')
 	
-	headerRow = [["Player", "Captaincy", "uwaterloo_email"]]
-	outputRows = []
-	for player in players:
-		##print player, player.getText(),
-		if(player.find(lambda tag: tag.name=='a')):
-			outputRows.append([player.getText().encode('utf8'), "(C)", player.find(lambda tag: tag.name=='a').get('href')[7:]])
-			##print "Captain", player.find(lambda tag: tag.name=='a').get('href')[7:]
-		else:
-			outputRows.append([player.getText(), "", ""])
-			##print ""
-	return (headerRow, outputRows)
-		
-if(__name__ == "__main__"):
+	
 
-	teamId = 12348
-	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i" % (teamId)
 
-	sports = {\
-	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
-	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
-	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
-	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
-	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
-	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
-	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
-	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
-	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
-	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
-	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
-	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
-	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
-	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
-	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
-	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
-	 }
-	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11484"
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=8936"	
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=8481"	
-	##url = "http://www.hockey-reference.com/teams/TOR/2017_games.html"
-	##url = "http://www.hockey-reference.com/teams/MTW/1918_games.html"
 
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=6887"
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13245"
-	##page = requests.get(url)
-	##getTableInRows(url, {"class", "refpays"})
-	##getTableInRows(url, {"id": "games"})
 	
+def scrapeStrobeTeam(teamId, levelId, sportId, seasonId):	
+	##teamId = 12348
+	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i&sport=%i" % (teamId, sportId)
 	
-	years = range(2008, 2017)
-	
-	def getTermById(termId):
-		if(termId == 1):
-			return "Winter"
-		elif(termId == 2):
-			return "Spring"
-		if(termId == 4):
-			return "Fall"						
-	
-	terms = [1,2,4]
-	## it goes winter, spring, fall
-	## makes no sense to me either how they picked the term numbers
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=7627"
-	
-	
-	for sport in sportIds:
-				
-		sportId = sport
-		sportName = sports[sportId][0]
-				
-				
-
-	#termName = getTermById(term)
-									
-	#leagueSpecifics = "%s-%s-%s" % (sports[sportId][3], sports[sportId][1], sports[sportId][2])
-									
-	#if(sports[sportId][4] == "league"):
-		#file_path = "./data/%s/watMu/%s/%s%i_%s/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
-	#else:
-		#file_path = "./data/%s/watMu/%s/%s%i_%s_tournament/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)				
-	#directory = os.path.dirname(file_path)
-	#print directory
-					
-
-				
+			
 	page = requests.get(url)
 	soup = BeautifulSoup(page.content, "lxml")	
 			
 	content = soup.find(lambda tag: tag.name=='div', {"id": "primarycontent"}) 
-	teamNameString = content.find(lambda tag: tag.name=='h1').getText()
+	teamNameString = content.find(lambda tag: tag.name=='h1').getText().encode('utf8')
 				
 	teamRosterHeading, teamRoster = getTableOfStrobePlayers(soup)
 	seasonGamesHeading, seasonGamesTable = getTableInRows(soup, {"class": "refpays"}, "REGULAR SEASON")
@@ -239,7 +179,30 @@ if(__name__ == "__main__"):
 
 	print "Saving to csv..."
 
-	file_path = "./outputFiles/%i.csv" % teamId
+	sports = {\
+	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
+	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 }
+	 
+	rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	file_path = "./data/%s/%s/watMu/%s/%s/%i.csv" % (sports[sportId][0], rulesSpec, levelId, seasonId, teamId)
+
+
+	##file_path = "./outputFiles/%i.csv" % teamId
 
 	directory = os.path.dirname(file_path)
 	try:
@@ -251,14 +214,19 @@ if(__name__ == "__main__"):
 	writer.writerow(['INFO:'])
 	writer.writerow(['teamName', teamName])	
 	writer.writerow(['teamAbbreviation', teamName])	
+	writer.writerow(['sportId', 'n/a'])		
+	writer.writerow(['sportName', 'n/a'])
+	writer.writerow(['sportRules', 'n/a'])		
 	writer.writerow(['leagueId', 'watMu'])	
 	writer.writerow(['levelId', 'n/a'])			
 	writer.writerow(['seasonName', 'n/a'])
 	writer.writerow(['seasonId', 'n/a'])	
 	writer.writerow(['Roster Size',len(teamRoster)])	
 	writer.writerow(['Season Games Played',len(seasonGamesTable)])	
-	
-	writer.writerow(['Playoff Round Lengths']+[1 for playoffRound in playoffGamesTable])
+	playoffRoundLengths = [1 for playoffRound in playoffGamesTable]
+	if(1 not in playoffRoundLengths):
+		playoffRoundLengths.append(0)
+	writer.writerow(['Playoff Round Lengths']+playoffRoundLengths)
 	writer.writerow(['END_INFO'])
 	writer.writerows([''])
 	writer.writerow(['SEASON:'])
@@ -276,11 +244,116 @@ if(__name__ == "__main__"):
 	writer.writerow(['END_PLAYOFFS'])
 	writer.writerows([''])
 	writer.writerow(['ROSTER:'])
-	for row in teamRosterHeading:
-		writer.writerow(row)	
-	for row in teamRoster:
-		writer.writerow(row)					
+	if(teamRosterHeading[0][0] != 'Roster Unavailable'):
+		for row in teamRosterHeading:
+			writer.writerow(row)	
+		for row in teamRoster:
+			writer.writerow(row)	
+	else:
+		writer.writerow(['Roster Unavailable'])				
 	writer.writerow(['END_ROSTER'])
 	f.close()
 							
-	print "...Finished writing csv\n"	
+	print "...Finished writing csv\n"		
+	
+
+	
+		
+if(__name__ == "__main__"):
+
+	##teamId = 12348
+	##teamId = 7627
+	##teamId = 11256
+	##teamId = 6867
+	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i" % (teamId)
+
+	teamId = 6169
+	levelId = 'intermediate'
+	sportId = 3
+	seasonId = 'spring2011'
+	scrapeStrobeTeam(teamId, levelId, sportId, seasonId)	
+	exit()
+
+	sports = {\
+	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
+	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 }
+	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
+
+	
+	years = range(2008, 2017)
+	
+	def getTermById(termId):
+		if(termId == 1):
+			return "winter"
+		elif(termId == 2):
+			return "spring"
+		if(termId == 4):
+			return "fall"						
+	
+	terms = [1,2,4]
+	## it goes winter, spring, fall
+	## makes no sense to me either how they picked the term numbers
+	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
+	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=7627"
+	
+	
+	for sport in sportIds:
+				
+		sportId = sport
+		sportName = sports[sportId][0]
+		rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+		
+		levelIdList = ['beginner', 'intermediate', 'advanced', 'allstar', 'allstarContact', 'any']
+		if(sportId in [16,17,18,26]):
+			levelIdList += ['beckham', 'figo', 'maradona', 'pele', 'ronaldinho', 'jordan', 'kobeBryant', 'lebronJames']
+			## when I go completely nuts, please refer to this as the reason why
+		for levelId in levelIdList:
+			for year in years:
+				for term in [getTermById(id_) for id_ in terms]:
+					seasonId = "%s%i" % (term, year)
+					file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesSpec, levelId, seasonId)	
+					try:
+						with open(file_path, 'rb') as foo:
+							reader = csv.reader(foo)
+							print file_path, " Exists"
+							for row in reader:
+								teamId = row[0]
+								print teamId, seasonId, levelId, sportId, sportName
+								scrapeStrobeTeam(int(teamId), levelId, sportId, seasonId)
+							print "\n" 
+					except IOError:
+						pass
+						##print file_path, " Does not exist"
+		##teamId = 12348
+		##levelId = 'beginner'
+		##sportId = 1
+		##seasonId = fall2015
+		##scrapeStrobeTeam(teamId, levelId, sportId, seasonId)					
+
+	#termName = getTermById(term)
+									
+	#leagueSpecifics = "%s-%s-%s" % (sports[sportId][3], sports[sportId][1], sports[sportId][2])
+									
+	#if(sports[sportId][4] == "league"):
+		#file_path = "./data/%s/watMu/%s/%s%i_%s/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)
+	#else:
+		#file_path = "./data/%s/watMu/%s/%s%i_%s_tournament/teamId.csv" % (sportName, levelId, termName, year, leagueSpecifics)				
+	#directory = os.path.dirname(file_path)
+	#print directory
+					
+
