@@ -11,7 +11,7 @@ def getTeamName(teamString):
 	levelStrings = [' (Casual)', ' (Beginner)',' (Semi-Competitive)',\
 	' (Intermediate)', ' (Competitive)', ' (Advanced)', ' (Elite)', ' (All Star)',\
 	' (All Star Non-Contact)', ' (All Star Contact)', ' (Maradona)', ' (Beckham)',\
-	' (Figo)', ' (District 1)', ' (The Capitol)', ' (Pele)', ' (Ronaldinho)'\
+	' (Figo)', ' (District 1)', ' (The Capitol)', ' (Pele)', ' (Ronaldinho)',\
 	' (All Skill Levels)', ' (Jordan)', ' (Kobe Bryant)', ' (LeBron James)']
 	
 	sportStrings = ['Tournament: 3-on-3 Indoor Soccer: ',\
@@ -27,9 +27,10 @@ def getTeamName(teamString):
 			##print teamString
 			##print levString, levString in teamString
 			##print sportString, sportString in teamString, '\n'
+			print levString, (levString in teamString), sportString, (sportString in teamString)
 			if((levString in teamString)and(sportString in teamString)):
 				
-				
+
 				print len(sportString)
 				return teamString[len(sportString): (len(teamString)-(len(levString)))]	
 	print '\n\n'		
@@ -267,12 +268,12 @@ if(__name__ == "__main__"):
 	##teamId = 6867
 	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=%i" % (teamId)
 
-	teamId = 6169
-	levelId = 'intermediate'
-	sportId = 3
-	seasonId = 'spring2011'
-	scrapeStrobeTeam(teamId, levelId, sportId, seasonId)	
-	exit()
+	#teamId = 6169
+	#levelId = 'intermediate'
+	#sportId = 3
+	#seasonId = 'spring2011'
+	#scrapeStrobeTeam(teamId, levelId, sportId, seasonId)	
+	#exit()
 
 	sports = {\
 	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
