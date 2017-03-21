@@ -27,11 +27,11 @@ def getTeamName(teamString):
 			##print teamString
 			##print levString, levString in teamString
 			##print sportString, sportString in teamString, '\n'
-			print levString, (levString in teamString), sportString, (sportString in teamString)
+			##print levString, (levString in teamString), sportString, (sportString in teamString)
 			if((levString in teamString)and(sportString in teamString)):
 				
 
-				print len(sportString)
+				##print len(sportString)
 				return teamString[len(sportString): (len(teamString)-(len(levString)))]	
 	print '\n\n'		
 
@@ -198,9 +198,16 @@ def scrapeStrobeTeam(teamId, levelId, sportId, seasonId):
 	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
+	
+	
 	 
 	rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
-	file_path = "./data/%s/%s/watMu/%s/%s/%i.csv" % (sports[sportId][0], rulesSpec, levelId, seasonId, teamId)
+	if(sports[sportId][4] == "tournament"):
+		##print "tournament"
+		rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])			
+	else:
+		rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])	
+	file_path = "./data/%s/%s/watMu/%s/%s/%i.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, teamId)
 
 
 	##file_path = "./outputFiles/%i.csv" % teamId
@@ -293,8 +300,8 @@ if(__name__ == "__main__"):
 	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
-	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
-
+	##sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
+	sportIds = [ 17, 26, 18, 16]	
 	
 	years = range(2008, 2017)
 	
@@ -318,7 +325,12 @@ if(__name__ == "__main__"):
 		sportId = sport
 		sportName = sports[sportId][0]
 		rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
-		
+		##print sports[sportId][4]
+		if(sports[sportId][4] == "tournament"):
+			##print "tournament"
+			rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])			
+		else:
+			rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])		
 		levelIdList = ['beginner', 'intermediate', 'advanced', 'allstar', 'allstarContact', 'any']
 		if(sportId in [16,17,18,26]):
 			levelIdList += ['beckham', 'figo', 'maradona', 'pele', 'ronaldinho', 'jordan', 'kobeBryant', 'lebronJames']
@@ -327,7 +339,7 @@ if(__name__ == "__main__"):
 			for year in years:
 				for term in [getTermById(id_) for id_ in terms]:
 					seasonId = "%s%i" % (term, year)
-					file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesSpec, levelId, seasonId)	
+					file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesPath, levelId, seasonId)	
 					try:
 						with open(file_path, 'rb') as foo:
 							reader = csv.reader(foo)
@@ -339,6 +351,7 @@ if(__name__ == "__main__"):
 							print "\n" 
 					except IOError:
 						pass
+						##print 'not_found: ', file_path
 						##print file_path, " Does not exist"
 		##teamId = 12348
 		##levelId = 'beginner'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-geany helloSoup.py helloReference.py scoutEmOut.py amTheStrobe.py unlimitedData.py gitter ../soupyFlow.txt  &
+geany helloSoup.py helloReference.py scoutEmOut.py amTheStrobe.py marchSpartaness.py unlimitedData.py gitter ../soupyFlow.txt  &
 ## got tired of doing this manually every time with geany
 
 exit 0

@@ -1,6 +1,8 @@
-## helloSoup.py ################################################################
-## just mucking around with beautiful soup to get ##############################
-## a feel for it ###############################################################
+## marchSpartaness.py ##########################################################
+## the march madness intramurals basketball tournament at waterloo for some ####
+## reason doesnt list the division bracket winners, so Im gonna write up a #####
+## quick n very dirty script that pulls down the teamIds instead of doing it ###
+## by hand #####################################################################
 ################################################################################
 from bs4 import BeautifulSoup
 from lxml import html
@@ -33,55 +35,8 @@ def getLinkedPagesFromUrl(url, alreadyLookedAt=[], depth=0):
 			totalList += getLinkedPagesFromUrl(linkHref, alreadyLookedAt+totalList, depth+1)
 	return totalList
 
-def getTableInRows(url, tableTarget, debugInfo=False):
-	page = requests.get(url)
-	soup = BeautifulSoup(page.content, "lxml")
-	##{"id": tableId}
-	table = soup.find(lambda tag: tag.name=='table', tableTarget) 
-	rows = table.findAll(lambda tag: tag.name=='tr')
-	
-	
-	for row in rows:
-		print row
-	print "\n\nFlattening to csv\n"
-
-	headerRows = []
-	outputRows = []
-
-	for row in rows:
-		##print row, row.find_all('tr')
-		headerRows.append([val.text.encode('utf8') for val in row.find_all('th')])	
-		##outputRows.append([val.text.encode('utf8') for val in row.find_all('th')+row.find_all('td')])
-		outputRows.append([val.text.encode('utf8') for val in row.find_all(['td', 'th'])])		
-		## important note here, some evil
-		## tables such as hockey reference like to make data in the first column
-		## (ie game number) a <th> element, like its another header but vertical
-		## because they hate me
-	for row in outputRows:
-		print row
-
-				
-	tableWidth = max([len(row) for row in headerRows])
-	## this is to single out that blasted "meta header" row thats often present
-	## but not always in a teams hockey reference page
-	##headerRows = [row for row in headerRows if (len(row)==tableWidth)]
-	outputRows = [row for row in outputRows if row not in headerRows]
-	headerRows = [row for row in headerRows if (len(row)==tableWidth)]
-	headerRows = map(list, set(map(tuple,headerRows)))
-	## remove duplicate header rows (in list form) from the list of lists
-	
-	print "## Header Rows ##"
-	for row in headerRows:
-		print row, len(row)
-	i = 0
-
-	print "## Output Rows ##"	
-	for row in outputRows:
-		print i, outputRows.index(row), row, len(row), (len(row) == tableWidth)	, "\n"
-		if(len(row) != tableWidth):
-			print "Bad row does not match widths of the others"
-		i+=1	
-	return (headerRows, outputRows)
+def convertUrlToTeamId(url):
+	return string.replace(string.replace(url, "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=", ""), "&sport=16", "")
 
 if(__name__ == "__main__"):
 
@@ -104,6 +59,18 @@ if(__name__ == "__main__"):
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
 	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]
+	
+	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13244&sport=16"
+	jordanDivisionIds = getLinkedPagesFromUrl(url)
+	print [convertUrlToTeamId(teamurl) for teamurl in jordanDivisionIds]
+	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13241&sport=16"
+	lebronDivisionIds = getLinkedPagesFromUrl(url)
+	print [convertUrlToTeamId(teamurl) for teamurl in lebronDivisionIds]
+	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13243&sport=16"
+	kobeDivisionIds = getLinkedPagesFromUrl(url)	
+	print [convertUrlToTeamId(teamurl) for teamurl in kobeDivisionIds]
+	exit()
+	
 	## logic not included
 	years = range(2008, 2017)
 	
