@@ -58,7 +58,7 @@ if(__name__ == "__main__"):
 	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
-	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]
+	sportId = 16
 	
 	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13244&sport=16"
 	jordanDivisionIds = getLinkedPagesFromUrl(url)
@@ -69,6 +69,32 @@ if(__name__ == "__main__"):
 	url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=13243&sport=16"
 	kobeDivisionIds = getLinkedPagesFromUrl(url)	
 	print [convertUrlToTeamId(teamurl) for teamurl in kobeDivisionIds]
+	
+	rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	divisionIds = {"jordan": jordanDivisionIds, "lebronJames": lebronDivisionIds, "kobeBryant": kobeDivisionIds}
+	for division in ["jordan", "lebronJames", "kobeBryant"]:
+		file_path = "./data/%s/%s/watMu/%s/winter2012/teamId.csv" % (sports[sportId][0], rulesPath, division)
+		## winter2012 is a best guess here, the year based on the upload date
+		## of this video advertising the tournament on youtube
+		##
+		## https://www.youtube.com/watch?v=szJOKHLLRD0
+		##
+		## best guess is that the video went up a month before the only time
+		## this tournament was run
+		
+		
+		directory = os.path.dirname(file_path)
+		try:
+			os.stat(directory)
+		except:
+			os.makedirs(directory)	
+		f = open(file_path, "wb")
+		writer = csv.writer(f)
+		for row in [convertUrlToTeamId(teamurl) for teamurl in divisionIds[division]]:
+			writer.writerow(["%s" % row])
+		f.close()	
+		
+	
 	exit()
 	
 	## logic not included

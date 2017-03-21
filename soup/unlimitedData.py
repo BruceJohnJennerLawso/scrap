@@ -301,7 +301,8 @@ if(__name__ == "__main__"):
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
 	##sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
-	sportIds = [ 17, 26, 18, 16]	
+	sportIds = [ 17, 26, 18, 16]
+	##sportIds = [16]	
 	
 	years = range(2008, 2017)
 	
