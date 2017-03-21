@@ -1,0 +1,6 @@
+#!/bin/bash
+
+geany gitter ../soupyFlow.txt  &
+## got tired of doing this manually every time with geany
+
+exit 0
