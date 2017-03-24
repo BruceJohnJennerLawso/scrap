@@ -1,4 +1,4 @@
-## webScrewdriver.py ###########################################################
+## teamSpider.py ###############################################################
 ## trying to yank js delivered content from a webpage, need an external ########
 ## lib to do it ################################################################
 ################################################################################
@@ -12,6 +12,56 @@ from bs4 import BeautifulSoup
 
 import time
 import sys
+from sys import argv
+import string
+
+def convertShortLinkHrefUrlToFull(shortLink):
+	output = string.replace(shortLink, "https://www.imleagues.com", "")
+	return "https://www.imleagues.com%s" % output
+
+def getLinksFromSoup(soup):
+	output = []
+	gameRows = soup.find_all(lambda tag: tag.name=='tr' and tag.has_attr('rowgameid'))
+	i = 0
+	for row in gameRows:
+		i += 1
+		for link in row.find_all(lambda tag: tag.name=='a'and (not tag.has_attr('class'))):
+			##print i, link, "\n",  link['href'], "\n\n"
+			if link['href'] not in output:
+				output.append(link['href'])
+	return output
+
+def getLinkedPagesFromUrl(browser, url, alreadyLookedAt=[], depth=0):
+	print " "*depth, string.replace(url, "https://www.imleagues.com", ""), depth, len(alreadyLookedAt)
+	driver = browser
+	
+	browser.get(url)
+	##driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+	time.sleep(10)
+	##print driver.find_element_by_tag_name('html'), driver.find_element_by_tag_name('html').text, driver.find_element_by_tag_name('html').get_attribute('innerHTML')
+		
+		
+	loadedHtmlContent = driver.find_element_by_tag_name('html').get_attribute('innerHTML').encode('utf8')
+	
+	
+	totalList = []
+				
+	##soup = BeautifulSoup("%s" % loadedHtmlContent, "lxml")
+	soup = BeautifulSoup("%s" % loadedHtmlContent, 'html.parser')
+	extractedLinks = getLinksFromSoup(soup)
+	extractedLinks = [convertShortLinkHrefUrlToFull(li) for li in extractedLinks]
+	##print "extractedLinks, ", extractedLinks
+	extractedLinks = [links for links in extractedLinks if links not in alreadyLookedAt]
+	extractedLinks = [links for links in extractedLinks if links not in [convertShortLinkHrefUrlToFull("/spa/team//home")]]
+	##print "extractedLinks, ", extractedLinks
+	for link in extractedLinks:
+		if((link not in [convertShortLinkHrefUrlToFull(url)])and(link not in alreadyLookedAt)):
+			linkedPagesOutput = getLinkedPagesFromUrl(browser, link, alreadyLookedAt+extractedLinks+[convertShortLinkHrefUrlToFull(url)], depth+1)
+			alreadyLookedAt += linkedPagesOutput
+			totalList += linkedPagesOutput
+			##print linkedPagesOutput, len(linkedPagesOutput)
+	return totalList+[convertShortLinkHrefUrlToFull(url)]
+
 
 def getTextInput(prompt):
 	output = ""
@@ -20,9 +70,15 @@ def getTextInput(prompt):
 		output = raw_input()
 	return output
 
+
+def goToLink(browser, url):
+	browser.get(url)
+	##driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+	time.sleep(10)
+	
+	
 if(__name__ == "__main__"):
 	
-	from sys import argv
 	## add this line
 	
 	if(len(argv) >= 3):
@@ -63,28 +119,12 @@ if(__name__ == "__main__"):
 		while(browser.current_url != "https://www.imleagues.com/spa/member/player"):
 			pass
 		print "Finished signing into IMLeagues"
-		browser.get(url)
-		##driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
-		time.sleep(15)
-		print driver.find_element_by_tag_name('html'), driver.find_element_by_tag_name('html').text, driver.find_element_by_tag_name('html').get_attribute('innerHTML')
-		
-		
-		loadedHtmlContent = driver.find_element_by_tag_name('html').get_attribute('innerHTML').encode('utf8')
-		print type(loadedHtmlContent)
-		
-		Html_file= open("./visiblePage.html","w")
-		Html_file.write(loadedHtmlContent)
-		Html_file.close()		
-		##soup = BeautifulSoup("%s" % loadedHtmlContent, "lxml")
-		soup = BeautifulSoup("%s" % loadedHtmlContent, 'html.parser')
-		print soup, type(soup)
-		try:
-			content = soup.findAll(lambda tag: tag.name=='div', {"class": "col-xs-12"}) 
-			for row in content:
-				print row, row,getText()
-		except:
-			pass
+		linkedTeamPages = getLinkedPagesFromUrl(browser, url)
+		print linkedTeamPages, len(linkedTeamPages)
+		##goToLink(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home")
 
+
+	
 
 if(__name__ == "__brain__"):
 	##url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
