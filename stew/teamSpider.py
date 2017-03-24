@@ -14,6 +14,8 @@ import time
 import sys
 from sys import argv
 import string
+import csv
+import os
 
 def convertShortLinkHrefUrlToFull(shortLink):
 	output = string.replace(shortLink, "https://www.imleagues.com", "")
@@ -77,8 +79,61 @@ def goToLink(browser, url):
 	time.sleep(10)
 	
 	
+def saveLinkToHtmlFileWithJsContent(browser, url, output_path):
+	browser.get(url)
+	##driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+	time.sleep(10)	
+	loadedHtmlContent = browser.find_element_by_tag_name('html').get_attribute('innerHTML').encode('utf8')
+	
+	
+def saveIdsInLinkedLeague(browser, initialTeamUrl, sportId, levelId, seasonId):
+	sports = {\
+	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
+	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 }
+	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]
+
+
+	linkedTeamPages = getLinkedPagesFromUrl(browser, initialTeamUrl)
+	print linkedTeamPages, len(linkedTeamPages)
+	
+	thisLevelTeamIds = [string.replace(string.replace(li, "/home", ""), "https://www.imleagues.com/spa/team/", "") for li in linkedTeamPages]
+	
+	if(sports[sportId][4] == "tournament"):
+		rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	else:
+		rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+		
+	file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesPath, levelId, seasonId)	
+	directory = os.path.dirname(file_path)
+	try:
+		os.stat(directory)
+	except:
+		os.makedirs(directory)	
+	f = open(file_path, "wb")
+	writer = csv.writer(f)
+	
+	for row in thisLevelTeamIds:
+		writer.writerow(["%s" % row])
+	f.close()
+
 if(__name__ == "__main__"):
 	
+
 	## add this line
 	
 	if(len(argv) >= 3):
@@ -119,12 +174,26 @@ if(__name__ == "__main__"):
 		while(browser.current_url != "https://www.imleagues.com/spa/member/player"):
 			pass
 		print "Finished signing into IMLeagues"
-		linkedTeamPages = getLinkedPagesFromUrl(browser, url)
-		print linkedTeamPages, len(linkedTeamPages)
+		##linkedTeamPages = getLinkedPagesFromUrl(browser, url)
+		##print linkedTeamPages, len(linkedTeamPages)
 		##goToLink(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home")
-
-
-	
+		##saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home", 1, "advanced", "winter2017")
+		semesters = ['fall2016']
+		
+		nextUp = [4]
+		for semester in semesters:
+			
+			with open('%shooks.csv' % semester, 'rb') as f:
+				reader = csv.reader(f)
+				i = 0
+				for row in reader:
+					i+=1
+					if(i in nextUp):
+						print row
+						teamId = row[0]
+						sportId = int(row[1])
+						levelId = row[2]
+						saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/%s/home" % teamId, sportId, levelId, semester)
 
 if(__name__ == "__brain__"):
 	##url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
