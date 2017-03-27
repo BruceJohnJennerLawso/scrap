@@ -24,7 +24,7 @@ def getLinksFromSoup(soup):
 
 if(__name__ == "__main__"):
 	import codecs
-	f=codecs.open("./visiblePage.html", 'r')
+	f=codecs.open("./teamData.html", 'r')
 	##print f.read()
 	soup = BeautifulSoup("%s" % f.read(), 'html.parser')
 	##print soup, type(soup)

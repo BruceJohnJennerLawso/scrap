@@ -258,6 +258,7 @@ def scrapeStrobeTeam(teamId, levelId, sportId, seasonId):
 		for row in teamRoster:
 			writer.writerow(row)	
 	else:
+		print "empty roster at %s" % teamId
 		writer.writerow(['Roster Unavailable'])				
 	writer.writerow(['END_ROSTER'])
 	f.close()
@@ -300,8 +301,8 @@ if(__name__ == "__main__"):
 	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
-	##sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
-	sportIds = [ 17, 26, 18, 16]
+	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
+	##sportIds = [ 17, 26, 18, 16]
 	##sportIds = [16]	
 	
 	years = range(2008, 2017)
@@ -347,7 +348,7 @@ if(__name__ == "__main__"):
 							print file_path, " Exists"
 							for row in reader:
 								teamId = row[0]
-								print teamId, seasonId, levelId, sportId, sportName
+								##print teamId, seasonId, levelId, sportId, sportName
 								scrapeStrobeTeam(int(teamId), levelId, sportId, seasonId)
 							print "\n" 
 					except IOError:
