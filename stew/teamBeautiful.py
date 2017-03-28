@@ -188,7 +188,8 @@ def getScheduleTableFromSoup(soup):
 		## might faceplant
 		link = row.find(lambda tag: tag.name=='a'and (not tag.has_attr('class')))
 			##print i, link, "\n",  link['href'], "\n\n"
-		rowContent.append(stripAnyCommasFromTeamName(link.getText().encode("utf-8")))	
+		rowContent.append(stripAnyCommasFromTeamName(link.getText().encode("utf-8"))[1:])
+			
 		rowContent.append(convertTeamUrlToTeamId(link['href'].encode("utf-8")))
 		for res in gameResults:
 			if(res != None):
@@ -220,6 +221,46 @@ def getScheduleTableFromSoup(soup):
 		for i in range(maxRowWidth - len(headerRow)):
 			headerRow.append('mvpId%i' % (i+1))
 	return (headerRow, outputRows)
+
+
+def getTeamRosterTable(soup):
+	headerRow = ['Player', 'imlPlayerId', 'Captaincy', 'Gender']
+	outputRows = []
+	
+	rosterSoup = soup.find(lambda tag: tag.name=='ul' and tag.has_attr('ng-show'), {"class": "list-group"})
+	##<ul class="list-group" ng-show=" !isDetail &amp;&amp; initData.teamRosters.length>0">
+	
+	for playah in rosterSoup.find_all(lambda tag: tag.name=='div', {"class":"media"}):
+		playahName = playah.find(lambda tag: tag.name=='a').getText().encode("utf-8")
+		playahLink = playah.find(lambda tag: tag.name=='a')['href'].encode("utf-8")
+		playahGender = playah.find(lambda tag: tag.name=='div', {"class":"media-body"}).contents[-1].encode("utf-8")
+		playahGender = stripStringOfPieces(playahGender, [" ", "\n"])
+		##<div class="media-body">
+		
+		def convertImlCaptaincyToStandard(imlCaptaincyString):
+			if(imlCaptaincyString == '(Captain)'):
+				return '(C)'
+			elif(imlCaptaincyString == '(Co-Captain)'):
+				return '(A)'
+			else:
+				return ''
+				## there could be more designations, but Im not aware of any
+				## just yet	
+				
+				## this function takes what IMLeagues displays and makes it
+				## standard with how the strobe uwaterloo dump displayed player
+				## data		
+		playahCaptaincy = playah.find(lambda tag: tag.name=='small').getText().encode("utf-8")
+		playahCaptaincy = convertImlCaptaincyToStandard(playahCaptaincy)
+		outputRow = [playahName, convertPlayerUrlToPlayerId(playahLink), playahCaptaincy, playahGender]
+		for s in outputRow:
+			print repr(s),
+		print "\n"
+		outputRows.append(outputRow)
+	##<div class="media">
+	
+	return (headerRow, outputRows)
+
 
 
 def scrapeImlTeam(sportId, levelId, seasonId, teamId):
@@ -260,20 +301,136 @@ def scrapeImlTeam(sportId, levelId, seasonId, teamId):
 	teamSoup = BeautifulSoup("%s" % f.read(), 'html.parser')
 	f.close()
 	
+	
+	teamNameString = teamSoup.find(lambda tag: tag.name=='title')
+	teamName = stripStringOfPieces(teamNameString.getText().encode("utf-8"), ["IMLeagues | ", ","])
+	teamName = teamName[:teamName.index('(')]
+	print teamNameString
+	print teamName
 	header, gameRows = getScheduleTableFromSoup(teamSoup)
+	
+	seasonGamesTable = [gm for gm in gameRows if (gm[0][0] == "R")]
+	playoffGamesTable = [gm for gm in gameRows if (gm[0][0] == "P")]	
+	
+	teamRosterHeading, teamRoster = getTeamRosterTable(peopleSoup)
+	
+	gameLinkEx = gameRows[0][10]
+	imlSeasonId = stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
+	imlSeasonId = imlSeasonId[:imlSeasonId.index('/')]
+	
 	print header, len(header)
 	for gm in gameRows:
 		print gm, len(gm)
+
+
+	output_file_path = "./data/%s/%s/watMu/%s/%s/%s.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, teamId)	
+	print output_file_path
+
+
+	directory = os.path.dirname(output_file_path)
+	try:
+		os.stat(directory)
+	except:
+		os.makedirs(directory)	
+	f = open(output_file_path, "wb")
+	writer = csv.writer(f)
+	writer.writerow(['INFO:'])
+	writer.writerow(['teamName', teamName])	
+	writer.writerow(['teamAbbreviation', teamName])	
+	writer.writerow(['sportId', sportId])		
+	writer.writerow(['sportName', sports[sportId][0]])
+	writer.writerow(['sportRules', rulesPath])		
+	writer.writerow(['leagueId', 'watMu'])	
+	writer.writerow(['levelId', levelId])			
+	writer.writerow(['seasonName', seasonId])
+	writer.writerow(['seasonId', imlSeasonId])	
+	writer.writerow(['Roster Size',len(teamRoster)])	
+	writer.writerow(['Season Games Played',len(seasonGamesTable)])	
+	playoffRoundLengths = [1 for playoffRound in playoffGamesTable]
+	if(1 not in playoffRoundLengths):
+		playoffRoundLengths.append(0)
+		## this is going to need to be fixed afterwards anyways, might as well
+		## leave it as is I guess
+	writer.writerow(['Playoff Round Lengths']+playoffRoundLengths)
+	writer.writerow(['END_INFO'])
+	writer.writerows([''])
+	writer.writerow(['SEASON:'])
+	
+	writer.writerow(header)
+	for row in seasonGamesTable:
+		writer.writerow(row)
+	writer.writerow(['END_SEASON'])
+	writer.writerows([''])
+	writer.writerow(['PLAYOFFS:'])
+	writer.writerow(header)
+	for row in playoffGamesTable:
+		writer.writerow(row)
+	writer.writerow(['END_PLAYOFFS'])
+	writer.writerows([''])
+	writer.writerow(['ROSTER:'])
+	if(teamRosterHeading[0][0] != 'Roster Unavailable'):
+		writer.writerow(teamRosterHeading)	
+		for row in teamRoster:
+			writer.writerow(row)	
+	else:
+		print "empty roster at %s" % teamId
+		writer.writerow(['Roster Unavailable'])				
+	writer.writerow(['END_ROSTER'])
+	f.close()
+							
+	print "...Finished writing csv\n"
 	
 if(__name__ == "__main__"):
-	scrapeImlTeam(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1')
-	print "\n\n"
-	scrapeImlTeam(6, 'intermediate', 'fall2016', '8a9d20afe4f240479156ad9977e60223')	
-	print "\n\n"
-	scrapeImlTeam(6, 'advanced', 'fall2016', 'c8770aa242584fc89dc1deb33c092f93')
+	##scrapeImlTeam(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1')
+	##exit()
+	##print "\n\n"
+	##scrapeImlTeam(6, 'intermediate', 'fall2016', '8a9d20afe4f240479156ad9977e60223')	
+	##print "\n\n"
+	##scrapeImlTeam(6, 'advanced', 'fall2016', 'c8770aa242584fc89dc1deb33c092f93')
+	sports = {\
+	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 18:['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
+	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 }
 
 
-
+	semesters = ["fall2016"]	
+	for semester in semesters:
+				
+		with open('%shooks.csv' % semester, 'rb') as f:
+			reader = csv.reader(f)
+			i = 0
+			for row in reader:
+				print row
+				##teamId = row[0]
+				sportId = int(row[1])
+				levelId = row[2]
+				seasonId = semester
+				if(sports[sportId][4] == "tournament"):
+					rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+				else:
+					rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+			
+				file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesPath, levelId, seasonId)	
+				with open(file_path, 'rb') as ff:
+					tm_reader = csv.reader(ff)
+					for tm_row in tm_reader:
+						teamId = tm_row[0]
+						print sportId, levelId, seasonId, teamId
+						scrapeImlTeam(sportId, levelId, seasonId, teamId)
 
 
 
