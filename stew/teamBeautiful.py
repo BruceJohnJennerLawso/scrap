@@ -164,7 +164,11 @@ def getScheduleTableFromSoup(soup):
 		for res in gameResults:
 			if(res != None):
 				rowContent.append(res.getText().encode("utf-8"))
-				goalsFor, goalsAgainst = processGoalsForAgainst(res.parent.getText().encode("utf-8"))
+				try:
+					goalsFor, goalsAgainst = processGoalsForAgainst(res.parent.getText().encode("utf-8"))
+				except ValueError:
+					goalsFor = -1
+					goalsAgainst = -1
 				rowContent.append(goalsFor)
 				rowContent.append(goalsAgainst)
 		## this part gets a bit hairy because its so tricky to positively id the
@@ -303,9 +307,10 @@ def scrapeImlTeam(sportId, levelId, seasonId, teamId):
 	
 	
 	teamNameString = teamSoup.find(lambda tag: tag.name=='title')
+	print teamNameString
+	
 	teamName = stripStringOfPieces(teamNameString.getText().encode("utf-8"), ["IMLeagues | ", ","])
 	teamName = teamName[:teamName.index('(')]
-	print teamNameString
 	print teamName
 	header, gameRows = getScheduleTableFromSoup(teamSoup)
 	
@@ -381,6 +386,8 @@ def scrapeImlTeam(sportId, levelId, seasonId, teamId):
 	print "...Finished writing csv\n"
 	
 if(__name__ == "__main__"):
+	##28 intermediate fall2016 0f02ca55c5ee4765bc53c72eb88a6def
+	##scrapeImlTeam(28, 'intermediate', 'fall2016', '0f02ca55c5ee4765bc53c72eb88a6def')	
 	##scrapeImlTeam(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1')
 	##exit()
 	##print "\n\n"

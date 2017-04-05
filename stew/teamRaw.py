@@ -212,12 +212,12 @@ if(__name__ == "__main__"):
 		##print linkedTeamPages, len(linkedTeamPages)
 		##goToLink(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home")
 		##saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home", 1, "advanced", "winter2017")
-		##teamId = "79030549daf84224a5eda45250450dd3"
-		##sportId = 6
-		##levelId = 'intermediate'
-		##semester = 'fall2016'
-		##saveTeamDataInLinkToRawHtml(browser, "https://www.imleagues.com/spa/team/%s" % teamId, sportId, levelId, semester, teamId)
-		##exit()
+		teamId = "0f02ca55c5ee4765bc53c72eb88a6def"
+		sportId = 28
+		levelId = 'intermediate'
+		semester = 'fall2016'
+		saveTeamDataInLinkToRawHtml(browser, "https://www.imleagues.com/spa/team/%s" % teamId, sportId, levelId, semester, teamId)
+		exit()
 		semesters = [semester]	
 		for semester in semesters:
 				
