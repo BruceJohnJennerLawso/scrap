@@ -96,7 +96,16 @@ def saveLinkToHtmlFileWithJsContent(browser, url, output_path):
 	loadedHtmlContent = browser.find_element_by_tag_name('html').get_attribute('innerHTML').encode('utf8')
 	
 
-
+def stripGameIdFromLink(url):
+	firstCrop = url.index('?')
+	output = url[firstCrop+8:]
+	gameType = output[len(output)-1]
+	secondCrop = output.index('&')
+	output = output[:secondCrop]
+	if(gameType == '0'):
+		return "R%s" % output
+	elif(gameType == '1'):
+		return "P%s" % output		
 
 def saveGameDataInLinkToRawHtml(browser, initialGameUrl, sportId, levelId, seasonId):
 	sports = watMuSportInfo.sportsInfoDict()
@@ -113,8 +122,8 @@ def saveGameDataInLinkToRawHtml(browser, initialGameUrl, sportId, levelId, seaso
 		rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
 	else:
 		rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
-			
-	file_path = "./data/%s/%s/watMu/%s/%s/games/gameData.html" % (sports[sportId][0], rulesPath, levelId, seasonId)	
+	gameId = stripGameIdFromLink(initialGameUrl)
+	file_path = "./data/%s/%s/watMu/%s/%s/games/%s/gameData.html" % (sports[sportId][0], rulesPath, levelId, seasonId, gameId)	
 	directory = os.path.dirname(file_path)
 	try:
 		os.stat(directory)
@@ -171,9 +180,14 @@ def getGameIds(sportId, levelId, seasonId, teamId, subsection):
 	output = [row[colInd] for row in subsectionRowData[1:]]
 	return output
 		
-	
+
+
+
 if(__name__ == "__main__"):
 
+	url = "/spa/league/d75eb42ff22f45baaea249ceaf0e72d5/viewgame?gameId=7836505&gameType=0"	
+	print stripGameIdFromLink(url)
+	exit()
 	##print getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'SEASON') + getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'PLAYOFFS')
 	##exit()
 	sports = watMuSportInfo.sportsInfoDict()

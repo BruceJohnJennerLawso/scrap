@@ -163,23 +163,23 @@ if(__name__ == "__main__"):
 		##print linkedTeamPages, len(linkedTeamPages)
 		##goToLink(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home")
 		##saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/a943b71808f94437a21b123ca7c8aaaf/home", 1, "advanced", "winter2017")
-		semesters = ['fall2016']
+		semesters = ['winter2017']
 		
-		#nextUp = [5,6,7,8,9,10,11,12,13,14,15,16,17.18,19,20,21,22,23,24,25,26,27,28,29]
-		#for semester in semesters:
+		nextUp = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17.18,19,20,21,22,23,24,25,26,27,28,29]
+		for semester in semesters:
 			
-			#with open('%shooks.csv' % semester, 'rb') as f:
-				#reader = csv.reader(f)
-				#i = 0
-				#for row in reader:
-					#i+=1
-					#if(i in nextUp):
-						#print row
-						#teamId = row[0]
-						#sportId = int(row[1])
-						#levelId = row[2]
-						#saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/%s/home" % teamId, sportId, levelId, semester)
-		saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/b966903aff5a400fbea28c27b77f08a9/home", 7, "advanced", "fall2016")
+			with open('%shooks.csv' % semester, 'rb') as f:
+				reader = csv.reader(f)
+				i = 0
+				for row in reader:
+					i+=1
+					if(i in nextUp):
+						print row
+						teamId = row[0]
+						sportId = int(row[1])
+						levelId = row[2]
+						saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/%s/home" % teamId, sportId, levelId, semester)
+		##saveIdsInLinkedLeague(browser, "https://www.imleagues.com/spa/team/b966903aff5a400fbea28c27b77f08a9/home", 7, "advanced", "fall2016")
 		
 if(__name__ == "__brain__"):
 	##url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
