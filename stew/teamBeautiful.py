@@ -1,8 +1,8 @@
 ## teamBeautiful.py ############################################################
-## now that the team data is (hopefully) saved to html file in raw form, it
-## needs to be broken down into the kilobyte or two of relevant data about the
-## team that gets saved to csv. Sooo, I need to load up the data in beautiful
-## soup and process the important data out of it
+## now that the team data is (hopefully) saved to html file in raw form, it ####
+## needs to be broken down into the kilobyte or two of relevant data about the #
+## team that gets saved to csv. Sooo, I need to load up the data in beautiful ##
+## soup and process the important data out of it ###############################
 ################################################################################
 #!/usr/bin/env python
 
