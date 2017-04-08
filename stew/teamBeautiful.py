@@ -144,7 +144,7 @@ def getScheduleTableFromSoup(soup):
 		## (October -> Oct, September -> Sep), and the numeric day of the month
 		## Time of game is available in the game page info, but not here, which
 		## is annoying, but oh well
-		gameResults = [row.find(lambda tag: tag.name=='span', {"style": "color: green; font-size: large; font-weight: bold;"} )] + [row.find(lambda tag: tag.name=='span', {"style": "color: red; font-size: large; font-weight: bold;"} )] + [row.find(lambda tag: tag.name=='span', {"style": "color: black; font-size: large; font-weight: bold;"} )]
+		gameResults = [row.find(lambda tag: tag.name=='span', {"style": "color: green; font-size: large; font-weight: bold;"} )] + [row.find(lambda tag: tag.name=='span', {"style": "color: red; font-size: large; font-weight: bold;"} )] + [row.find(lambda tag: tag.name=='span', {"style": "color: black; font-size: large; font-weight: bold;"} )] + [scoreMissing for scoreMissing in [row.find(lambda tag: tag.name=='span', {"ng-bind-html": "trustAsHtml(item.gameResult)"} )] if scoreMissing.find('span') == None]
 		## eggh yuck
 		for res in gameResults:
 			if(res != None):
@@ -156,6 +156,7 @@ def getScheduleTableFromSoup(soup):
 					goalsAgainst = -1
 				rowContent.append(goalsFor)
 				rowContent.append(goalsAgainst)
+
 		## this part gets a bit hairy because its so tricky to positively id the
 		## span thats got the game result and score, the only thing that can pin
 		## it down accurately is that blasted style attribute, which is long,
@@ -288,7 +289,11 @@ def scrapeImlTeam(sportId, levelId, seasonId, teamId):
 	teamRosterHeading, teamRoster = getTeamRosterTable(peopleSoup)
 	
 	gameLinkEx = gameRows[0][10]
-	imlSeasonId = stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
+	try:
+		imlSeasonId = stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
+	except AttributeError:
+		print gameLinkEx
+		exit()
 	imlSeasonId = imlSeasonId[:imlSeasonId.index('/')]
 	
 	print header, len(header)
@@ -365,7 +370,7 @@ if(__name__ == "__main__"):
 	sports = watMuSportInfo.sportsInfoDict()
 
 
-	semesters = ["fall2016"]	
+	semesters = ["winter2017"]	
 	for semester in semesters:
 				
 		with open('%shooks.csv' % semester, 'rb') as f:

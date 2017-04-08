@@ -185,9 +185,9 @@ def getGameIds(sportId, levelId, seasonId, teamId, subsection):
 
 if(__name__ == "__main__"):
 
-	url = "/spa/league/d75eb42ff22f45baaea249ceaf0e72d5/viewgame?gameId=7836505&gameType=0"	
-	print stripGameIdFromLink(url)
-	exit()
+	##url = "/spa/league/d75eb42ff22f45baaea249ceaf0e72d5/viewgame?gameId=7836505&gameType=0"	
+	##print stripGameIdFromLink(url)
+	##exit()
 	##print getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'SEASON') + getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'PLAYOFFS')
 	##exit()
 	sports = watMuSportInfo.sportsInfoDict()
@@ -230,9 +230,9 @@ if(__name__ == "__main__"):
 			pass
 		print "Finished signing into IMLeagues"
 
-		semesters = ["fall2016"]	
+		semesters = [semester]	
 		for semester in semesters:
-					
+			incompleteTeams = []		
 			with open('%shooks.csv' % semester, 'rb') as f:
 				reader = csv.reader(f)
 				i = 0
@@ -258,14 +258,19 @@ if(__name__ == "__main__"):
 							teamId = tm_row[0]
 							##print sportId, levelId, seasonId, teamId
 							teamGameLinks = getGameIds(sportId, levelId, seasonId, teamId, "SEASON") + getGameIds(sportId, levelId, seasonId, teamId, "PLAYOFFS")
+							if("" in teamGameLinks):
+								incompleteTeams.append("%s_%s_%s"% (teamId, levelId, sportId))
+								print teamId, " had a bad gameId"
 							seasonGames += [link for link in teamGameLinks if link not in seasonGames]
 					print sportId, levelId, seasonId, len(seasonGames)
 					for gmUrl in seasonGames:
-						saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
+						print seasonGames.index(gmUrl), gmUrl
+						##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
+						##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
 						
-						print gm
+						##print gmUrl
 					##print sportId, levelId, seasonId, teamCount, len(seasonGames)
-
+			print incompleteTeams
 
 
 
