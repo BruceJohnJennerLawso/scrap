@@ -265,7 +265,7 @@ if(__name__ == "__main__"):
 					print sportId, levelId, seasonId, len(seasonGames)
 					for gmUrl in seasonGames:
 						print seasonGames.index(gmUrl), gmUrl
-						##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
+						saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
 						##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
 						
 						##print gmUrl
