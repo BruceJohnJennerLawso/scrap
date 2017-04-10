@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp winter2017hooks.bak winter2017hooks.csv
+
+exit 0
