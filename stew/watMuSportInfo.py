@@ -9,7 +9,7 @@ def sportsInfoDict():
 	 1  :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
 	 4  :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
 	 3  :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
-	 16 :['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 16 :['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
 	 26 :['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
 	 6  :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
 	 28 :['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
@@ -22,5 +22,5 @@ def sportsInfoDict():
 	 31 :['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
 	 8  :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
 	 5  :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
-	 18 :['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament'],\
+	 18 :['dodgeball', 'indoor', 'floor', '7-8vs_0GK_hunger_games', 'tournament']\
 	 }
