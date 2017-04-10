@@ -182,6 +182,29 @@ def getGameIds(sportId, levelId, seasonId, teamId, subsection):
 	return output
 		
 
+def getPlayerStatsTableFromSoup(soup):
+	headerRow = ['imlPlayerId']
+	outputRows = []
+	headerRowSoup = soup.find('thead').find('tr')
+	for heading in headerRowSoup.findAll('th'):
+		headerRow.append(heading.getText().encode('utf-8'))
+	
+	playerDataRowSoup = soup.find('tbody')
+	for row in playerDataRowSoup.findAll('tr'):
+		rowData = []
+		
+		rowPlayerId = stripStringOfPieces(row.find('td').find('a')['href'], ['/Members/player_card.aspx?player=']).encode('utf-8')
+		rowData.append(rowPlayerId)
+		print repr(rowPlayerId)
+		for col in row.findAll('td'):
+			if(col.getText().encode('utf-8') == '\xc2\xa0'):
+				rowData.append('')
+			else:	
+				rowData.append(col.getText().encode('utf-8'))
+		outputRows.append(rowData)
+	return (headerRow, outputRows)
+
+
 def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	sports = watMuSportInfo.sportsInfoDict()
 	
@@ -195,37 +218,80 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	file_path = "./data/%s/%s/watMu/%s/%s/games/%s/gameData.html" % (sports[sportId][0], rulesPath, levelId, seasonId, gameId)	
 	
 
-	f=codecs.open("%s" % file_path, 'r')
+	f=codecs.open("%s" % file_path, 'r') 
 	gameSoup = BeautifulSoup("%s" % f.read(), 'html.parser')
 	f.close()
 	
 	
-	print gameSoup.find(lambda tag: tag.name=='span', {"class": "game-date"}).getText()
-	gamePeriodSoup = gameSoup.find(lambda tag: tag.name=='table', {"id": "tbGamePeriodDetail"})
-	print gamePeriodSoup
+	gameDateString = "%s" % gameSoup.find(lambda tag: tag.name=='span', {"class": "game-date"}).getText().encode("utf-8")
+	gameResultString = "%s" % gameSoup.find(lambda tag: tag.name=='div', {"class": "game-result"}).getText().encode("utf-8")
 	
+	
+	gamePeriodSoup = gameSoup.find(lambda tag: tag.name=='table', {"id": "tbGamePeriodDetail"})
+	
+	print repr(gameDateString)
+	print repr(gameResultString)
+	##stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
+	sidesStats = {'home':{}, 'away':{}}
+	## left is home, right is away
+	sideConversion = {'left': 'home', 'right': 'away'}
+	for side in ['left', 'right']:
+		sideSoup = gameSoup.find(lambda tag: tag.name=='div', {"class": "media team-%s" % side})
+		print '\n\n\n', side, '\n'
+		thisSideTeam = sideSoup.find(lambda tag: tag.name=='a')
+		
+		teamName = thisSideTeam.getText().encode("utf-8")
+		teamId = stripStringOfPieces(thisSideTeam['href'].encode("utf-8"), ['/spa/team/', '/home'])	
+		
+		teamSide = sideConversion[side]
+		##sidesStats[teamSide]['teamName'] = teamName
+		sidesStats[teamSide]['teamId'] = teamId	
+		
+		
+	visibleDataRows = [row for row in gamePeriodSoup.findAll(lambda tag: tag.name=='tr', {}) if (row.has_attr('class')==False)]
+		
+		
+	for row in visibleDataRows:
+		rowStatName = row.find(['td', 'th'], {'class': "item-name text-center"}).getText().encode("utf-8")
+		homeRowStatValue = row.find(['td', 'th']).getText().encode("utf-8")
+			
+		secondValue = row.find(['td'], {'class': "td-2"})
+		if(secondValue == None):
+			visitorRowStatValue = row.find([ 'th'], {'class': "th-1"}).getText().encode("utf-8")
+		else:
+			visitorRowStatValue = secondValue.getText().encode("utf-8")
+		print 'rowStatName', rowStatName
+		print 'home: ', homeRowStatValue
+		print 'visitor: ', visitorRowStatValue
+		sidesStats['home'][rowStatName] = homeRowStatValue
+		sidesStats['away'][rowStatName] = homeRowStatValue
+		print row
+		##print sideSoup
+	##print gamePeriodSoup
+	
+	for side in ['home', 'away']:
+		teamPlayerStats = gameSoup.find('div', {'id': "divPlayerStats%s" % sidesStats[side]['teamId']})
+		teamName = stripStringOfPieces(teamPlayerStats.parent.parent.parent.find('h3').getText().encode("utf-8"), [ '\n']).strip()
+		print repr(teamName)
+		sidesStats[side]['teamName'] = teamName
+	
+	print sidesStats
+	
+	gamePlayerStatsTable = {'home':{}, 'away':{}}
+	
+	for side in ['home', 'away']:
+		teamPlayerStats = gameSoup.find('div', {'id': "divPlayerStats%s" % sidesStats[side]['teamId']})
+		header, data = getPlayerStatsTableFromSoup(teamPlayerStats)
+		gamePlayerStatsTable[side]['header'] = header
+		gamePlayerStatsTable[side]['data'] = data
+	print gamePlayerStatsTable
+	for side in ['home', 'away']:
+		print gamePlayerStatsTable[side]['header']
+		playerDataRows = gamePlayerStatsTable[side]['data']
+		for row in playerDataRows:
+			print row, '\n'
 	return
 	
-	teamNameString = teamSoup.find(lambda tag: tag.name=='title')
-	print teamNameString
-	
-	teamName = stripStringOfPieces(teamNameString.getText().encode("utf-8"), ["IMLeagues | ", ","])
-	teamName = teamName[:teamName.index('(')]
-	print teamName
-	header, gameRows = getScheduleTableFromSoup(teamSoup)
-	
-	seasonGamesTable = [gm for gm in gameRows if (gm[0][0] == "R")]
-	playoffGamesTable = [gm for gm in gameRows if (gm[0][0] == "P")]	
-	
-	teamRosterHeading, teamRoster = getTeamRosterTable(peopleSoup)
-	
-	gameLinkEx = gameRows[0][10]
-	try:
-		imlSeasonId = stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
-	except AttributeError:
-		print gameLinkEx
-		exit()
-	imlSeasonId = imlSeasonId[:imlSeasonId.index('/')]
 	
 	print header, len(header)
 	for gm in gameRows:
@@ -297,7 +363,20 @@ if(__name__ == "__main__"):
 	sportId = 1
 	levelId = "advanced"
 	seasonId = "winter2017"
-	gameId = "R8442888"
+	##gameId = "R8442888"
+	gameId = "P2087295"
+
+
+	##sportId = 8
+	##levelId = "beginner"
+	##seasonId = "winter2017"
+	##gameId = "R8442632"
+
+	sportId = 4
+	levelId = 'beginner'
+	seasonId = 'winter2017'
+	gameId = 'P2074877'
+
 	scrapeImlGame(sportId, levelId, seasonId, gameId)
 	exit()
 	sports = watMuSportInfo.sportsInfoDict()
