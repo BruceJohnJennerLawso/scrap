@@ -2,14 +2,10 @@
 ## similar to how the teamBeautiful module takes the raw html page content and #
 ## distills it to the desired information saved in a csv file, gameBeautiful ###
 ## takes the raw game page content and saves it to a game csv ##################
-## unfortunately, for the game page, theres quite a bit of variation in the ####
-## exact layout of the game pages, such as the individual set scores for #######
-## volleyball, so Im gonna break this down into separate functions per sport ###
-## and handle each different case seperately ###################################
 ################################################################################
 #!/usr/bin/env python
 
-from gameProcessing import *
+from gameProcessing import stripStringOfPieces
 
 from contextlib import closing
 from selenium.webdriver import Firefox # pip install selenium
@@ -205,6 +201,16 @@ def getPlayerStatsTableFromSoup(soup):
 	return (headerRow, outputRows)
 
 
+def processGoalsHomeAway(rawDataString):
+	data = rawDataString
+	dashIndex = data.index('-')
+	## find where the dash is in this string so we can start properly placing
+	## the scores
+	score1 = int(data[0:(dashIndex-1)])
+	score2 = int(data[(dashIndex+1):len(data)])	
+	return (score1, score2)	
+	
+
 def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	sports = watMuSportInfo.sportsInfoDict()
 	
@@ -223,21 +229,29 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	f.close()
 	
 	
-	gameDateString = "%s" % gameSoup.find(lambda tag: tag.name=='span', {"class": "game-date"}).getText().encode("utf-8")
-	gameResultString = "%s" % gameSoup.find(lambda tag: tag.name=='div', {"class": "game-result"}).getText().encode("utf-8")
+	gameDateString = "%s" % gameSoup.find(lambda tag: tag.name=='span', {"class": "game-date"}).getText().encode("utf-8").strip()
+
+	gameLocationString = "%s" % gameSoup.find(lambda tag: tag.name=='span', {"class": "game-address pull-right im-wordbreak"}).getText().encode("utf-8").strip()
 	
+	gameResultString = "%s" % gameSoup.find(lambda tag: tag.name=='div', {"class": "game-result"}).getText().encode("utf-8")
+	gameResultString = stripStringOfPieces(gameResultString, ['\n', 'Final'])
+	print repr(gameResultString)
+	homeScore, awayScore = processGoalsHomeAway(gameResultString)
 	
 	gamePeriodSoup = gameSoup.find(lambda tag: tag.name=='table', {"id": "tbGamePeriodDetail"})
 	
+	print repr(gameLocationString)
 	print repr(gameDateString)
 	print repr(gameResultString)
 	##stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
 	sidesStats = {'home':{}, 'away':{}}
+	sidesStats['home']['scoreFor'] = homeScore
+	sidesStats['away']['scoreFor'] = awayScore
 	## left is home, right is away
 	sideConversion = {'left': 'home', 'right': 'away'}
 	for side in ['left', 'right']:
 		sideSoup = gameSoup.find(lambda tag: tag.name=='div', {"class": "media team-%s" % side})
-		print '\n\n\n', side, '\n'
+		##print '\n\n\n', side, '\n'
 		thisSideTeam = sideSoup.find(lambda tag: tag.name=='a')
 		
 		teamName = thisSideTeam.getText().encode("utf-8")
@@ -290,17 +304,15 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 		playerDataRows = gamePlayerStatsTable[side]['data']
 		for row in playerDataRows:
 			print row, '\n'
-	return
 	
 	
-	print header, len(header)
-	for gm in gameRows:
-		print gm, len(gm)
 
 
-	output_file_path = "./data/%s/%s/watMu/%s/%s/%s.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, teamId)	
+	output_file_path = "./data/%s/%s/watMu/%s/%s/games/%s.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, gameId)	
 	print output_file_path
 
+
+	##return
 
 	directory = os.path.dirname(output_file_path)
 	try:
@@ -310,47 +322,54 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	f = open(output_file_path, "wb")
 	writer = csv.writer(f)
 	writer.writerow(['INFO:'])
-	writer.writerow(['teamName', teamName])	
-	writer.writerow(['teamAbbreviation', teamName])	
-	writer.writerow(['sportId', sportId])		
-	writer.writerow(['sportName', sports[sportId][0]])
-	writer.writerow(['sportRules', rulesPath])		
-	writer.writerow(['leagueId', 'watMu'])	
-	writer.writerow(['levelId', levelId])			
-	writer.writerow(['seasonName', seasonId])
-	writer.writerow(['seasonId', imlSeasonId])	
-	writer.writerow(['Roster Size',len(teamRoster)])	
-	writer.writerow(['Season Games Played',len(seasonGamesTable)])	
-	playoffRoundLengths = [1 for playoffRound in playoffGamesTable]
-	if(1 not in playoffRoundLengths):
-		playoffRoundLengths.append(0)
-		## this is going to need to be fixed afterwards anyways, might as well
-		## leave it as is I guess
-	writer.writerow(['Playoff Round Lengths']+playoffRoundLengths)
+	writer.writerow(['rawGameDateString', gameDateString])	
+	writer.writerow(['rawGameLocationString', gameLocationString])		
 	writer.writerow(['END_INFO'])
 	writer.writerows([''])
-	writer.writerow(['SEASON:'])
 	
-	writer.writerow(header)
-	for row in seasonGamesTable:
-		writer.writerow(row)
-	writer.writerow(['END_SEASON'])
+	writer.writerow(['HOMETEAM:'])
+	team = 'home'
+	
+	for stat in sidesStats[team]:
+		print stat, sidesStats[team][stat]
+		writer.writerow([stat, sidesStats['home'][stat]])	
+	writer.writerow(['END_HOMETEAM'])
 	writer.writerows([''])
-	writer.writerow(['PLAYOFFS:'])
-	writer.writerow(header)
-	for row in playoffGamesTable:
-		writer.writerow(row)
-	writer.writerow(['END_PLAYOFFS'])
+	
+	writer.writerow(['HOMEPLAYERSTATS:'])
+	
+	
+	writer.writerow( gamePlayerStatsTable[team]['header'])		
+	for row in gamePlayerStatsTable[team]['data']:
+		writer.writerow(row)	
+
+				
+	writer.writerow(['END_HOMEPLAYERSTATS'])	
+	writer.writerows([''])	
+	
+	
+	
+	
+	
+	
+	writer.writerow(['AWAYTEAM:'])
+	
+	
+	team = 'away'
+	
+	
+	for stat in sidesStats[team]:
+		print stat, sidesStats[team][stat]
+		writer.writerow([stat, sidesStats['home'][stat]])	
+	writer.writerow(['END_AWAYTEAM'])
 	writer.writerows([''])
-	writer.writerow(['ROSTER:'])
-	if(teamRosterHeading[0][0] != 'Roster Unavailable'):
-		writer.writerow(teamRosterHeading)	
-		for row in teamRoster:
-			writer.writerow(row)	
-	else:
-		print "empty roster at %s" % teamId
-		writer.writerow(['Roster Unavailable'])				
-	writer.writerow(['END_ROSTER'])
+	writer.writerow(['AWAYPLAYERSTATS:'])
+	
+	writer.writerow(gamePlayerStatsTable[team]['header'])		
+	for row in gamePlayerStatsTable[team]['data']:
+		writer.writerow(row)		
+				
+	writer.writerow(['END_AWAYPLAYERSTATS'])	
 	f.close()
 							
 	print "...Finished writing csv\n"
@@ -360,11 +379,11 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 if(__name__ == "__main__"):
 
 
-	sportId = 1
-	levelId = "advanced"
-	seasonId = "winter2017"
+	##sportId = 1
+	##levelId = "advanced"
+	##seasonId = "winter2017"
 	##gameId = "R8442888"
-	gameId = "P2087295"
+	##gameId = "P2087295"
 
 
 	##sportId = 8
@@ -372,13 +391,14 @@ if(__name__ == "__main__"):
 	##seasonId = "winter2017"
 	##gameId = "R8442632"
 
-	sportId = 4
-	levelId = 'beginner'
-	seasonId = 'winter2017'
-	gameId = 'P2074877'
 
-	scrapeImlGame(sportId, levelId, seasonId, gameId)
-	exit()
+	##sportId = 7
+	##levelId = 'beginner'
+	##seasonId = 'winter2017'
+	##gameId = 'R8445492'
+
+	##scrapeImlGame(sportId, levelId, seasonId, gameId)
+	##exit()
 	sports = watMuSportInfo.sportsInfoDict()
 
 
@@ -422,6 +442,7 @@ if(__name__ == "__main__"):
 						seasonGames += [link for link in teamGameLinks if link not in seasonGames]
 				print sportId, levelId, seasonId, len(seasonGames)
 				for gmUrl in seasonGames:
+					gameId = gmUrl
 					totalGamesList.append(gmUrl)
 					print seasonGames.index(gmUrl), gmUrl
 					scrapeImlGame(sportId, levelId, seasonId, gameId)
