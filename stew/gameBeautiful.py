@@ -177,102 +177,177 @@ def getGameIds(sportId, levelId, seasonId, teamId, subsection):
 		
 	subsectionRowData = getSubsectionByTag(csvRows, subsection)
 		
-	colInd = subsectionRowData[0].index('linkToGame')	
+	colInd = subsectionRowData[0].index('Game Name')	
 	output = [row[colInd] for row in subsectionRowData[1:]]
 	return output
 		
+
+def scrapeImlGame(sportId, levelId, seasonId, gameId):
+	sports = watMuSportInfo.sportsInfoDict()
+	
+	
+	
+	if(sports[sportId][4] == "tournament"):
+		rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	else:
+		rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+			
+	file_path = "./data/%s/%s/watMu/%s/%s/games/%s/gameData.html" % (sports[sportId][0], rulesPath, levelId, seasonId, gameId)	
+	
+
+	f=codecs.open("%s" % file_path, 'r')
+	gameSoup = BeautifulSoup("%s" % f.read(), 'html.parser')
+	f.close()
+	
+	
+	print gameSoup.find(lambda tag: tag.name=='span', {"class": "game-date"}).getText()
+	gamePeriodSoup = gameSoup.find(lambda tag: tag.name=='table', {"id": "tbGamePeriodDetail"})
+	print gamePeriodSoup
+	
+	return
+	
+	teamNameString = teamSoup.find(lambda tag: tag.name=='title')
+	print teamNameString
+	
+	teamName = stripStringOfPieces(teamNameString.getText().encode("utf-8"), ["IMLeagues | ", ","])
+	teamName = teamName[:teamName.index('(')]
+	print teamName
+	header, gameRows = getScheduleTableFromSoup(teamSoup)
+	
+	seasonGamesTable = [gm for gm in gameRows if (gm[0][0] == "R")]
+	playoffGamesTable = [gm for gm in gameRows if (gm[0][0] == "P")]	
+	
+	teamRosterHeading, teamRoster = getTeamRosterTable(peopleSoup)
+	
+	gameLinkEx = gameRows[0][10]
+	try:
+		imlSeasonId = stripStringOfPieces(gameLinkEx, ["/spa/league/", "viewgame?gameId=", "&gameType=0"])
+	except AttributeError:
+		print gameLinkEx
+		exit()
+	imlSeasonId = imlSeasonId[:imlSeasonId.index('/')]
+	
+	print header, len(header)
+	for gm in gameRows:
+		print gm, len(gm)
+
+
+	output_file_path = "./data/%s/%s/watMu/%s/%s/%s.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, teamId)	
+	print output_file_path
+
+
+	directory = os.path.dirname(output_file_path)
+	try:
+		os.stat(directory)
+	except:
+		os.makedirs(directory)	
+	f = open(output_file_path, "wb")
+	writer = csv.writer(f)
+	writer.writerow(['INFO:'])
+	writer.writerow(['teamName', teamName])	
+	writer.writerow(['teamAbbreviation', teamName])	
+	writer.writerow(['sportId', sportId])		
+	writer.writerow(['sportName', sports[sportId][0]])
+	writer.writerow(['sportRules', rulesPath])		
+	writer.writerow(['leagueId', 'watMu'])	
+	writer.writerow(['levelId', levelId])			
+	writer.writerow(['seasonName', seasonId])
+	writer.writerow(['seasonId', imlSeasonId])	
+	writer.writerow(['Roster Size',len(teamRoster)])	
+	writer.writerow(['Season Games Played',len(seasonGamesTable)])	
+	playoffRoundLengths = [1 for playoffRound in playoffGamesTable]
+	if(1 not in playoffRoundLengths):
+		playoffRoundLengths.append(0)
+		## this is going to need to be fixed afterwards anyways, might as well
+		## leave it as is I guess
+	writer.writerow(['Playoff Round Lengths']+playoffRoundLengths)
+	writer.writerow(['END_INFO'])
+	writer.writerows([''])
+	writer.writerow(['SEASON:'])
+	
+	writer.writerow(header)
+	for row in seasonGamesTable:
+		writer.writerow(row)
+	writer.writerow(['END_SEASON'])
+	writer.writerows([''])
+	writer.writerow(['PLAYOFFS:'])
+	writer.writerow(header)
+	for row in playoffGamesTable:
+		writer.writerow(row)
+	writer.writerow(['END_PLAYOFFS'])
+	writer.writerows([''])
+	writer.writerow(['ROSTER:'])
+	if(teamRosterHeading[0][0] != 'Roster Unavailable'):
+		writer.writerow(teamRosterHeading)	
+		for row in teamRoster:
+			writer.writerow(row)	
+	else:
+		print "empty roster at %s" % teamId
+		writer.writerow(['Roster Unavailable'])				
+	writer.writerow(['END_ROSTER'])
+	f.close()
+							
+	print "...Finished writing csv\n"
 
 
 
 if(__name__ == "__main__"):
 
-	##url = "/spa/league/d75eb42ff22f45baaea249ceaf0e72d5/viewgame?gameId=7836505&gameType=0"	
-	##print stripGameIdFromLink(url)
-	##exit()
-	##print getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'SEASON') + getGameIds(1, 'beginner', 'fall2016', '245ae04604684f40a40d7257467879c1', 'PLAYOFFS')
-	##exit()
+
+	sportId = 1
+	levelId = "advanced"
+	seasonId = "winter2017"
+	gameId = "R8442888"
+	scrapeImlGame(sportId, levelId, seasonId, gameId)
+	exit()
 	sports = watMuSportInfo.sportsInfoDict()
 
 
-	if(len(argv) >= 3):
-		username = argv[1]
-		password = argv[2]
-		if(len(argv) >= 4):
-			semester = argv[3]
-		else:
-			semester = getTextInput("Please Input Desired semester: ")
+	if(len(argv) >= 1):
+		semester = argv[1]
 	else:
-		username = getTextInput("Please Input Username: ")
-		password = getTextInput("Please Input Password: ")		
+		semester = getTextInput("Please Input Desired semester: ")
 	
-	
-	##url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
-	
-	with closing(Firefox()) as browser:
-
-		##driver = webdriver.Firefox()
-
-		driver = browser
-	
-
-		driver.get("https://nike.uwaterloo.ca/Login.aspx?soi=IM&ref=Intramurals")
-		element = driver.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_UserName_I")
-		element.send_keys(username)
-		element = driver.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_Password_I")
-		element.send_keys(password)	
-		
-		buttonId = 'ctl00_contentMain_ASPxRoundPanel2_loginMain_LoginButton'
-
-		WebDriverWait(browser, timeout=10).until(
-				lambda x: x.find_element_by_id(buttonId))
-		button = browser.find_element_by_id(buttonId)
-		button.click()
-		while(browser.current_url != "https://www.imleagues.com/spa/member/player"):
-			pass
-		print "Finished signing into IMLeagues"
-
-		semesters = [semester]	
-		for semester in semesters:
-			incompleteTeams = []		
-			with open('%shooks.csv' % semester, 'rb') as f:
-				reader = csv.reader(f)
-				i = 0
-				for row in reader:
-					print row
-					##teamId = row[0]
-					sportId = int(row[1])
-					levelId = row[2]
-					seasonId = semester
-					if(sports[sportId][4] == "tournament"):
-						rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
-					else:
-						rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	totalGamesList = []
+	semesters = [semester]	
+	for semester in semesters:
+		incompleteTeams = []		
+		with open('%shooks.csv' % semester, 'rb') as f:
+			reader = csv.reader(f)
+			i = 0
+			for row in reader:
+				print row
+				##teamId = row[0]
+				sportId = int(row[1])
+				levelId = row[2]
+				seasonId = semester
+				if(sports[sportId][4] == "tournament"):
+					rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+				else:
+					rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
 				
-					file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesPath, levelId, seasonId)	
+				file_path = "./data/%s/%s/watMu/%s/%s/teamId.csv" % (sports[sportId][0], rulesPath, levelId, seasonId)	
 					
-					seasonGames = []
-					teamCount = 0
-					with open(file_path, 'rb') as ff:
-						tm_reader = csv.reader(ff)
-						for tm_row in tm_reader:
-							teamCount += 1
-							teamId = tm_row[0]
-							##print sportId, levelId, seasonId, teamId
-							teamGameLinks = getGameIds(sportId, levelId, seasonId, teamId, "SEASON") + getGameIds(sportId, levelId, seasonId, teamId, "PLAYOFFS")
-							if("" in teamGameLinks):
-								incompleteTeams.append("%s_%s_%s"% (teamId, levelId, sportId))
-								print teamId, " had a bad gameId"
-							seasonGames += [link for link in teamGameLinks if link not in seasonGames]
-					print sportId, levelId, seasonId, len(seasonGames)
-					for gmUrl in seasonGames:
-						print seasonGames.index(gmUrl), gmUrl
-						saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
-						##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
-						
-						##print gmUrl
-					##print sportId, levelId, seasonId, teamCount, len(seasonGames)
-			print incompleteTeams
-
+				seasonGames = []
+				teamCount = 0
+				with open(file_path, 'rb') as ff:
+					tm_reader = csv.reader(ff)
+					for tm_row in tm_reader:
+						teamCount += 1
+						teamId = tm_row[0]
+						##print sportId, levelId, seasonId, teamId
+						teamGameLinks = getGameIds(sportId, levelId, seasonId, teamId, "SEASON") + getGameIds(sportId, levelId, seasonId, teamId, "PLAYOFFS")
+						if("" in teamGameLinks):
+							incompleteTeams.append("%s_%s_%s"% (teamId, levelId, sportId))
+							print teamId, " had a bad gameId"
+						seasonGames += [link for link in teamGameLinks if link not in seasonGames]
+				print sportId, levelId, seasonId, len(seasonGames)
+				for gmUrl in seasonGames:
+					totalGamesList.append(gmUrl)
+					print seasonGames.index(gmUrl), gmUrl
+					scrapeImlGame(sportId, levelId, seasonId, gameId)
+		print incompleteTeams
+	print len(totalGamesList)
 
 
 
