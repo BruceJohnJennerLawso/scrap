@@ -165,8 +165,15 @@ if(__name__ == "__main__"):
 			pass
 		print "Finished signing into IMLeagues"
 		semesters = [semester]	
+		
+		
+		#sportId = 3
+		#levelId = 'beginner'
+		#teamId = 'efbb7ad9fce54785bb2a71a68b2f1ace'
+		#saveTeamDataInLinkToRawHtml(browser, "https://www.imleagues.com/spa/team/%s" % teamId, sportId, levelId, semester, teamId)			
+		#exit()
+		
 		for semester in semesters:
-				
 			with open('%shooks.csv' % semester, 'rb') as f:
 				reader = csv.reader(f)
 				i = 0

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-geany doorBreach.py webScrewdriver.py imlTeamProcessing.py gameProcessing.py watMuSportInfo.py teamSpider.py teamRaw.py teamBeautiful.py gameRaw.py gameBeautiful.py imSurfer.py fall2016hooks.csv spynMeRound.py gitter ../soupyFlow.txt  &
+geany doorBreach.py webScrewdriver.py imlTeamProcessing.py gameProcessing.py watMuSportInfo.py fall2016hooks.csv winter2017hooks.csv teamSpider.py teamRaw.py teamBeautiful.py gameRaw.py gameBeautiful.py imSurfer.py spynMeRound.py gitter ../soupyFlow.txt  &
 ## got tired of doing this manually every time with geany
 
 exit 0

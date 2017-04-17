@@ -236,8 +236,11 @@ def scrapeImlGame(sportId, levelId, seasonId, gameId):
 	gameResultString = "%s" % gameSoup.find(lambda tag: tag.name=='div', {"class": "game-result"}).getText().encode("utf-8")
 	gameResultString = stripStringOfPieces(gameResultString, ['\n', 'Final'])
 	print repr(gameResultString)
-	homeScore, awayScore = processGoalsHomeAway(gameResultString)
-	
+	try:
+		homeScore, awayScore = processGoalsHomeAway(gameResultString)
+	except ValueError:
+		homeScore, awayScore = (-1,-1)	
+		
 	gamePeriodSoup = gameSoup.find(lambda tag: tag.name=='table', {"id": "tbGamePeriodDetail"})
 	
 	print repr(gameLocationString)
