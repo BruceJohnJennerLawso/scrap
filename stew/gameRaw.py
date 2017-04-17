@@ -230,7 +230,17 @@ if(__name__ == "__main__"):
 			pass
 		print "Finished signing into IMLeagues"
 
+		
+		##gmUrl = "/spa/league/166378f737a9487ca75099ed8bd8dfe8/viewgame?gameId=8445369&gameType=1"
+		##sportId = 7
+		##levelId = "advanced"
+		##seasonId = "winter2017"
+		##saveGameDataInLinkToRawHtml(browser, gmUrl, sportId, levelId, seasonId)
+		##exit()
 		semesters = [semester]	
+
+		
+
 		for semester in semesters:
 			incompleteTeams = []		
 			with open('%shooks.csv' % semester, 'rb') as f:
