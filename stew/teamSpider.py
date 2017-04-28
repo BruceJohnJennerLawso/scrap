@@ -17,7 +17,7 @@ import string
 import csv
 import os
 import watMuSportInfo
-
+from imlLogin import getAuthenticatedBrowser
 
 def convertShortLinkHrefUrlToFull(shortLink):
 	output = string.replace(shortLink, "https://www.imleagues.com", "")
@@ -131,23 +131,7 @@ if(__name__ == "__main__"):
 		password = getTextInput("Please Input Password: ")
 		semester = getTextInput("Please Semester to build teamIds for: ")			
 	
-	url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
-	with closing(Firefox()) as browser:	
-
-		browser.get("https://nike.uwaterloo.ca/Login.aspx?soi=IM&ref=Intramurals")
-		element = browser.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_UserName_I")
-		element.send_keys(username)
-		element = browser.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_Password_I")
-		element.send_keys(password)	
-		
-		buttonId = 'ctl00_contentMain_ASPxRoundPanel2_loginMain_LoginButton'		
-		WebDriverWait(browser, timeout=10).until(
-				lambda x: x.find_element_by_id(buttonId))
-		button = browser.find_element_by_id(buttonId)
-		button.click()
-		while(browser.current_url != "https://www.imleagues.com/spa/member/player"):
-			pass
-		print "Finished signing into IMLeagues"
+	with getAuthenticatedBrowser(username, password) as browser:
 		semesters = [semester]
 		for semester in semesters:
 			
