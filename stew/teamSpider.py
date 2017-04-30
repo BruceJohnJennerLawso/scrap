@@ -130,8 +130,8 @@ if(__name__ == "__main__"):
 		username = getTextInput("Please Input Username: ")
 		password = getTextInput("Please Input Password: ")
 		semester = getTextInput("Please Semester to build teamIds for: ")			
-	
-	with getAuthenticatedBrowser(username, password) as browser:
+	browser = getAuthenticatedBrowser(username, password)
+	if(True):
 		semesters = [semester]
 		for semester in semesters:
 			

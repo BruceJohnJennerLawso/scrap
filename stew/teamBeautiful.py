@@ -370,7 +370,7 @@ if(__name__ == "__main__"):
 	sports = watMuSportInfo.sportsInfoDict()
 
 
-	semesters = ["winter2017"]	
+	semesters = ["spring2016"]	
 	for semester in semesters:
 				
 		with open('%shooks.csv' % semester, 'rb') as f:

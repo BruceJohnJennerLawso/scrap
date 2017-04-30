@@ -21,6 +21,8 @@ import csv
 import os
 
 import watMuSportInfo
+from imlLogin import getAuthenticatedBrowser
+
 
 def convertShortLinkHrefUrlToFull(shortLink):
 	output = string.replace(shortLink, "https://www.imleagues.com", "")
@@ -144,35 +146,11 @@ if(__name__ == "__main__"):
 		password = getTextInput("Please Input Password: ")		
 	
 	
-	url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
+	##url = "https://www.imleagues.com/spa/team/662222b25eb54b88b4eebb4090cb455a/home"
+	semesters = [semester]
 	
-	with closing(Firefox()) as browser:
-		driver = browser
-	
-
-		driver.get("https://nike.uwaterloo.ca/Login.aspx?soi=IM&ref=Intramurals")
-		element = driver.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_UserName_I")
-		element.send_keys(username)
-		element = driver.find_element_by_id("ctl00_contentMain_ASPxRoundPanel2_loginMain_Password_I")
-		element.send_keys(password)	
-		
-		buttonId = 'ctl00_contentMain_ASPxRoundPanel2_loginMain_LoginButton'
-		WebDriverWait(browser, timeout=10).until(
-				lambda x: x.find_element_by_id(buttonId))
-		button = browser.find_element_by_id(buttonId)
-		button.click()
-		while(browser.current_url != "https://www.imleagues.com/spa/member/player"):
-			pass
-		print "Finished signing into IMLeagues"
-		semesters = [semester]	
-		
-		
-		#sportId = 3
-		#levelId = 'beginner'
-		#teamId = 'efbb7ad9fce54785bb2a71a68b2f1ace'
-		#saveTeamDataInLinkToRawHtml(browser, "https://www.imleagues.com/spa/team/%s" % teamId, sportId, levelId, semester, teamId)			
-		#exit()
-		
+	browser = getAuthenticatedBrowser(username, password)
+	if(True):		
 		for semester in semesters:
 			with open('%shooks.csv' % semester, 'rb') as f:
 				reader = csv.reader(f)
