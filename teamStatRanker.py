@@ -25,7 +25,7 @@ def exampleCommand():
 def task(seasons, parameters):
 	seasons = filterSeasonsByParams(seasons, parameters)
 	
-	stat = statSelect.getTargetStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
+	stat = statSelect.getTargetTeamStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
 	if(parameters.getSortOrder() == 'asc'):
 		stat.printSortedContainer(parameters.getPlayoffTeamsOnly())
 	elif(parameters.getSortOrder() == 'desc'):

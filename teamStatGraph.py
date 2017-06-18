@@ -32,13 +32,17 @@ def task(seasons, parameters):
 		thing = 'PlayoffTeam'
 	else:
 		thing = 'Total'
-	
-	independent = statSelect.getTargetStatContainer(parameters.getIndependentStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
-	print "Independent"
+	print "Independent Graph Variable: "
+	independent = statSelect.getTargetTeamStatContainer(parameters.getIndependentStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
 	independent.printStatBounds()
-	dependent = statSelect.getTargetStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
-	print "Dependent"
+	print independent.getStat(onlyPlayoffTeams=parameters.getPlayoffTeamsOnly())
+	
+	print "Dependent Graph Variable: "
+	dependent = statSelect.getTargetTeamStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
+	
 	dependent.printStatBounds()
+	
+	dependent.getStat(onlyPlayoffTeams=parameters.getPlayoffTeamsOnly())
 	for var in [independent, dependent]:
 		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(parameters.getPlayoffTeamsOnly()),'./results/%s/%s/histograms' % (parameters.getLeagueId(), parameters.getLevelId()), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
 	plotScatterplot(independent.getShortStatName(), dependent.getShortStatName(), '%s\nby %s\nfor %s, %s' % (dependent.getLongStatName(), independent.getLongStatName(), parameters.getLeagueId(), parameters.getLevelId()), independent.getStat(parameters.getPlayoffTeamsOnly()), dependent.getStat(parameters.getPlayoffTeamsOnly()), './results/%s/%s/%sBy' % (parameters.getLeagueId(), parameters.getLevelId(), dependent.getShortStatName()), '%s' % independent.getShortStatName(), '%s_by_%s.png' % (dependent.getShortStatName(), independent.getShortStatName()))		

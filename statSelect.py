@@ -73,7 +73,7 @@ def getTeamPlayoffStatNames():
 def getTeamStatNames():
 	return getTeamSeasonStatNames()+getTeamPlayoffStatNames()
 
-def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
+def getTargetTeamStatContainer(targetStatName, seasons, leagueId, levelId):
 	
 	statNames = getTeamStatNames()
 	
@@ -81,6 +81,7 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 		statCall, shortStatName, longStatName = getTeamStatInformation(targetStatName)
 		return getStatContainer(statCall, shortStatName, longStatName, seasons, leagueId, levelId)
 	except TypeError:
+		print targetStatName
 		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
 		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
 		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
