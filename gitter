@@ -1,6 +1,6 @@
 #!/bin/bash
 
-geany jsonNhlScraper.py gameProcessing.py perfectlyNormalUser.py nhlScraper.py watMuScraper.py scrape.py MJD.py game.py gameWatMu.py gameNhl.py player.py playerWatMu.py playerNhl.py seasonParts.py team.py teamWatMu.py teamNhl.py season.py seasonWatMu.py seasonNhl.py distModel.py modelNormal.py modelExponential.py modelUniform.py modelLogNormal.py modelMultimodal.py modelSelection.py distStats.py graphtools.py statContainer.py statRetrieve.py statSelect.py outputs.py scrapParam.py readata.py seasonSummary.py teamSummary.py playerSummary.py playerData.py teamStatRanker.py teamStatTable.py teamStatGraph.py scrap.py makeItFourier.py get go gitter retrieval soupyFlow.txt dependencies.txt &
+geany jsonNhlScraper.py gameProcessing.py perfectlyNormalUser.py nhlScraper.py watMuScraper.py scrape.py MJD.py game.py gameWatMu.py gameNhl.py player.py playerWatMu.py playerNhl.py seasonParts.py team.py teamWatMu.py teamNhl.py season.py seasonWatMu.py seasonNhl.py distModel.py modelNormal.py modelExponential.py modelUniform.py modelLogNormal.py modelMultimodal.py modelSelection.py distStats.py graphtools.py statSelect.py statContainer.py statRetrieve.py outputs.py scrapParam.py readata.py seasonSummary.py teamSummary.py playerSummary.py playerData.py teamStatRanker.py teamStatTable.py teamStatGraph.py scrap.py makeItFourier.py get go gitter retrieval soupyFlow.txt dependencies.txt &
 ## got tired of doing this manually every time with geany
 
 exit 0

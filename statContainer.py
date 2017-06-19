@@ -33,7 +33,7 @@ def consistencyCheck(statCon1, statCon2):
 ## statList, teamIdList, teamNameList, yearList, madePlayoffs
 
 class teamStatContainer:
-	def __init__(self, statNameShort, seasons, statValues=[]):
+	def __init__(self, statNameShort, seasons):
 		self.statNameShort = statNameShort
 		self.statNameLong = getTeamStatLongName(statNameShort)
 		
@@ -41,7 +41,7 @@ class teamStatContainer:
 		
 		
 		
-		##statValues = []
+		statValues = []
 		teamIds = []
 		teamNames = []
 		years = []
@@ -49,15 +49,12 @@ class teamStatContainer:
 
 		for season in seasons:
 			for team in season.Teams:
+				statValues.append(statCall(team))
 				teamIds.append(team.getTeamId())
 				teamNames.append(team.getTeamName())
 				years.append(team.seasonId)
 				madePlayoffs.append(team.madeRealPlayoffs())
 				
-		if(statValues == []):
-			for season in seasons:
-				for team in season.Teams:
-					statValues.append(statCall(team))
 		
 		self.dataPoints = []
 		for i in range(0, len(statValues)):
@@ -98,8 +95,12 @@ class teamStatContainer:
 		x_values = self.getStat(playoffTeamsOnly)
 		y_values = dependentContainer.getStat(playoffTeamsOnly)
 		
+		
+		##print len(x_values), len(y_values)
 		gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values, y_values)
-		print "fit parameters, ", gradient, intercept
+		
+		
+		##print "fit parameters, ", stats.linregress(x_values, y_values)
 		modelDiffs = []
 		
 		def modelValue(x, gradient, intercept):
@@ -109,7 +110,7 @@ class teamStatContainer:
 			modelDiffs.append(y_values[i] - modelValue(x_values[i], gradient, intercept))
 		
 		##outputDiffContainer = teamStatContainer("%sby%s_Diffs" % (dependentContainer.getShortStatName(), self.getShortStatName()), )
-		print "creating new statcontainer with diffs, ", x_values, "\n", y_values, "\n", modelDiffs, "\n", "\ngradient = %.3f\nintercept = %.3f\n\n" % (gradient, intercept)
+		##print "creating new statcontainer with diffs, ", x_values, "\n", y_values, "\n", modelDiffs, "\n", "\ngradient = %.3f\nintercept = %.3f\n\n" % (gradient, intercept)
 		
 		return teamStatDiffContainer(dependentContainer.getShortStatName(), self.getShortStatName(), dependentContainer, self.getLongStatName(), modelDiffs, gradient, intercept)
 

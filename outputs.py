@@ -278,6 +278,7 @@ def getTargetTeamStatContainer(targetStatName, seasons, leagueId, levelId):
 			## wordy, but its a rather specific requirement
 			dependentShortStatName = targetStatName.rsplit('*')[0]
 			independentShortStatName = targetStatName.rsplit('*')[1]
+			##print "%s->%s, %s" % (targetStatName, dependentShortStatName, independentShortStatName)
 			return getModelDiffContainer(seasons, leagueId, levelId, independentShortStatName, dependentShortStatName)
 		else:
 			print "Stat name %s not found, available options are:\n\n" % targetStatName

@@ -34,7 +34,7 @@ from statContainer import *
 	#return container
 	
 
-def getModelDiffContainer(seasons, leagueId, levelId, independentShortName, dependentShortName, debugInfo=False):
+def getModelDiffContainer(seasons, leagueId, levelId, independentShortName, dependentShortName, debugInfo=True):
 	
 	independentStatCall = getTeamStatInformation(independentShortName)[0]
 	dependentStatCall = getTeamStatInformation(dependentShortName)[0]
@@ -46,8 +46,12 @@ def getModelDiffContainer(seasons, leagueId, levelId, independentShortName, depe
 	independentContainer = teamStatContainer(independentShortName, seasons)
 	dependentContainer = teamStatContainer(dependentShortName, seasons)
 	if(debugInfo):
+		print "Independent Container:\n"
+		print independentContainer.getShortStatName()
 		independentContainer.printContainer()
-		dependentContainer.printContainer()		 	
+		print "Dependent Container:\n"
+		print dependentContainer.getShortStatName()	 			
+		dependentContainer.printContainer()	
 	
 	modelDiffsContainer = independentContainer.getModelDiffs(dependentContainer)
 	if(consistencyCheck(independentContainer, dependentContainer)):
