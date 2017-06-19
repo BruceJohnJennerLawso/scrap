@@ -5,7 +5,7 @@
 ################################################################################
 
 
-from statSelect import *
+from statRetrieve import *
 from seasonWatMu import *
 from seasonNhl import *
 from graphtools import *
@@ -261,6 +261,31 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 	## briefly pause here so we can see that the hashes are all gone * for nhl
 	return seasons
 
+
+
+def getTargetTeamStatContainer(targetStatName, seasons, leagueId, levelId):
+	
+	statNames = getTeamStatNames()
+	
+	if("*" not in targetStatName):
+		statCall, shortStatName, longStatName = getTeamStatInformation(targetStatName)
+		return teamStatContainer(targetStatName, seasons)
+	else:
+		print targetStatName
+		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
+		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
+		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
+			## wordy, but its a rather specific requirement
+			dependentShortStatName = targetStatName.rsplit('*')[0]
+			independentShortStatName = targetStatName.rsplit('*')[1]
+			return getModelDiffContainer(seasons, leagueId, levelId, independentShortStatName, dependentShortStatName)
+		else:
+			print "Stat name %s not found, available options are:\n\n" % targetStatName
+			print statNames
+			return []
+
+						
+	return output
 
 
 def getFranchiseList(leagueId, levelId):

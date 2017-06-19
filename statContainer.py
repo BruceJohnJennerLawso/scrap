@@ -5,6 +5,8 @@
 ################################################################################
 from scipy import stats
 
+from statSelect import *
+
 def consistencyCheck(statCon1, statCon2):
 	if(statCon1.getNumberOfDataPoints() == statCon2.getNumberOfDataPoints()):
 		if(statCon1.getDataPointsWithoutData() == statCon2.getDataPointsWithoutData()):
@@ -19,14 +21,47 @@ def consistencyCheck(statCon1, statCon2):
 
 
 
+
+
+
+
+
+
+
+
+
+## statList, teamIdList, teamNameList, yearList, madePlayoffs
+
 class teamStatContainer:
-	def __init__(self, statNameShort, statNameLong, statList, teamIdList, teamNameList, yearList, madePlayoffs):
+	def __init__(self, statNameShort, seasons, statValues=[]):
 		self.statNameShort = statNameShort
-		self.statNameLong = statNameLong
+		self.statNameLong = getTeamStatLongName(statNameShort)
+		
+		statCall = getTeamStatInformation(statNameShort)[0]
+		
+		
+		
+		##statValues = []
+		teamIds = []
+		teamNames = []
+		years = []
+		madePlayoffs = []
+
+		for season in seasons:
+			for team in season.Teams:
+				teamIds.append(team.getTeamId())
+				teamNames.append(team.getTeamName())
+				years.append(team.seasonId)
+				madePlayoffs.append(team.madeRealPlayoffs())
+				
+		if(statValues == []):
+			for season in seasons:
+				for team in season.Teams:
+					statValues.append(statCall(team))
 		
 		self.dataPoints = []
-		for i in range(0, len(statList)):
-			statRow = [statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]]
+		for i in range(0, len(statValues)):
+			statRow = [statValues[i], teamIds[i], teamNames[i], years[i], madePlayoffs[i]]
 			self.dataPoints.append(statRow)
 		self.sortDataPointsByStandard()
 
@@ -63,8 +98,8 @@ class teamStatContainer:
 		x_values = self.getStat(playoffTeamsOnly)
 		y_values = dependentContainer.getStat(playoffTeamsOnly)
 		
-		gradient, intercept, r_value, p_value, std_err = stats.linregress( x_values, y_values)
-		
+		gradient, intercept, r_value, p_value, std_err = stats.linregress(x_values, y_values)
+		print "fit parameters, ", gradient, intercept
 		modelDiffs = []
 		
 		def modelValue(x, gradient, intercept):
@@ -72,7 +107,11 @@ class teamStatContainer:
 		
 		for i in range(0, len(x_values)):
 			modelDiffs.append(y_values[i] - modelValue(x_values[i], gradient, intercept))
-		return teamStatContainer("%sby%s Model Diffs" % (dependentContainer.getShortStatName(), self.getShortStatName()), "Deltas from the Model for %s by %s, gradient=%.3f, intercept=%.3f" % (dependentContainer.getLongStatName, self.getShortStatName(), gradient, intercept), modelDiffs, self.getTeamIds(playoffTeamsOnly), self.getTeamNames(playoffTeamsOnly), self.getYears(playoffTeamsOnly), self.getMadePlayoffsList(playoffTeamsOnly))
+		
+		##outputDiffContainer = teamStatContainer("%sby%s_Diffs" % (dependentContainer.getShortStatName(), self.getShortStatName()), )
+		print "creating new statcontainer with diffs, ", x_values, "\n", y_values, "\n", modelDiffs, "\n", "\ngradient = %.3f\nintercept = %.3f\n\n" % (gradient, intercept)
+		
+		return teamStatDiffContainer(dependentContainer.getShortStatName(), self.getShortStatName(), dependentContainer, self.getLongStatName(), modelDiffs, gradient, intercept)
 
 	def getShortStatName(self):
 		return self.statNameShort
@@ -193,15 +232,30 @@ class teamStatContainer:
 		
 		
 		
+class teamStatDiffContainer(teamStatContainer):
+	def __init__(self, dependentShortName, independentShortName, dependentContainer, independentLongStatName, modelDiffs, gradient, intercept):
+		
+		##super(teamStatDiffContainer, self).__init__(data)
+		
+		self.statNameShort = "%sby%s_ModelDiffs" % (dependentShortName, independentShortName)
+		self.statNameLong = "Deltas from the Model for %s by %s, gradient=%.3f, intercept=%.3f" % (dependentContainer.getLongStatName(), independentLongStatName, gradient, intercept)
 		
 		
 		
+
+		##statValues = []
+		teamIds = dependentContainer.getTeamIds()
+		teamNames = dependentContainer.getTeamNames()
+		years = dependentContainer.getYears()
+		madePlayoffs = dependentContainer.getMadePlayoffsList()
+	
+		statValues = modelDiffs
 		
-		
-		
-		
-		
-		
+		self.dataPoints = []
+		for i in range(0, len(statValues)):
+			statRow = [statValues[i], teamIds[i], teamNames[i], years[i], madePlayoffs[i]]
+			self.dataPoints.append(statRow)
+		self.sortDataPointsByStandard()		
 		
 		
 		
@@ -214,13 +268,13 @@ class teamStatContainer:
 		
 		
 class gameStatContainer:
-	def __init__(self, statNameShort, statNameLong, statList, teamIdList, teamNameList, yearList, madePlayoffs):
+	def __init__(self, statNameShort, statNameLong):
 		self.statNameShort = statNameShort
 		self.statNameLong = statNameLong
 		
 		self.dataPoints = []
 		for i in range(0, len(statList)):
-			statRow = [statList[i], teamIdList[i], teamNameList[i], yearList[i], madePlayoffs[i]]
+			statRow = [statList[i], homeTeamIdList[i], homeTeamNameList[i], awayTeamIdList[i], awayTeamNameList[i], dateList[i]]
 			self.dataPoints.append(statRow)
 		self.sortDataPointsByStandard()
 

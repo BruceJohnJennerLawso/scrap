@@ -7,6 +7,7 @@ from sys import argv
 from scrapParam import *
 
 import statSelect
+import outputs
 
 def moduleId():
 	return "teamStatRanker"
@@ -25,7 +26,7 @@ def exampleCommand():
 def task(seasons, parameters):
 	seasons = filterSeasonsByParams(seasons, parameters)
 	
-	stat = statSelect.getTargetTeamStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
+	stat = outputs.getTargetTeamStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
 	if(parameters.getSortOrder() == 'asc'):
 		stat.printSortedContainer(parameters.getPlayoffTeamsOnly())
 	elif(parameters.getSortOrder() == 'desc'):

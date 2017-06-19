@@ -3,62 +3,125 @@
 ## appropriate stat container object ###########################################
 ################################################################################
 
-from statRetrieve import *
+
 from team import *
+
+
+
+
+def getTeamStatLongName(targetStatName):
+	if(targetStatName == "PlusMinus"):
+		return 'Season Goal Differential'
+	elif(targetStatName == "Wins"):
+		return 'Season Wins'		
+	elif(targetStatName == "GDA"):
+		return 'Season Goal Differential Average'
+	elif(targetStatName == "AOQI"):
+		return 'Average Offence Quality Index'
+	elif(targetStatName == "ADQI"):
+		return 'Average Defence Quality Index'	
+	elif(targetStatName == "AGCI"):
+		return 'Average Game Closeness Index'	
+	elif(targetStatName == "OQI"):
+		return 'Offence Quality Index'	
+	elif(targetStatName == "DQI"):
+		return 'Defence Quality Index'			
+	elif(targetStatName == "MaAWQI"):
+		return 'Mean Adjusted Average Win Quality Index'			
+	elif(targetStatName == "MaAPQI"):
+		return 'Mean Adjusted Average Play Quality Index'			
+	elif(targetStatName == "Points"):
+		return 'Season Points Total'				
+	elif(targetStatName == "Offence"):
+		return 'Season Goals For Average'				
+	elif(targetStatName == "Defence"):
+		return 'Season Goals Against Average'				
+	elif(targetStatName == "CPQI"):
+		return 'Complete Play Quality Index'						
+	elif(targetStatName == "ODQSplit"):
+		return 'OffenceDefence Quality Split'			
+	elif(targetStatName == "DQM"):
+		return 'DiffQualityMargin'	
+	elif(targetStatName == "FBS"):
+		return 'CPQI FrontBack Split'	
+	elif(targetStatName == "SGP"):
+		return 'Total Season Games Played'			
+	## playoff stats start here
+	elif(targetStatName == "PlayoffOffence"):
+		return 'PlayoffOffence'	
+	elif(targetStatName == "PlayoffDefence"):
+		return 'PlayoffDefence'
+	elif(targetStatName == "PlayoffSuccess"):
+		return 'PlayoffSuccess'	
+	elif(targetStatName == "POT"):
+		return 'Playoffs Offence Transition'						
+	elif(targetStatName == "PDT"):
+		return 'Playoffs Defence Transition'	
+	elif(targetStatName == "PGDT"):
+		return 'Playoffs Goal Differential Transition'			
+	else:
+		return targetStatName
+
+
 
 
 def getTeamStatInformation(targetStatName):
 	if(targetStatName == "PlusMinus"):
-		return (Team.getSeasonPlusMinus, 'PlusMinus', 'Season Goal Differential')
+		return (Team.getSeasonPlusMinus, targetStatName, getTeamStatLongName(targetStatName))
 	elif(targetStatName == "Wins"):
-		return (Team.getSeasonWinsTotal, 'Wins', 'Season Wins')		
+		return (Team.getSeasonWinsTotal, targetStatName, getTeamStatLongName(targetStatName))		
 	elif(targetStatName == "GDA"):
-		return (Team.getSeasonGoalDifferentialAverage, 'GDA', 'Season Goal Differential Average')
+		return (Team.getSeasonGoalDifferentialAverage, targetStatName, getTeamStatLongName(targetStatName))
 	elif(targetStatName == "AOQI"):
-		return (Team.getAOQI, 'AOQI', 'Average Offence Quality Index')
+		return (Team.getAOQI, targetStatName, getTeamStatLongName(targetStatName))
 	elif(targetStatName == "ADQI"):
-		return (Team.getADQI, 'ADQI', 'Average Defence Quality Index')	
+		return (Team.getADQI, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "AGCI"):
-		return (Team.getAGCI, 'AGCI', 'Average Game Closeness Index')	
+		return (Team.getAGCI, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "OQI"):
-		return (Team.getOffenceQualityIndex, 'OQI', 'Offence Quality Index')	
+		return (Team.getOffenceQualityIndex, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "DQI"):
-		return (Team.getDefenceQualityIndex, 'DQI', 'Defence Quality Index')			
+		return (Team.getDefenceQualityIndex, targetStatName, getTeamStatLongName(targetStatName))			
 	elif(targetStatName == "MaAWQI"):
-		return (Team.getMaAWQI, 'MaAWQI', 'Mean Adjusted Average Win Quality Index')			
+		return (Team.getMaAWQI, targetStatName, getTeamStatLongName(targetStatName))			
 	elif(targetStatName == "MaAPQI"):
-		return (Team.getMaAPQI, 'MaAPQI', 'Mean Adjusted Average Play Quality Index')			
+		return (Team.getMaAPQI, targetStatName, getTeamStatLongName(targetStatName))			
 	elif(targetStatName == "Points"):
-		return (Team.getSeasonPointsTotal, 'Points', 'Season Points Total')				
+		return (Team.getSeasonPointsTotal, targetStatName, getTeamStatLongName(targetStatName))				
 	elif(targetStatName == "Offence"):
-		return (Team.getSeasonGoalsForAverage, 'Offence', 'Season Goals For Average')				
+		return (Team.getSeasonGoalsForAverage, targetStatName, getTeamStatLongName(targetStatName))				
 	elif(targetStatName == "Defence"):
-		return (Team.getSeasonGoalsAgainstAverage, 'Defence', 'Season Goals Against Average')				
+		return (Team.getSeasonGoalsAgainstAverage, targetStatName, getTeamStatLongName(targetStatName))				
 	elif(targetStatName == "CPQI"):
-		return (Team.getCPQI, 'CPQI', 'Complete Play Quality Index')						
+		return (Team.getCPQI, targetStatName, getTeamStatLongName(targetStatName))						
 	elif(targetStatName == "ODQSplit"):
-		return (Team.getODQSplit, 'ODQSplit', 'OffenceDefence Quality Split')			
+		return (Team.getODQSplit, targetStatName, getTeamStatLongName(targetStatName))			
 	elif(targetStatName == "DQM"):
-		return (Team.getDQM, 'DiffQualityMargin', 'DiffQualityMargin')	
+		return (Team.getDQM, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "FBS"):
-		return (Team.getFrontBackSplit, 'CPQI FrontBack Split', 'CPQI FrontBack Split')	
+		return (Team.getFrontBackSplit, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "SGP"):
-		return (Team.getSeasonGamesTotal, 'SGP', 'Total Season Games Played')			
+		return (Team.getSeasonGamesTotal, targetStatName, getTeamStatLongName(targetStatName))
 	## playoff stats start here
 	elif(targetStatName == "PlayoffOffence"):
-		return (Team.getPlayoffGoalsForAverage, 'PlayoffOffence', 'PlayoffOffence')	
+		return (Team.getPlayoffGoalsForAverage, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "PlayoffDefence"):
-		return (Team.getPlayoffGoalsAgainstAverage, 'PlayoffDefence', 'PlayoffDefence')
+		return (Team.getPlayoffGoalsAgainstAverage, targetStatName, getTeamStatLongName(targetStatName))
 	elif(targetStatName == "PlayoffSuccess"):
-		return (Team.getPlayoffSuccessRating, 'PlayoffSuccess', 'PlayoffSuccess')	
+		return (Team.getPlayoffSuccessRating, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "POT"):
-		return (Team.getPlayoffOffenceTransition, 'POT', 'Playoffs Offence Transition')						
+		return (Team.getPlayoffOffenceTransition, targetStatName, getTeamStatLongName(targetStatName))						
 	elif(targetStatName == "PDT"):
-		return (Team.getPlayoffDefenceTransition, 'PDT', 'Playoffs Defence Transition')	
+		return (Team.getPlayoffDefenceTransition, targetStatName, getTeamStatLongName(targetStatName))	
 	elif(targetStatName == "PGDT"):
-		return (Team.getPlayoffGoalDifferentialTransition, 'PGDT', 'Playoffs Goal Differential Transition')			
+		return (Team.getPlayoffGoalDifferentialTransition, targetStatName, getTeamStatLongName(targetStatName))			
 	else:
 		raise TypeError("Unable to find stat type for name %s" % targetStatName)
+
+
+
+
+
 
 def getTeamSeasonStatNames():
 	seasonStats = ["PlusMinus", "Wins", "AOQI", "ADQI", "AGCI", "OQI", "DQI", "MaAWQI",\
@@ -73,27 +136,5 @@ def getTeamPlayoffStatNames():
 def getTeamStatNames():
 	return getTeamSeasonStatNames()+getTeamPlayoffStatNames()
 
-def getTargetTeamStatContainer(targetStatName, seasons, leagueId, levelId):
-	
-	statNames = getTeamStatNames()
-	
-	try:
-		statCall, shortStatName, longStatName = getTeamStatInformation(targetStatName)
-		return getStatContainer(statCall, shortStatName, longStatName, seasons, leagueId, levelId)
-	except TypeError:
-		print targetStatName
-		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
-		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
-		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
-			## wordy, but its a rather specific requirement
-			dependentStatCall, dependentShortStatName, dependentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[0])
-			independentStatCall, independentShortStatName, independentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[1])
-			return getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortStatName, independentLongStatName, dependentStatCall, dependentShortStatName, dependentLongStatName)
-		else:
-			print "Stat name %s not found, available options are:\n\n" % targetStatName
-			print statNames
-			return []
 
-						
-	return output
 
