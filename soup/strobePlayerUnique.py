@@ -45,8 +45,58 @@ def scrapePlayerInfoFromStrobeTeamPanel(browser, teamId, levelId, sportId, seaso
 	page_source = browser.page_source
 	teamPlayersSoup = BeautifulSoup(page_source, 'html.parser')
 	teamPlayersSoup = teamPlayersSoup.find(lambda tag: tag.name=='table') 
-	print teamPlayersSoup
+	##print teamPlayersSoup
+	rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
+	if(sports[sportId][4] == "tournament"):
+		##print "tournament"
+		rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])			
+	else:
+		rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])	
+	file_path = "./data/%s/%s/watMu/%s/%s/%i_RosterData.csv" % (sports[sportId][0], rulesPath, levelId, seasonId, teamId)
+
+	directory = os.path.dirname(file_path)
+	try:
+		os.stat(directory)
+	except:
+		os.makedirs(directory)	
+	f = open(file_path, "wb")
+	writer = csv.writer(f)
+	writer.writerow(['INFO:'])
+	writer.writerow(['teamId', teamId])	
+	writer.writerow(['sportId', sportId])		
+	writer.writerow(['levelId', levelId])		
+	writer.writerow(['seasonId', seasonId])			
+	writer.writerow(['END_INFO'])
+	writer.writerows([''])
+	writer.writerow(['ROSTER_DATA:'])
 	
+	writer.writerow(['playerNameFirst', 'playerNameLast', 'emailFound', 'emailListed'])
+	for row in teamPlayersSoup.find_all(lambda tag: tag.name=='td'):
+		##print row
+		emailFound = False
+		try:
+			emailLink = "%s" % (row.find(lambda tag: tag.name=='a')['href'].encode("utf-8"))
+			emailLink = emailLink.replace("mailto:", "")
+			emailFound = True
+			playerNameFirst = row.find(lambda tag: tag.name=='a').getText().encode("utf-8")
+			playerNameLast = row.getText().encode("utf-8")
+			playerNameLast = playerNameLast.replace(" (%s)" % playerNameFirst, "")
+		except TypeError:
+			emailLink = "Not Found"
+			playerNameFirst = row.getText().encode("utf-8")
+			playerNameLast = row.getText().encode("utf-8")
+			playerNameFirst = playerNameLast[playerNameLast.find("(")+1:playerNameLast.find(")")]
+			playerNameLast = playerNameLast.replace(" (%s)" % (playerNameFirst), "")
+		print repr(playerNameFirst), repr(playerNameLast), ", emailFound=%r" % emailFound,
+		if(emailFound):
+			print repr(emailLink)
+		else:
+			print ""
+		writer.writerow([playerNameFirst, playerNameLast, emailFound, emailLink])
+	writer.writerow(['END_ROSTERDATA'])
+	print "...Finished writing csv\n"
+	f.close()			
+			
 if(__name__ == "__main__"):
 	sports = watMuSportInfo.sportsInfoDict()
 
