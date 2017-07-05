@@ -19,36 +19,43 @@ import matplotlib.pyplot as plt
 
 random_strings = set()
 
+
 def random_string():
     while True:
         result = ''.join(choice(ascii_lowercase) for _ in range(6))
-        if result not in random_strings:
+        if(result not in random_strings):
+            random_strings.add(result)
             return result
+			
 
-
+previouslyGeneratedMaps = {}
 
 def getObfuscatedString(inputString, masks, rw, debugInfo=False):
-	currentMaskString = ""
-	i = 0
-	for character in masks[inputString]:
-		if(i == 0):
-				
-			if(character in "qwertyuiopasdfghjklzcvbnm"):
-				wordCharacterMap = rw.random_word(character)
+	if(inputString in previouslyGeneratedMaps):
+		return previouslyGeneratedMaps[inputString]
+	else:
+		currentMaskString = ""
+		i = 0
+		for character in masks[inputString]:
+			if(i == 0):
+					
+				if(character in "qwertyuiopasdfghjklzcvbnm"):
+					wordCharacterMap = rw.random_word(character)
+				else:
+					wordCharacterMap = character		
+				if(debugInfo):
+					print character, wordCharacterMap
 			else:
-				wordCharacterMap = character		
-			if(debugInfo):
-				print character, wordCharacterMap
-		else:
-			if(character in "qwertyuiopasdfghjklzcvbnm"):
-				wordCharacterMap = rw.random_word(character).capitalize()
-			else:
-				wordCharacterMap = character.capitalize()
-			if(debugInfo):
-				print character, wordCharacterMap
-		i += 1
-		currentMaskString += wordCharacterMap
-	return currentMaskString
+				if(character in "qwertyuiopasdfghjklzcvbnm"):
+					wordCharacterMap = rw.random_word(character).capitalize()
+				else:
+					wordCharacterMap = character.capitalize()
+				if(debugInfo):
+					print character, wordCharacterMap
+			i += 1
+			currentMaskString += wordCharacterMap
+		previouslyGeneratedMaps[inputString] = currentMaskString
+		return currentMaskString
 
 def basicTest(masks, rw):	
 	names = ["Jim Brooks", "John Lawson", "Jean-Christophe Robertson"]
@@ -94,7 +101,7 @@ def randomizedTest(masks, rw):
 	
 	rn = RandomNicknames()
 	
-	for i in range(40000):
+	for i in range(400000):
 		##print i,
 		fNameGender=choice(['f', 'm', 'u'])
 		##print fNameGender

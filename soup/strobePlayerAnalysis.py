@@ -49,6 +49,7 @@ if(__name__ == "__main__"):
 	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
 	 }
 	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
+	sportIds = [1]
 	##sportIds = [ 17, 26, 18, 16]
 	##sportIds = [16]	
 	
@@ -120,14 +121,27 @@ if(__name__ == "__main__"):
 												
 												playerId = getObfuscatedString(email, getMasks(), RandomWords())
 												
-												print repr(fullName), repr(email), " -> ", repr(playerId)
+												##print repr(fullName), repr(email), " -> ", repr(playerId)
 											else:
 												playerId = "%s_%s" % (getObfuscatedString(fullName, getMasks(), RandomWords()), teamId)
-												print repr(fullName), teamId, " -> ", repr(playerId)												
+												##print repr(fullName), teamId, " -> ", repr(playerId)	
+												email = playerId
+											if(playerId in playerInfoDict):
+												playerInfoDict[playerId]["teamIds"].append(teamId)
+											else:
+												playerInfoDict[playerId] = {"firstName":row[0], "lastName":row[1], "teamIds":[teamId]}											
 								##scrapeStrobeTeam(int(teamId), levelId, sportId, seasonId)
 							print "\n" 
 					except IOError:
 						pass
 						##print 'not_found: ', file_path
 						##print file_path, " Does not exist"
-					
+	for player in playerInfoDict:
+		##if(len(playerInfoDict[player]["teamIds"]) > 1):
+		print player, "\n", playerInfoDict[player]
+	##print playerInfoDict		
+	
+	print "\n\n"	
+	for player in playerInfoDict:
+		if(playerInfoDict[player]["lastName"] == "Lawson"):
+			print player, "\n", playerInfoDict[player]
