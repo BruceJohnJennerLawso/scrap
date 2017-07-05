@@ -4,6 +4,8 @@
 ################################################################################
 import csv
 
+import random
+
 from obfuscant import getObfuscatedString	
 from obfuscant import getMasks	
 		
@@ -23,6 +25,8 @@ if(__name__ == "__main__"):
 	#seasonId = 'spring2011'
 	#scrapeStrobeTeam(teamId, levelId, sportId, seasonId)	
 	#exit()
+
+	random.seed(3141592654)
 
 	playerInfoDict = {}
 
@@ -113,9 +117,13 @@ if(__name__ == "__main__"):
 											fullName = row[0] + " " + row[1]
 											if(row[2] == 'True'):
 												email = row[3]
-												print repr(fullName), repr(email), " -> ", repr(getObfuscatedString(email, getMasks(), RandomWords()))
+												
+												playerId = getObfuscatedString(email, getMasks(), RandomWords())
+												
+												print repr(fullName), repr(email), " -> ", repr(playerId)
 											else:
-												print repr(fullName), teamId, " -> ", repr("%s_%s" % (getObfuscatedString(fullName, getMasks(), RandomWords()), teamId))												
+												playerId = "%s_%s" % (getObfuscatedString(fullName, getMasks(), RandomWords()), teamId)
+												print repr(fullName), teamId, " -> ", repr(playerId)												
 								##scrapeStrobeTeam(int(teamId), levelId, sportId, seasonId)
 							print "\n" 
 					except IOError:

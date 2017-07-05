@@ -21,7 +21,7 @@ random_strings = set()
 
 def random_string():
     while True:
-        result = ''.join(choice(ascii_lowercase) for _ in range(7))
+        result = ''.join(choice(ascii_lowercase) for _ in range(6))
         if result not in random_strings:
             return result
 
@@ -94,7 +94,7 @@ def randomizedTest(masks, rw):
 	
 	rn = RandomNicknames()
 	
-	for i in range(400000):
+	for i in range(40000):
 		##print i,
 		fNameGender=choice(['f', 'm', 'u'])
 		##print fNameGender
