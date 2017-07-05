@@ -27,6 +27,29 @@ def random_string():
 
 
 
+def getObfuscatedString(inputString, masks, rw, debugInfo=False):
+	currentMaskString = ""
+	i = 0
+	for character in masks[inputString]:
+		if(i == 0):
+				
+			if(character in "qwertyuiopasdfghjklzcvbnm"):
+				wordCharacterMap = rw.random_word(character)
+			else:
+				wordCharacterMap = character		
+			if(debugInfo):
+				print character, wordCharacterMap
+		else:
+			if(character in "qwertyuiopasdfghjklzcvbnm"):
+				wordCharacterMap = rw.random_word(character).capitalize()
+			else:
+				wordCharacterMap = character.capitalize()
+			if(debugInfo):
+				print character, wordCharacterMap
+		i += 1
+		currentMaskString += wordCharacterMap
+	return currentMaskString
+
 def basicTest(masks, rw):	
 	names = ["Jim Brooks", "John Lawson", "Jean-Christophe Robertson"]
 	
@@ -42,25 +65,7 @@ def basicTest(masks, rw):
 	for name in names:
 		print(rawMasks[name])	
 		
-		currentMaskString = ""
-		i = 0
-		for character in rawMasks[name]:
-			if(i == 0):
-				
-				if(character in "qwertyuiopasdfghjklzcvbnm"):
-					wordCharacterMap = rw.random_word(character)
-				else:
-					wordCharacterMap = character		
-				print character, wordCharacterMap
-			else:
-				if(character in "qwertyuiopasdfghjklzcvbnm"):
-					wordCharacterMap = rw.random_word(character).capitalize()
-				else:
-					wordCharacterMap = character.capitalize()
-				print character, wordCharacterMap
-			i += 1
-			currentMaskString += wordCharacterMap
-		outputMasks[masks[name]] = currentMaskString
+		outputMasks[masks[name]] = getObfuscatedString(name, masks, rw)
 		
 	for name in names:
 		print repr(name), " -> ", repr(rawMasks[name]), " -> ", repr(outputMasks[rawMasks[name]])
@@ -80,6 +85,8 @@ def basicTest(masks, rw):
 	
 	##plt.show()
 	
+
+
 
 
 def randomizedTest(masks, rw):
@@ -114,25 +121,7 @@ def randomizedTest(masks, rw):
 	for name in names:
 		##print(rawMasks[name])	
 		
-		currentMaskString = ""
-		i = 0
-		for character in rawMasks[name]:
-			if(i == 0):
-				
-				if(character in "qwertyuiopasdfghjklzcvbnm"):
-					wordCharacterMap = rw.random_word(character)
-				else:
-					wordCharacterMap = character		
-				##print character, wordCharacterMap
-			else:
-				if(character in "qwertyuiopasdfghjklzcvbnm"):
-					wordCharacterMap = rw.random_word(character).capitalize()
-				else:
-					wordCharacterMap = character.capitalize()
-				##print character, wordCharacterMap
-			i += 1
-			currentMaskString += wordCharacterMap
-		outputMasks[masks[name]] = currentMaskString
+		outputMasks[masks[name]] = getObfuscatedString(name, masks, rw)
 		
 	for name in names:
 		print repr(name), " -> ", repr(rawMasks[name]), " -> ", repr(outputMasks[rawMasks[name]])
@@ -160,10 +149,13 @@ def randomizedTest(masks, rw):
 	
 	plt.show()
 
+def getMasks():
+	return defaultdict(random_string)
+
 if(__name__ == "__main__"):
 	
-	##random.seed(20466075555555555551)
-	masks = defaultdict(random_string)
+	random.seed(3141592654)
+	masks = getMasks()
 	
 	rw = RandomWords()
 	basicTest(masks, rw)
