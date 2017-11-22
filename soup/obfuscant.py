@@ -390,13 +390,17 @@ if(__name__ == "__main__"):
 	
 	f = open(file_path, "wb")
 	writer = csv.writer(f)
+	
+	writer.writerow(['hashedId', 'playerId', 'playerEmailFound', 'playerNameFirst', 'playerNameLast', 'teamIds'])
+	
 	for hashedKey in [outputMasks[rawMasks[name]] for name in sortedPlayersKeys]:
 		playerHash = hashedKey
-		playerEmail = hashedPlayersDict[hashedKey][0]['playerId']
+		playerId = hashedPlayersDict[hashedKey][0]['playerId']
+		playerEmailFound = hashedPlayersDict[hashedKey][0]['emailFound']
 		playerNameFirst = hashedPlayersDict[hashedKey][0]['playerNameFirst']			
 		playerNameLast = hashedPlayersDict[hashedKey][0]['playerNameLast']			
 		
-		rowToWrite = [playerHash, playerEmail, playerNameFirst, playerNameLast] + [entry['teamInfoDict']['teamId'] for entry in hashedPlayersDict[hashedKey]]
+		rowToWrite = [playerHash, playerId, playerEmailFound, playerNameFirst, playerNameLast] + [entry['teamInfoDict']['teamId'] for entry in hashedPlayersDict[hashedKey]]
 		
 		writer.writerow(rowToWrite)
 	f.close()	
