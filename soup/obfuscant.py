@@ -199,22 +199,40 @@ def convertTeamFileToDictionaries(teamFileContent):
 	rosterDictionary = {}
 	
 	for row in rosterContent:
+		rosterFirstName = rosterHeader.index('playerNameFirst')
+		rosterLastName = rosterHeader.index('playerNameLast')
 		if(row[rosterEmailFound] == 'True'):
-			thisPlayerKey = row[rosterEmailListed]
+			##thisPlayerKey = row[rosterEmailListed]
 			## the raw email of the player
 	
+			## this used to be the player key, just something like 
+			## jdlawso@uwaterloo.ca
+			## but I discovered that there is a potential issue where two
+			## players, commonly on the same team (I think the only case Ive
+			## seen so far was a brother/sister combo using the same email)
+			## theres about 50-60 of these issues at most in the dataset, going
+			## to try to fix this by making the key include the player name
+			## first and last, as well as the player email, which should deal
+			## with that issue completely
+
+			
+			firstName = row[rosterFirstName]
+			lastName = row[rosterLastName]
+
+						
+			thisPlayerEmail = row[rosterEmailListed]	
+
+			thisPlayerKey = lastName+"_"+firstName+"_"+thisPlayerEmail
 		else:
 			## a unique email was not listed for the player in question, so 
 			## i will need to fabricate a new one from a mishmash of data
 			## specific to the player
-			rosterFirstName = rosterHeader.index('playerNameFirst')
-			rosterLastName = rosterHeader.index('playerNameLast')
 			
 			firstName = row[rosterFirstName]
 			lastName = row[rosterLastName]
 			teamId = infoDictionary['teamId']
 			
-			tempPlayerId = 	lastName+firstName+teamId
+			tempPlayerId = 	lastName+"_"+firstName+"_"+teamId
 			
 			
 			thisPlayerKey = tempPlayerId
@@ -315,7 +333,6 @@ if(__name__ == "__main__"):
 					except IOError:
 						pass
 
-	
 	
 	
 	names = [player for player in completePlayersDict]
