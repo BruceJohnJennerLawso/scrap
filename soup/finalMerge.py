@@ -507,6 +507,8 @@ def reformatSeasonAndPlayoffsDictionaries(teamInfoDict, seasonDict, playoffsDict
 			gamesDict[gameId][teamId] = seasonDict[game]
 			gamesDict[gameId][teamId]['dateTimeString'] = game
 			
+			gamesDict[gameId][teamId]['thisTeamName'] = teamInfoDict['teamName']
+			
 			gamesDict[gameId][teamId]['scoreDictionary'] = convertScoreStringToScoreDictionary(gamesDict[gameId][teamId]['Score'])
 			##convertScoreStringToScoreDictionary(inputScoreString):
 			
@@ -640,7 +642,7 @@ if(__name__ == "__main__"):
 
 	debugInfo = False
 	
-	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': False, 'mergedRoster': False, 'gamesDict': False}
+	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': False, 'mergedRoster': False, 'gamesDict': True}
 
 	arguments = argv[1:]
 
