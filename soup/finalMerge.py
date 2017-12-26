@@ -639,6 +639,8 @@ def convertScoreStringToScoreDictionary(inputScoreString):
 if(__name__ == "__main__"):
 
 	debugInfo = False
+	
+	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': False, 'mergedRoster': False, 'gamesDict': False}
 
 	arguments = argv[1:]
 
@@ -674,7 +676,7 @@ if(__name__ == "__main__"):
 	## later)
 	## hashedPlayerId (Str)
 	
-	if(debugInfo):
+	if(debugInfo['hashMapDict']):
 		for player in hashMapDict:
 		
 			print player, '\n', hashMapDict[player], '\n\n'
@@ -790,7 +792,7 @@ if(__name__ == "__main__"):
 								updateTeamInfoDictWithLoopParameters(teamId, seasonId, levelId, sportId, sportName, rulesPath, teamInfoDict)
 								
 								seasonDict, playoffsDict = reformatSeasonAndPlayoffsDictionaries(teamInfoDict, seasonDict, playoffsDict, gamesDict)
-								if(debugInfo):
+								if(debugInfo['teamGames']):
 									for game in seasonDict:
 										print game, seasonDict[game]
 						
@@ -801,7 +803,7 @@ if(__name__ == "__main__"):
 									print "\n\n"
 								
 								
-								if(debugInfo):
+								if(debugInfo['teamInfo']):
 									print teamInfoDict
 									for infoField in teamInfoDict:
 										print infoField, ": ", repr(teamInfoDict[infoField])
@@ -812,16 +814,14 @@ if(__name__ == "__main__"):
 									##	print player, rosterDict[player]
 								
 								mergedRosterDict = mergeRosterDictionaries(teamId, seasonId, levelId, sportId, sportName, rosterEmailDict, rosterDict, hashMapDict, False)
-								if(debugInfo):
+								if(debugInfo['mergedRoster']):
 									for player in mergedRosterDict:
 										print player, "\n", mergedRosterDict[player], "\n\n"	
 									
 							print "\n" 
 					except IOError:
 						pass
-	
-	##exit()
-	
+							
 	gamesWithErrors = {}	
 	gamesWithErrors['notEnoughTeams'] = {}
 	gamesWithErrors['tooManyTeams'] = {}
@@ -832,7 +832,7 @@ if(__name__ == "__main__"):
 						
 	for game in gamesDict:
 		
-		if(debugInfo):
+		if(debugInfo['gamesDict']):
 			print game, "\n", 
 		
 		teamIdList = [team for team in gamesDict[game]]
@@ -853,7 +853,7 @@ if(__name__ == "__main__"):
 				gameLocationCounts[gameLocation] += 1
 			else:
 				gamesWithErrors['locationsDontMatch'][game] = listedLocations
-		if(debugInfo):
+		if(debugInfo['gamesDict']):
 			for team in gamesDict[game]:
 				print team, "\n", gamesDict[game][team]					
 			print "\n"
