@@ -50,9 +50,10 @@ import numpy as np
 
 from sys import argv
 
-##from obfuscant import convertTeamFileToDictionaries
+from watMuSportInfo import sportsInfoDict
 
 
+## convertRosterFileToDictionaries: Listof(Listof(X)) -> 
 
 def convertRosterFileToDictionaries(rosterFileContent):
 	
@@ -496,7 +497,7 @@ def reformatSeasonAndPlayoffsDictionaries(teamInfoDict, seasonDict, playoffsDict
 			## order
 			
 			gameId = "[%s,%s,%s,%s]" % (repr(game), repr(seasonDict[game]['Location']), repr(teamsPlaying[0]), repr(teamsPlaying[1]))
-			print "gameId: ", repr(gameId), "\n reformatted to list: ", repr(ast.literal_eval(gameId))
+			##print "gameId: ", repr(gameId), "\n reformatted to list: ", repr(ast.literal_eval(gameId))
 			
 			if(gameId not in gamesDict):
 				gamesDict[gameId] = {}
@@ -505,6 +506,10 @@ def reformatSeasonAndPlayoffsDictionaries(teamInfoDict, seasonDict, playoffsDict
 			
 			gamesDict[gameId][teamId] = seasonDict[game]
 			gamesDict[gameId][teamId]['dateTimeString'] = game
+			
+			gamesDict[gameId][teamId]['scoreDictionary'] = convertScoreStringToScoreDictionary(gamesDict[gameId][teamId]['Score'])
+			##convertScoreStringToScoreDictionary(inputScoreString):
+			
 			
 		except KeyError:
 			print game, seasonDict[game]
@@ -537,7 +542,6 @@ def getPlayerHashMapsDictionaryFromFile(hashMapFilepath):
 	hashMapArray = np.array(hashMapContent)
 	print hashMapArray.shape
 
-	##print hashMapContent
 	headerRow = hashMapContent[0]
 	##print headerRow
 	hashMapContent = hashMapContent[1:]
@@ -583,18 +587,58 @@ def getPlayerHashMapsDictionaryFromFile(hashMapFilepath):
 
 
 
+## convertScoreStringToScoreDictionary: Str -> Dict
 
+## possible input options here include
 
+## 'lost 10 - 0'
+## 'lost 1 - 2'
+## 'won 2 - 0'
+## 'won 47 - 57'
+## 'tie 4 - 4'
 
-
-
-
-
-
-
-
+def convertScoreStringToScoreDictionary(inputScoreString):
+	thisTeamResult = 'notFound'
+	
+	output = {}
+	for result in ['tie', 'lost', 'won']:
+		if(result in inputScoreString):
+			thisTeamResult = result
+			inputScoreString = inputScoreString[len(result):]
+			break
+	if(thisTeamResult == 'notFound'):
+		print "input string '%s' not correctly formatted, returning nonetype" % inputScoreString 
+		## hopefully this crashes things reliably when a dictionary is expected
+	else:
+		output['thisTeamResult'] = thisTeamResult
+		
+		if('-' in inputScoreString):
+			dashLocation = inputScoreString.index('-')
+			
+			secondScoreFragment = inputScoreString[dashLocation+1:]
+			firstScoreFragment = inputScoreString[:dashLocation]
+			
+			firstScore = int(firstScoreFragment)
+			secondScore = int(secondScoreFragment)
+			if('tie' in thisTeamResult):
+				if(firstScore == secondScore):
+					output['bothScore'] = firstScore
+				else:
+					print "tie indicated, but scores dont match, erroring"
+					return None
+			else:
+				output['winnerScore'] = max([firstScore, secondScore])
+				output['loserScore'] = min([firstScore, secondScore])			
+			return output
+		else:
+			print "input string '%s' not correctly formatted, returning nonetype" % inputScoreString 
+			## hopefully this crashes things reliably when a dictionary is expected				
+	
+		
 
 if(__name__ == "__main__"):
+
+	debugInfo = False
 
 	arguments = argv[1:]
 
@@ -611,30 +655,58 @@ if(__name__ == "__main__"):
 	##exit()
 
 	hashMapDict = getPlayerHashMapsDictionaryFromFile('./playerIdHashMaps.csv')
-	##for player in hashMapDict:
-	##	print player, '\n', hashMapDict[player], '\n\n'
+	## get a dictionary of every player listed in waterloo intramurals
+	## key is "%s_%s_%s" % (playerNameLast, playerNameFirst, playerListedEmail)
+	## when the email was available, and 
+	## key is "%s_%s_%s" % (playerNameLast, playerNameFirst, teamId)
+	## in the case of where the email wasnt found, the player gets treated
 	
-	sports = {\
-	 28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
-	 4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
-	 3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
-	 5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
-	 11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
-	 7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
-	 1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
-	 31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
-	 10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
-	 6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
-	 2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
-	 8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
-	 17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
-	 26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
-	 18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
-	 16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
-	 }
-	sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]	
-	##sportIds = [ 17, 26, 18, 16]
-	##sportIds = [16]	
+	## fields are 
+	## playerNameFirst (Str)
+	## playerNameLast (Str)
+	## playerId (Str) (same as the key)
+	## teamIds (Listof(teamIds)) 
+	## (a list of all of the teams that a player is found on)
+	## playerEmailFound (Str representing(Bool))
+	## (not all player emails were available in the strobe uwaterloo panel, so
+	## some players are represented as a series of individual players with
+	## identical names on different teams that can be manually edited into one
+	## later)
+	## hashedPlayerId (Str)
+	
+	if(debugInfo):
+		for player in hashMapDict:
+		
+			print player, '\n', hashMapDict[player], '\n\n'
+	
+	## this dict is used to rebuild player statlines with their names and emails
+	## hidden and replaced with the hash key generated in the mappings file	
+	
+	## from watMuSportInfo import sportsInfoDict
+	
+	sports = sportsInfoDict()
+	
+	#sports = {\
+	 #28:['soccer', 'outdoor', 'grass', '4-7vs_1GK', 'league'],\
+	 #4 :['hockey', 'indoor', 'floor', '3-4vs_1GK', 'league'],\
+	 #3 :['basketball', 'indoor', 'floor', '4-5vs_0GK', 'league'],\
+	 #5 :['dodgeball', 'indoor', 'floor', '6-8vs_0GK', 'league'],\
+	 #11:['flag_football', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 #7 :['soccer', 'indoor', 'floor', '3-5vs_1GK', 'league'],\
+	 #1 :['hockey', 'indoor', 'ice', '6-6vs_1GK', 'league'],\
+	 #31:['ultimate', 'indoor', 'floor', '3-4vs_0GK', 'league'],\
+	 #10:['slowpitch', 'outdoor', 'grass', '8-10vs_0GK', 'league'],\
+	 #6 :['soccer', 'outdoor', 'grass', '7-11vs_1GK', 'league'],\
+	 #2 :['ultimate', 'outdoor', 'grass', '5-7vs_0GK', 'league'],\
+	 #8 :['volleyball', 'indoor', 'floor', '4-6vs_0GK', 'league'],\
+	 #17:['soccer', 'indoor', 'floor', '2-3vs_0GK', 'tournament'],\
+	 #26:['basketball', 'outdoor', 'ashphalt', '2-3vs_0GK', 'tournament'],\
+	 #18:['hunger_games_dodgeball', 'indoor', 'floor', '7-8vs_0GK', 'tournament'],\
+	 #16:['basketball', 'indoor', 'floor', '2-3vs_0GK', 'tournament']\
+	 #}
+	##sportIds = [28, 4, 3, 5, 11, 7, 1, 31, 10, 6, 2, 8, 17, 26, 18, 16]		
+	
+	sportIds = [sportId for sportId in sports]
 	
 	years = range(2008, 2017)
 	
@@ -652,18 +724,13 @@ if(__name__ == "__main__"):
 	terms = [1,2,4]
 	## it goes winter, spring, fall
 	## makes no sense to me either how they picked the term numbers
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=11256"
-	##url = "https://strobe.uwaterloo.ca/athletics/intramurals/teams.php?team=7627"
-	
 	
 	for sport in sportIds:
 				
 		sportId = sport
 		sportName = sports[sportId][0]
 		rulesSpec = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])
-		##print sports[sportId][4]
 		if(sports[sportId][4] == "tournament"):
-			##print "tournament"
 			rulesPath = "%s-%s-%s_tournament" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])			
 		else:
 			rulesPath = "%s-%s-%s" % (sports[sportId][1], sports[sportId][2], sports[sportId][3])		
@@ -680,12 +747,12 @@ if(__name__ == "__main__"):
 						with open(file_path, 'rb') as foo:
 							reader = csv.reader(foo)
 							print file_path, " Exists"
-
+							
 							teamData = []							
 							for row in reader:
 								teamData += [row]
 								teamId = row[0]
-								print "\n"*5, teamId, seasonId, levelId, sportId, sportName, "\n"*2							
+								print "\n"*5, "|| %s / %s / %s / %s / %s ||" % (sportId, sportName, levelId, seasonId, teamId), "\n"*2							
 								rosterEmailDict = {}
 								rosterDict = {}
 								
@@ -723,32 +790,38 @@ if(__name__ == "__main__"):
 								updateTeamInfoDictWithLoopParameters(teamId, seasonId, levelId, sportId, sportName, rulesPath, teamInfoDict)
 								
 								seasonDict, playoffsDict = reformatSeasonAndPlayoffsDictionaries(teamInfoDict, seasonDict, playoffsDict, gamesDict)
+								if(debugInfo):
+									for game in seasonDict:
+										print game, seasonDict[game]
+						
+									print "\n\n"
 								
-								for game in seasonDict:
-									print game, seasonDict[game]
-								print "\n\n"
-								
-								for game in playoffsDict:
-									print game, playoffsDict[game]
-								print "\n\n"
+									for game in playoffsDict:
+										print game, playoffsDict[game]
+									print "\n\n"
 								
 								
-								
-								print teamInfoDict
-								for infoField in teamInfoDict:
-									print infoField, ": ", repr(teamInfoDict[infoField])
+								if(debugInfo):
+									print teamInfoDict
+									for infoField in teamInfoDict:
+										print infoField, ": ", repr(teamInfoDict[infoField])
 									
 																			
-								##print "\n\n"
-								##for player in rosterDict:
-								##	print player, rosterDict[player]
+									##print "\n\n"
+									##for player in rosterDict:
+									##	print player, rosterDict[player]
 								
 								mergedRosterDict = mergeRosterDictionaries(teamId, seasonId, levelId, sportId, sportName, rosterEmailDict, rosterDict, hashMapDict, False)
-								##for player in mergedRosterDict:
-								##	print player, "\n", mergedRosterDict[player], "\n\n"	
+								if(debugInfo):
+									for player in mergedRosterDict:
+										print player, "\n", mergedRosterDict[player], "\n\n"	
+									
 							print "\n" 
 					except IOError:
 						pass
+	
+	##exit()
+	
 	gamesWithErrors = {}	
 	gamesWithErrors['notEnoughTeams'] = {}
 	gamesWithErrors['tooManyTeams'] = {}
@@ -758,7 +831,9 @@ if(__name__ == "__main__"):
 	gameLocationCounts = {}
 						
 	for game in gamesDict:
-		print game, "\n", 
+		
+		if(debugInfo):
+			print game, "\n", 
 		
 		teamIdList = [team for team in gamesDict[game]]
 		listedLocations = [gamesDict[game][team]['Location'] for team in gamesDict[game]]
@@ -778,9 +853,10 @@ if(__name__ == "__main__"):
 				gameLocationCounts[gameLocation] += 1
 			else:
 				gamesWithErrors['locationsDontMatch'][game] = listedLocations
-		for team in gamesDict[game]:
-			print team, "\n", gamesDict[game][team]					
-		print "\n"
+		if(debugInfo):
+			for team in gamesDict[game]:
+				print team, "\n", gamesDict[game][team]					
+			print "\n"
 	
 	for gameLoc in gameLocationCounts:
 		print gameLoc, gameLocationCounts[gameLoc]
