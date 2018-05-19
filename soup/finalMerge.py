@@ -52,6 +52,8 @@ from sys import argv
 
 from watMuSportInfo import sportsInfoDict
 
+from dictool import printDictTree
+
 
 ## convertRosterFileToDictionaries: Listof(Listof(X)) -> 
 
@@ -642,7 +644,7 @@ if(__name__ == "__main__"):
 
 	debugInfo = False
 	
-	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': False, 'mergedRoster': False, 'gamesDict': True}
+	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': True, 'mergedRoster': False, 'gamesDict': False}
 
 	arguments = argv[1:]
 
@@ -806,9 +808,11 @@ if(__name__ == "__main__"):
 								
 								
 								if(debugInfo['teamInfo']):
-									print teamInfoDict
-									for infoField in teamInfoDict:
-										print infoField, ": ", repr(teamInfoDict[infoField])
+									printDictTree(teamInfoDict)
+									
+									##print teamInfoDict
+									##for infoField in teamInfoDict:
+									##	print infoField, ": ", repr(teamInfoDict[infoField])
 									
 																			
 									##print "\n\n"
@@ -816,10 +820,11 @@ if(__name__ == "__main__"):
 									##	print player, rosterDict[player]
 								
 								mergedRosterDict = mergeRosterDictionaries(teamId, seasonId, levelId, sportId, sportName, rosterEmailDict, rosterDict, hashMapDict, False)
+								
 								if(debugInfo['mergedRoster']):
-									for player in mergedRosterDict:
-										print player, "\n", mergedRosterDict[player], "\n\n"	
-									
+									##for player in mergedRosterDict:
+									##	print player, "\n", mergedRosterDict[player], "\n\n"	
+									printDictTree(mergedRosterDict)
 							print "\n" 
 					except IOError:
 						pass
@@ -831,11 +836,13 @@ if(__name__ == "__main__"):
 	gamesWithErrors['locationsNotListed'] = {}		
 	
 	gameLocationCounts = {}
-						
+
+	if(debugInfo['gamesDict']):
+		printDictTree(gamesDict)
 	for game in gamesDict:
 		
-		if(debugInfo['gamesDict']):
-			print game, "\n", 
+
+			##print game, "\n", 
 		
 		teamIdList = [team for team in gamesDict[game]]
 		listedLocations = [gamesDict[game][team]['Location'] for team in gamesDict[game]]
@@ -880,4 +887,27 @@ if(__name__ == "__main__"):
 		## actually one error isnt bad for the amount of data worked over here
 		##
 		## my solution for this is going to be a simple manual fix of the files
-		## applied like a patch as usual
+		## applied like a patch as usual (copy it onto the existing directory)
+	
+	##for game in gamesDict:
+	##	print game
+		## game key here is a string containing a list of data pieces regarding
+		## each game, ie 
+		##
+		##'['Thu Feb 14 @ 8:30 pm','Columbia Icefield: Gym 1','Ibaka Flocka Flame','Pharmsters']'
+		##
+		## which maps to a dict of info about the game, ie something like
+		##
+		## {'8798': {'Score': 'lost 10 - 0', 'thisTeamName': 'Pharmsters', 'S.O.C.': '-2', 'Opposing Team': 'Ibaka Flocka Flame', 'Location': 'Columbia Icefield: Gym 1', 'dateTimeString': 'Thu Feb 14 @ 8:30 pm', 'scoreDictionary': {'loserScore': 0, 'thisTeamResult': 'lost', 'winnerScore': 10}}, '8774': {'Score': 'won 10 - 0', 'thisTeamName': 'Ibaka Flocka Flame', 'S.O.C.': 'avg.', 'Opposing Team': 'Pharmsters', 'Location': 'Columbia Icefield: Gym 1', 'dateTimeString': 'Thu Feb 14 @ 8:30 pm', 'scoreDictionary': {'loserScore': 0, 'thisTeamResult': 'won', 'winnerScore': 10}}}
+		
+		## so keys of teamId
+		## 		which map to a dict of 
+	##	print gamesDict[game]
+	##	for teamId in gamesDict[game]:
+	##		print "		", teamId
+	##		for field in gamesDict[game][teamId]:
+	##			print "			", field, gamesDict[game][teamId][field]
+				
+	##printDictTree(gamesDict)
+	##printDictTree(mergedRosterDict)
+	
