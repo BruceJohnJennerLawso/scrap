@@ -644,7 +644,7 @@ if(__name__ == "__main__"):
 
 	debugInfo = False
 	
-	debugInfo = {'hashMapDict': False, 'teamGames': False, 'teamInfo': True, 'mergedRoster': False, 'gamesDict': False}
+	debugInfo = {'hashMapDict': False, 'teamGames': True, 'teamInfo': False, 'mergedRoster': False, 'gamesDict': False, 'postChecks': False}
 
 	arguments = argv[1:]
 
@@ -839,6 +839,8 @@ if(__name__ == "__main__"):
 
 	if(debugInfo['gamesDict']):
 		printDictTree(gamesDict)
+	
+	
 	for game in gamesDict:
 		
 
@@ -862,21 +864,17 @@ if(__name__ == "__main__"):
 				gameLocationCounts[gameLocation] += 1
 			else:
 				gamesWithErrors['locationsDontMatch'][game] = listedLocations
-		if(debugInfo['gamesDict']):
-			for team in gamesDict[game]:
-				print team, "\n", gamesDict[game][team]					
-			print "\n"
-	
-	for gameLoc in gameLocationCounts:
-		print gameLoc, gameLocationCounts[gameLoc]
-	print "\n\n"
-	print gamesWithErrors
-	print "\n\n\n"
-	errorGameKeys = sorted([game for game in gamesWithErrors['notEnoughTeams']])
-	totalGameKeys = sorted([game for game in gamesDict])	
-	print len(totalGameKeys)
-	for game in errorGameKeys:
-		print game, gamesWithErrors['notEnoughTeams'][game]
+	if(debugInfo['postChecks']):
+		for gameLoc in gameLocationCounts:
+			print gameLoc, gameLocationCounts[gameLoc]
+		print "\n\n"
+		print gamesWithErrors
+		print "\n\n\n"
+		errorGameKeys = sorted([game for game in gamesWithErrors['notEnoughTeams']])
+		totalGameKeys = sorted([game for game in gamesDict])	
+		print len(totalGameKeys)
+		for game in errorGameKeys:
+			print game, gamesWithErrors['notEnoughTeams'][game]
 		##for team in gamesWithErrors['notEnoughTeams'][game]
 		
 		## so the only legit error I see so far is 7630 'Kleats-R-Us', which has
