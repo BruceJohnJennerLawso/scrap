@@ -32,10 +32,10 @@ def task(seasons, parameters):
 		else:
 			playah = nhlPlayer(playerName, seasons)		
 	
-		print playah.getStatsLine(), '\n\n'
+		print(playah.getStatsLine(), '\n\n')
 	
 		for team in reversed(playah.playedFor):
-			print team.getDescriptionString(), '\n'
+			print(team.getDescriptionString(), '\n')
 
 if(__name__ == "__main__"):
 	
@@ -47,8 +47,8 @@ if(__name__ == "__main__"):
 		playerName = argv[2]
 		## ie 'Jim Brooks'
 	except IndexError:
-		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
-		print exampleCommand()
+		print("Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0]))		
+		print(exampleCommand())
 		exit()
 	
 	

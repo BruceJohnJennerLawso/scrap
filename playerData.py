@@ -23,21 +23,18 @@ def task(seasons, parameters):
 	
 	##seasonIndexList = getSeasonIndexList(leagueId)
 	for season in seasons:
-		if(season.getSeasonId() == seasonId):
-			for team in season.Teams:
-				if(team.getTeamName() == teamName):
+		for team in season.Teams:
+			print(team.getDescriptionString())
 					
-					print team.getDescriptionString()
+			teamExpectedMawquee = 0.000
 					
-					teamExpectedMawquee = 0.000
+			for player in team.getPlayers():
+				player.getStatsLine(getSeasonIndexById(seasonId, getSeasonIndexList(leagueId)))
+				print(getSeasonIndexById(seasonId, getSeasonIndexList(leagueId)))
+				teamExpectedMawquee += player.getPlayerMaAWQI(getSeasonIndexById(seasonId, getSeasonIndexList(leagueId)))
 					
-					for player in team.getPlayers():
-						player.getStatsLine(getSeasonIndexById(seasonId, getSeasonIndexList(leagueId)))
-						print getSeasonIndexById(seasonId, getSeasonIndexList(leagueId))
-						teamExpectedMawquee += player.getPlayerMaAWQI(getSeasonIndexById(seasonId, getSeasonIndexList(leagueId)))
-					
-					teamExpectedMawquee /= float(len(team.getPlayers()))
-					print "Team expected MaAWQI %.3f, Actual %.3f, diff %.3f" % (teamExpectedMawquee, team.getMaAWQI(), (team.getMaAWQI()-teamExpectedMawquee))
+			teamExpectedMawquee /= float(len(team.getPlayers()))
+			print("Team expected MaAWQI %.3f, Actual %.3f, diff %.3f" % (teamExpectedMawquee, team.getMaAWQI(), (team.getMaAWQI()-teamExpectedMawquee)))
 					
 
 

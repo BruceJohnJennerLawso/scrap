@@ -42,7 +42,7 @@ if(__name__ == "__main__"):
 		## ie 'beginner'
 		_sortOrder = argv[3]
 		if(_sortOrder not in ['asc', 'desc']):
-			print "Bad sort order argument %s supplied, must be either asc or desc" % _sortOrder
+			print("Bad sort order argument %s supplied, must be either asc or desc" % _sortOrder)
 	
 		playoffTeamsOnly = argv[4]
 		if(playoffTeamsOnly == "True"):
@@ -50,12 +50,12 @@ if(__name__ == "__main__"):
 		elif(playoffTeamsOnly == "False"):
 			playoffTeamsOnly = False
 		else:
-			print "Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly	
+			print("Unable to parse option 'playoffTeamsOnly' as %s" % playoffTeamsOnly)
 	
 		targetStatName = argv[5]
 	except IndexError:
-		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
-		print exampleCommand()
+		print("Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0]))	
+		print(exampleCommand())
 		exit()
 	
 	seasons = getAllSeasons(leagueId, levelId)
