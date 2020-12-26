@@ -96,7 +96,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 	if(leagueId != 'watMu'):
 		
 		try:
-			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rt') as foo:
 				## open the manifest csv file for this particular league
 				## (nhl)
 				earlyReader = csv.reader(foo)
@@ -105,7 +105,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 				if(not quiet):
 					print("total ", total)
 			
-			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rt') as foo:
 				## open the manifest csv file for this particular league
 				## (nhl)
 				reader = csv.reader(foo)
@@ -119,7 +119,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					## open the list of team ids stored for that particular season in
 					## another csv file
 					teamIdList = []
-					with open(idPath, 'rb') as bar:
+					with open(idPath, 'rt') as bar:
 						reading = csv.reader(bar)
 						for teamId in reading:
 							## open up the list of teamIds for the season in question
@@ -175,7 +175,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 	else:
 		## our league is watMu here
 		try:
-			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:			
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rt') as foo:			
 				## open the manifest csv file for this particular league
 				## (watMu)
 				earlyReader = csv.reader(foo)
@@ -183,7 +183,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					total += 1
 				if(not quiet):
 					print("total ", total)
-			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
+			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rt') as foo:
 				## open the manifest csv file for this particular league & level
 				## (waterloo intramurals and beginner...)
 				reader = csv.reader(foo)
@@ -197,7 +197,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					## open the list of team ids stored for that particular season in
 					## another csv file
 					teamIdList = []
-					with open(idPath, 'rb') as bar:
+					with open(idPath, 'rt') as bar:
 						reading = csv.reader(bar)
 						for teamId in reading:
 							## open up the list of teamIds for the season in question
@@ -232,7 +232,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 						## open the list of team ids stored for that particular season in
 						## another csv file
 						teamIdList = []
-						with open(idPath, 'rb') as bar:
+						with open(idPath, 'rt') as bar:
 							reading = csv.reader(bar)
 							for teamId in reading:
 								## open up the list of teamIds for the season in question
@@ -270,7 +270,7 @@ def getFranchiseList(leagueId, levelId):
 	
 	
 	if(leagueId != 'watMu'):
-		with open('./data/%s/franchises.csv' % (leagueId), 'rb') as foo:
+		with open('./data/%s/franchises.csv' % (leagueId), 'rt') as foo:
 			## open the manifest csv file for this particular league & level
 			## which lists the franchises on each row
 			reader = csv.reader(foo)
@@ -281,7 +281,7 @@ def getFranchiseList(leagueId, levelId):
 				## [...['Chicago Blackhawks', 'Chicago Black Hawks'],...]
 
 	else:
-		with open('./data/%s/%s/franchises.csv' % (leagueId, levelId), 'rb') as foo:
+		with open('./data/%s/%s/franchises.csv' % (leagueId, levelId), 'rt') as foo:
 			## open the manifest csv file for this particular league & level
 			## which lists the franchises on each row
 			reader = csv.reader(foo)

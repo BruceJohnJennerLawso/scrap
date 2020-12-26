@@ -78,7 +78,7 @@ class scrapParams(object):
 
 	def getOutputType(self):
 		try:
-			with open('./data/%s/%s/seasons.csv' % (self.leagueId, self.levelId), 'rb') as foo:
+			with open('./data/%s/%s/seasons.csv' % (self.leagueId, self.levelId), 'rt') as foo:
 				outputType = "generic"
 		except IOError:		
 			outputType = "detailed"	
@@ -117,7 +117,7 @@ def filterSeasonsByParams(seasons, parameters):
 		seasonIdList = []
 		
 		try:
-			with open('./data/%s/%s/seasons.csv' % (parameters.getLeagueId(), parameters.getLevelId()), 'rb') as foo:
+			with open('./data/%s/%s/seasons.csv' % (parameters.getLeagueId(), parameters.getLevelId()), 'rt') as foo:
 				seasonIdList += [f.rstrip() for f in foo]
 			for season in seasons:
 				if(season.getLeagueId() == parameters.getLeagueId()):
@@ -130,7 +130,7 @@ def filterSeasonsByParams(seasons, parameters):
 			## check to see if the levelId supplied can be matched to a seasonId
 			## in the index list
 			levelIdIsSeason = False
-			with open('./data/%s/seasonIndex.csv' % (parameters.getLeagueId()), 'rb') as foo:
+			with open('./data/%s/seasonIndex.csv' % (parameters.getLeagueId()), 'rt') as foo:
 				if(parameters.getLevelId() in [f.rstrip() for f in foo]):
 					levelIdIsSeason = True
 			
@@ -143,6 +143,6 @@ def filterSeasonsByParams(seasons, parameters):
 					return output
 			else:
 				print("Unable to make parameter set work with seasons, params:")
-				params.info()
+				parameters.info()
 	elif(parameters.getLeagueId() == "all"):
 		return seasons
