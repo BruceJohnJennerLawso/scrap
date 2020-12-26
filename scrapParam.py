@@ -17,15 +17,15 @@ class scrapParams(object):
 		self.sortOrder = sortOrder
 	
 	def info(self):
-		print "scrapParams object:"
-		print "leagueId = %s" % (self.getLeagueId())
-		print "levelId = %s" % (self.getLevelId())
-		print "playoffTeamsOnly = %r" % (self.getPlayoffTeamsOnly())
-		print "teamNames = ", self.getTeamNames()
-		print "playerNames = ", self.getPlayerNames()	
-		print "runMode = %s" % (self.getRunMode())
-		print "targetStatName = %s" % (self.getTargetStatName())
-		print "sortOrder = %s" % (self.getSortOrder())
+		print("scrapParams object:")
+		print("leagueId = %s" % (self.getLeagueId()))
+		print("levelId = %s" % (self.getLevelId()))
+		print("playoffTeamsOnly = %r" % (self.getPlayoffTeamsOnly()))
+		print("teamNames = ", self.getTeamNames())
+		print("playerNames = ", self.getPlayerNames())	
+		print("runMode = %s" % (self.getRunMode()))
+		print("targetStatName = %s" % (self.getTargetStatName()))
+		print("sortOrder = %s" % (self.getSortOrder()))
 		
 	def getLeagueId(self):
 		return self.leagueId
@@ -142,7 +142,7 @@ def filterSeasonsByParams(seasons, parameters):
 				if(len(output) > 0):
 					return output
 			else:
-				print "Unable to make parameter set work with seasons, params:"
+				print("Unable to make parameter set work with seasons, params:")
 				params.info()
 	elif(parameters.getLeagueId() == "all"):
 		return seasons

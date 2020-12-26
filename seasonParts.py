@@ -20,7 +20,7 @@ class gamesSelectConditions(object):
 		elif(part == "none"):
 			self.Conditions.append(part)						
 		else:
-			print "Unrecognized condition %s supplied to seasonSelectConditions() object" % part
+			print("Unrecognized condition %s supplied to seasonSelectConditions() object" % part)
 		##self.comparisonCondition = gamesSelectConditions(comparison, comparison)
 	
 	
@@ -32,7 +32,7 @@ class gamesSelectConditions(object):
 			
 	def getGamesList(self, inputGames):
 		if(inputGames is None):
-			print "getGamesList received none type inputGames"
+			print("getGamesList received none type inputGames")
 		if(self.Conditions[0] == "everything"):
 			return inputGames
 		elif((self.Conditions[0] == "firstHalf")or(self.Conditions[0] == "secondHalf")):
@@ -70,7 +70,7 @@ def getGameSelectConditions(description):
 		return [gamesSelectConditions(part="none"),gamesSelectConditions(part="everything")]						
 
 if(__name__ == "__main__"):
-	print "Fuck"
+	print("Fuck")
 	##print (getGameSelectConditions("regularSeason") == [gamesSelectConditions(part="everything"),gamesSelectConditions(part="none")])
 
 
@@ -79,7 +79,7 @@ class seasonPart(object):
 	def __init__(self, seasonGames, playoffGames, seasonGameConditions=gamesSelectConditions(), playoffGameConditions=gamesSelectConditions()):
 		
 		if((seasonGames is None)or(playoffGames is None)):
-			print "Season parts constructor received none type in games list"
+			print("Season parts constructor received none type in games list")
 		
 		self.seasonGameConditions = seasonGameConditions
 		self.playoffGameConditions = playoffGameConditions
@@ -88,7 +88,7 @@ class seasonPart(object):
 		## take the original list of games for this season and run it through
 		## the seasonSelectConditions object
 		if((self.seasonGames is None)or(self.playoffGames is None)):
-			print "Season parts constructor finished with none type in games list"
+			print("Season parts constructor finished with none type in games list")
 
 
 	def getGameConditions(self):

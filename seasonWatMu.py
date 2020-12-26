@@ -23,11 +23,11 @@ def getSeedsInBracket(currentTeam, season, alreadyInBracket, count=0, debugInfo=
 		alreadyInBracket.append(thisTeamSeed)
 		if(debugInfo):
 			if(count > 0):				
-				print "-"*count, thisTeamSeed
+				print("-"*count, thisTeamSeed)
 				## indent in to give us a sense of how deep the recursive calls have
 				## gone
 			else:
-				print thisTeamSeed
+				print(thisTeamSeed)
 		opponentSeeds = currentTeam.getPlayoffOpponentTeamSeeds(season)
 		## make a list of the opponent team seed numbers
 		for opponentSeed in opponentSeeds:
@@ -105,7 +105,7 @@ class watMuSeason(Season):
 		## ie the most recent playoff bracket that we handled
 		
 		if(debugInfo):
-			print "top playoff bracket: ", self.topPlayoffBracket
+			print("top playoff bracket: ", self.topPlayoffBracket)
 			
 		
 		self.playoffBrackets.append(self.topPlayoffBracket)
@@ -134,14 +134,14 @@ class watMuSeason(Season):
 	def printPlayoffBrackets(self):
 		for i in range(0, len(self.playoffBrackets)):
 			if(i == 0):
-				print "Top Playoff Bracket ", self.playoffBrackets[i]
+				print("Top Playoff Bracket ", self.playoffBrackets[i])
 			elif(i==1):
-				print "Second Playoff Bracket ", self.playoffBrackets[i]
+				print("Second Playoff Bracket ", self.playoffBrackets[i])
 			elif(i==2):
-				print "Third Playoff Bracket ", self.playoffBrackets[i]
+				print("Third Playoff Bracket ", self.playoffBrackets[i])
 			else:
-				print "%th Playoff Bracket " % i, self.playoffBrackets[i]
-			print len(self.playoffBrackets[i])
+				print("%th Playoff Bracket " % i, self.playoffBrackets[i])
+			print(len(self.playoffBrackets[i]))
 			
 	def getTotalPlayoffTeams(self):
 		output = 0

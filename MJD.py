@@ -31,4 +31,4 @@ if(__name__ == "__main__"):
 	
 	date2 = ["2011-01-08", 22, 30]
 	jd2 = getMJDForDate(*date2)
-	print jd1, jd2
+	print(jd1, jd2)

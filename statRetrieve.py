@@ -13,7 +13,7 @@ from statContainer import *
 def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, debugInfo=False):
 	
 	if(debugInfo):
-		print statCall
+		print(statCall)
 	
 	statValues = []
 	teamIds = []
@@ -37,8 +37,8 @@ def getStatContainer(statCall, shortName, longName, seasons, leagueId, levelId, 
 def getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortName, independentLongName, dependentStatCall, dependentShortName, dependentLongName, debugInfo=False):
 	
 	if(debugInfo):
-		print "Independent: %s, " % (independentLongName), independentStatCall
-		print "Dependent: %s, " % (dependentLongName), dependentStatCall		
+		print("Independent: %s, " % (independentLongName), independentStatCall)
+		print("Dependent: %s, " % (dependentLongName), dependentStatCall)
 		
 	
 	independentStatValues = []
@@ -66,5 +66,5 @@ def getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, indep
 	if(consistencyCheck(independentContainer, dependentContainer)):
 		return modelDiffsContainer	
 	else:
-		print "Consistency check for model diffs container %s*%s failed" % (independentContainer.getShortStatName(), dependentContainer.getShortStatName())
+		print("Consistency check for model diffs container %s*%s failed" % (independentContainer.getShortStatName(), dependentContainer.getShortStatName()))
 

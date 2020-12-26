@@ -66,7 +66,7 @@ def seabornHeatmap(data, output_path, output_directory, output_filename):
 
 		corrmat.to_csv(_output)
 	except IOError:
-		print "Oh Well"
+		print("Oh Well")
 	
 	plt.xticks(rotation=20)
 	plt.yticks(rotation=20)		
@@ -175,7 +175,7 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plotMax = snapToNearestTen(max(n))
 	
 	
-	print output_filename
+	print(output_filename)
 	##print "n ", n, 'len %i\n bins ' % len(n) ,  bins, 'len %i\npatches ' % len(bins) , patches
 	
 	
@@ -195,17 +195,17 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	try:
 		popt,pcov = curve_fit(gaus,bins[:-1], n, p0=[1,distMean,sigma])
 		plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-		print "Fitted gaussian curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2])
+		print("Fitted gaussian curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2]))
 		paramsString = "Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2])
 	except RuntimeError:
 		try:
 			popt,pcov = curve_fit(expDist,bins[:-1],n,p0=[1,distMean,sigma])
 			plt.plot(bins[:-1],expDist(bins[:-1],*popt),'c-',label="Fitted exponential curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2]), alpha=0.5)		
-			print "Fitted exponential curve to data"
-			print "Fitted exponential curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2])
+			print("Fitted exponential curve to data")
+			print("Fitted exponential curve to data with params a %f, x0 %f, sigma %f" % (popt[0], popt[1], popt[2]))
 			paramsString = "Exponential Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2])
 		except RuntimeError:	
-			print "Unable to fit curve"
+			print("Unable to fit curve")
 			ableToFit = False
 	if(ableToFit == False):
 		plt.plot([], [], 'c-', label=paramsString)
@@ -219,13 +219,13 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	title_ = "%s, n = %i\nMean (blue) %.3f, Median (red) %.3f, Variance (green) %.3f, Skewness %.3f, Kurtosis %.3f" % (title, nVal, distMean, distMedian, distVar, getSkewness(values), getAdjustedKurtosis(values))
 	plt.title(title_)
 	## an' title it
-	print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)
+	print("Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax))
 	
 	if(minShow == maxShow):
-		print "Histogram bounds identical, attempting to reset"
+		print("Histogram bounds identical, attempting to reset")
 		minShow = float(int(min(values))-1)	
 		maxShow = float(int(max(values))+1)		
-		print "Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax)	
+		print("Plot x min %f, x max %f, y min %f, y max %f" % (minShow, maxShow, 0.0, plotMax))	
 
 	plt.axis([minShow, maxShow, 0.0, abs(plotMax)])
 
@@ -244,7 +244,7 @@ def plotHistogram(xlabel, ylabel, title, values, output_path, output_directory, 
 	try:
 		plt.savefig(output_)
 	except UserWarning:
-		print "Duh"
+		print("Duh")
 	except IOError:
 		os.makedirs('%s/%s/' % (output_path, output_directory))
 		plt.savefig(output_)
@@ -300,7 +300,7 @@ def isPowerOf(value, powerOf):
 			value /= 10.0
 		elif((value/10.0) < 0.1):
 			value *= 10.0
-	print "isPowerOf() transformed ", initialValue, value	
+	print("isPowerOf() transformed ", initialValue, value)	
 	if(value == 1.0):
 		value *= 10.0
 	if(value == powerOf):
@@ -314,10 +314,10 @@ if(__name__ == "__mainer__"):
 	valuesMatchTen = [isPowerOf(val, 10) for val in values_to_check]
 	valuesMatchFive = [isPowerOf(val, 5) for val in values_to_check]
 	valuesMatchTwo = [isPowerOf(val, 2) for val in values_to_check]	
-	print values_to_check
-	print 10, valuesMatchTen
-	print 5, valuesMatchFive
-	print 2, valuesMatchTwo
+	print(values_to_check)
+	print(10, valuesMatchTen)
+	print(5, valuesMatchFive)
+	print(2, valuesMatchTwo)
 	
 def getGraphBounds(values, snapToNearest=10, paddingLayers=0, debugInfo=False):
 	
@@ -386,7 +386,7 @@ def getGraphBounds(values, snapToNearest=10, paddingLayers=0, debugInfo=False):
 	
 	while(viewFilledPercentage < cutoff):
 		if(debugInfo):
-			print loopCount, dataSpan, boundsSpan, viewFilledPercentage, cutoff, snapToNearest, isPowerOf(snapToNearest, 10), isPowerOf(snapToNearest, 5), isPowerOf(snapToNearest, 2), (lower, upper), 10**math.ceil(math.log10(snapToNearest)), isPowerOf(10**math.ceil(math.log10(snapToNearest)), 10), isPowerOf((snapToNearest), 10)
+			print(loopCount, dataSpan, boundsSpan, viewFilledPercentage, cutoff, snapToNearest, isPowerOf(snapToNearest, 10), isPowerOf(snapToNearest, 5), isPowerOf(snapToNearest, 2), (lower, upper), 10**math.ceil(math.log10(snapToNearest)), isPowerOf(10**math.ceil(math.log10(snapToNearest)), 10), isPowerOf((snapToNearest), 10))
 		if(loopCount >= 100):
 			break
 		loopCount += 1
@@ -424,17 +424,17 @@ def getGraphBounds(values, snapToNearest=10, paddingLayers=0, debugInfo=False):
 				if(isPowerOf(snapToNearest, 5)):
 					snapToNearest *= 0.2
 			if(debugInfo):
-				print startSnapValue, " -> ", snapToNearest	
+				print(startSnapValue, " -> ", snapToNearest)	
 			if((not isPowerOf(snapToNearest, 10))and(not isPowerOf(snapToNearest, 5))and(not isPowerOf(snapToNearest, 2))):
 				snapToNearest = 10**math.ceil(math.log10(snapToNearest))
 
 		if(debugInfo):
-			print "Snapping..."
-			print (lower, mid, upper)
+			print("Snapping...")
+			print(lower, mid, upper)
 		lower = snapAwayFrom(min(values), mid, snapToNearest)
 		upper = snapAwayFrom(max(values), mid, snapToNearest)
 		if(debugInfo):
-			print "Finished snapping"
+			print("Finished snapping")
 			print (lower, mid, upper)		
 		while(lower >= min(values)):
 			## we done goofed, so try brute forcing it away again
@@ -455,17 +455,17 @@ if(__name__ == "__main__"):
 	##y_values = [3.3536585365853657, 3.2439024390243905, 3.475609756097561, 3.402439024390244, 3.1341463414634148, 3.292682926829268, 2.6219512195121952, 3.3902439024390243, 3.3048780487804876, 3.8536585365853657, 3.5609756097560976, 3.292682926829268, 3.1097560975609757, 3.731707317073171, 3.524390243902439, 3.0853658536585367, 3.1463414634146343, 3.0609756097560976, 3.0365853658536586, 3.024390243902439, 3.1341463414634148, 3.451219512195122, 3.1219512195121952, 3.6951219512195124, 3.4634146341463414, 3.097560975609756, 3.2804878048780486, 3.4878048780487805, 3.317073170731707, 2.951219512195122, 3.0365853658536586, 2.8658536585365852, 2.658536585365854, 3.0609756097560976, 2.7560975609756095, 3.2439024390243905, 2.9634146341463414, 2.817073170731707, 2.8902439024390243, 3.2560975609756095, 3.1707317073170733, 2.6219512195121952, 3.4146341463414633, 2.8536585365853657, 3.1341463414634148, 3.1341463414634148, 3.024390243902439, 2.817073170731707, 2.8536585365853657, 2.4390243902439024, 2.841463414634146, 3.402439024390244, 2.8902439024390243, 3.073170731707317, 3.402439024390244, 3.573170731707317, 3.0609756097560976, 3.1219512195121952, 2.5609756097560976, 3.1219512195121952, 3.158536585365854, 3.097560975609756, 3.4634146341463414, 2.975609756097561, 3.0, 3.2195121951219514, 2.658536585365854, 2.7195121951219514, 3.1707317073170733, 3.2560975609756095, 3.2804878048780486, 2.8902439024390243, 2.9146341463414633, 3.5121951219512195, 3.1463414634146343, 2.841463414634146, 3.2804878048780486, 2.792682926829268, 2.841463414634146, 2.548780487804878, 3.2195121951219514, 3.048780487804878, 2.8536585365853657, 3.0609756097560976, 2.817073170731707, 2.8048780487804876, 2.7560975609756095, 2.9634146341463414, 2.682926829268293, 3.1951219512195124, 2.707317073170732, 2.9146341463414633, 2.7560975609756095, 2.7560975609756095, 3.1097560975609757, 3.426829268292683, 3.2195121951219514, 3.0, 2.9791666666666665, 3.3333333333333335, 3.3333333333333335, 3.1666666666666665, 2.4791666666666665, 2.9583333333333335, 2.7916666666666665, 3.5625, 2.8958333333333335, 2.6875, 2.9375, 2.7291666666666665, 3.125, 3.0, 3.024390243902439, 2.9390243902439024, 2.8048780487804876, 3.292682926829268, 3.268292682926829, 2.951219512195122, 2.5365853658536586, 3.2560975609756095, 3.231707317073171, 2.817073170731707, 3.1219512195121952, 2.7195121951219514, 2.926829268292683, 2.8902439024390243, 3.317073170731707, 2.573170731707317, 3.341463414634146, 2.7560975609756095, 2.768292682926829, 3.048780487804878, 3.1707317073170733, 3.451219512195122, 2.7195121951219514, 2.5, 2.6341463414634148, 2.8536585365853657, 2.8292682926829267, 3.1951219512195124, 2.9878048780487805, 2.8048780487804876, 2.707317073170732, 3.1707317073170733, 2.7560975609756095, 2.926829268292683, 3.073170731707317, 2.9878048780487805, 2.8780487804878048, 2.5365853658536586, 3.0121951219512195, 3.0, 2.9634146341463414, 2.9146341463414633, 2.9146341463414633, 2.4390243902439024, 3.1707317073170733, 3.1341463414634148, 2.658536585365854, 2.548780487804878, 3.0609756097560976, 2.792682926829268, 3.0121951219512195, 2.768292682926829, 2.792682926829268, 2.6219512195121952, 2.573170731707317, 3.158536585365854, 2.951219512195122, 3.1707317073170733, 2.5365853658536586, 2.9878048780487805, 2.951219512195122, 2.7560975609756095, 2.402439024390244, 2.426829268292683, 2.3292682926829267, 2.5853658536585367, 2.451219512195122, 2.926829268292683, 2.6341463414634148, 2.707317073170732, 3.0, 2.426829268292683, 3.182926829268293, 2.451219512195122, 2.3292682926829267, 2.707317073170732, 2.768292682926829, 2.6707317073170733, 2.524390243902439, 2.2439024390243905, 2.658536585365854, 2.707317073170732, 2.792682926829268, 2.402439024390244, 2.426829268292683, 3.0121951219512195, 2.841463414634146, 2.6341463414634148, 2.3536585365853657, 2.817073170731707, 2.902439024390244, 2.3902439024390243, 3.024390243902439, 2.7560975609756095, 2.6341463414634148, 2.8048780487804876, 2.975609756097561, 3.0121951219512195, 2.548780487804878, 2.658536585365854, 2.902439024390244, 2.9146341463414633, 2.4878048780487805, 2.841463414634146, 2.682926829268293, 2.9878048780487805, 2.4390243902439024, 2.524390243902439, 2.548780487804878, 2.841463414634146, 2.6341463414634148, 2.6707317073170733, 2.7195121951219514, 2.7439024390243905, 2.3292682926829267, 2.902439024390244, 2.7439024390243905, 2.4634146341463414, 2.8902439024390243, 2.6219512195121952, 2.707317073170732, 2.841463414634146, 2.8658536585365852, 2.3780487804878048, 2.792682926829268, 2.7439024390243905, 2.9390243902439024, 2.4146341463414633, 2.548780487804878, 2.3658536585365852, 2.4146341463414633, 2.7195121951219514, 2.7560975609756095, 2.426829268292683, 2.597560975609756, 2.926829268292683, 2.2560975609756095, 2.402439024390244, 2.4634146341463414, 2.902439024390244, 2.475609756097561, 2.768292682926829, 2.182926829268293, 2.5609756097560976, 2.548780487804878, 2.2804878048780486, 2.926829268292683, 2.8292682926829267, 2.4878048780487805, 2.6951219512195124, 2.5609756097560976, 2.0121951219512195, 2.4146341463414633, 2.8048780487804876, 2.4583333333333335, 2.2708333333333335, 2.125, 2.3958333333333335, 2.4583333333333335, 2.6458333333333335, 2.625, 2.8958333333333335, 2.3333333333333335, 2.1666666666666665, 2.4791666666666665, 2.4166666666666665, 2.3958333333333335, 2.7708333333333335, 2.5208333333333335, 2.7083333333333335, 2.548780487804878, 2.158536585365854, 2.682926829268293, 2.682926829268293, 2.6341463414634148, 2.7804878048780486, 2.8048780487804876, 2.1219512195121952, 2.5121951219512195, 2.4878048780487805, 2.3536585365853657, 2.8658536585365852, 2.524390243902439, 2.4390243902439024, 2.3292682926829267, 2.6219512195121952, 2.7560975609756095, 2.6341463414634148, 2.3048780487804876, 2.6951219512195124, 2.451219512195122, 2.3048780487804876, 2.5365853658536586, 2.8048780487804876, 2.341463414634146, 2.6219512195121952, 2.5609756097560976, 2.451219512195122, 2.573170731707317, 2.707317073170732, 2.475609756097561, 2.5609756097560976, 2.341463414634146, 2.548780487804878, 2.8048780487804876, 2.731707317073171, 2.475609756097561, 2.3780487804878048, 2.5121951219512195, 2.6219512195121952, 2.6341463414634148, 2.6463414634146343, 2.658536585365854, 2.475609756097561, 2.5609756097560976, 2.451219512195122, 2.451219512195122, 2.3536585365853657]	
 	y_values = [2.012, 3.8536]
 	##y_values = [3.583, 0.99]
-	print getGraphBounds(y_values, 5), min(y_values), max(y_values)
+	print(getGraphBounds(y_values, 5), min(y_values), max(y_values))
 	z_values = [-0.99,-2.09]
-	print getGraphBounds(z_values, 10), min(z_values), max(z_values)
+	print(getGraphBounds(z_values, 10), min(z_values), max(z_values))
 
 
 
 if(__name__ == "__mainerai__"):
 	testValues = [3.583, -7.99]
 	lower, upper = getGraphBounds(testValues)
-	print testValues
-	print "[%.3f, %.3f]" % (lower, upper)
+	print(testValues)
+	print("[%.3f, %.3f]" % (lower, upper))
 	
 	
 	
@@ -499,12 +499,12 @@ if(__name__ == "__mainerai__"):
 	try:
 		popt,pcov = curve_fit(expDist,xPdf, yPdf, p0=[a,x0, sigma])
 		##plt.plot(bins[:-1], gaus(bins[:-1],*popt),'c-',label="Gaussian Curve with params\na=%f\nx0=%f\nsigma=%f" % (popt[0], popt[1], popt[2]), alpha=0.5)
-		print "Fitted exponential curve to data with params, ", popt
+		print("Fitted exponential curve to data with params, ", popt)
 	except RuntimeError:	
-		print "Unable to fit curve"
+		print("Unable to fit curve")
 		ableToFit = False
 		
-	print len(popt)
+	print(len(popt))
 	
 	##lam *= 0.5
 	##lam = (1.0/5.1)
@@ -512,13 +512,13 @@ if(__name__ == "__mainerai__"):
 		
 	plt.plot(xPdf, yPdf, 'rs')
 
-	print "a %f, lambda %f" % (popt[0], popt[1])
+	print("a %f, lambda %f" % (popt[0], popt[1]))
 
 	
-	print popt, len(popt), type(popt), type(popt[0]), popt[0], popt[1]
-	print xPdf
-	print yPdf
-	print [expDist(xVal, popt[0], popt[1], popt[2]) for xVal in xPdf]
+	print(popt, len(popt), type(popt), type(popt[0]), popt[0], popt[1])
+	print(xPdf)
+	print(yPdf)
+	print([expDist(xVal, popt[0], popt[1], popt[2]) for xVal in xPdf])
 
 
 
@@ -554,7 +554,7 @@ if(__name__ == "__mainerai__"):
 		bullshitValues.append(aVal*np.random.exponential(1.0/sigmaVal))
 		##bullshitValues.append(popt[1]*np.random.weibull(popt[0]))	
 	nparr = np.array(bullshitValues)
-	print nparr.shape
+	print(nparr.shape)
 	
 	##for i in range(len(a)-1):
 	##	bullshitValues = [val for sublist in bullshitValues for val in sublist]
@@ -587,7 +587,7 @@ def plotScatterplot(xlabel, ylabel, title, x_values, y_values, output_path, outp
 	minY, maxY, yInterval = getGraphBounds(y_values, 5)	
 
 		
-	print "minShow %f, maxShow %f, Y min %f, Y max %f" % (minShow, maxShow, minY, maxY)			
+	print("minShow %f, maxShow %f, Y min %f, Y max %f" % (minShow, maxShow, minY, maxY))			
 	modifiers =  [0.5, 1.0, 1.50]
 	
 	for k in modifiers:

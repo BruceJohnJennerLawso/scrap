@@ -26,11 +26,11 @@ def printTitleBox(text, debugInfo=False):
 	
 	if(debugInfo):
 		for i in range(0, len(text)):
-			print i, text[i]
+			print(i, text[i])
 	
-	print "#"*80
-	print "##", text, "#"*trailingLength
-	print "#"*80, "\n"
+	print("#"*80)
+	print("##", text, "#"*trailingLength)
+	print("#"*80, "\n")
 
 def clearTerminal():
 	## Clears the screen
@@ -72,14 +72,14 @@ def printProgressBar(x, outOf, openSlotChar, filledSlotChar, outputWidthCap=80):
 		lineString += "]"
 		lines.append(lineString)
 	for line in lines:
-		print line
+		print(line)
 	##print outputLines			
 
 
 def displayLoadingFrame(feedbackText, currentlyLoaded, total, openSlotChar, filledSlotChar):
 	clearTerminal()
 	printProgressBar(currentlyLoaded, total, openSlotChar, filledSlotChar)
-	print "\n", feedbackText
+	print("\n", feedbackText)
 	
 def getAllSeasons(leagueId, levelId='null', quiet=False):
 	## returns a list of every season listed in our manifest file
@@ -103,7 +103,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 				for row in earlyReader:
 					total += 1
 				if(not quiet):
-					print "total ", total
+					print("total ", total)
 			
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league
@@ -132,14 +132,14 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 
 					currentlyLoaded = len(seasons)
 					if(not quiet):
-						print "currentlyLoaded, ", currentlyLoaded
+						print("currentlyLoaded, ", currentlyLoaded)
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
 			if(not quiet):
 				displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")	
 		except IOError:
-			print "Catching unusual argument %s" % levelId
+			print("Catching unusual argument %s" % levelId)
 			## a year was passed as argument instead of a season spread
 			## list name
 			if(True):
@@ -150,7 +150,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 				seasonId = levelId
 				idPath = "./data/%s/%s/teamId.csv" % (leagueId, seasonId)
-				print "idPath ",idPath 
+				print("idPath ",idPath)
 				## open the list of team ids stored for that particular season in
 				## another csv file
 				teamIdList = []
@@ -163,10 +163,10 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					
 						## no idea why the ids are stored one deep
 				if(not quiet):
-					print "finished creating teamIdList from %s" % idPath
+					print("finished creating teamIdList from %s" % idPath)
 				seasons.append(nhlSeason(leagueId, seasonId, teamIdList, True))
 				if(not quiet):
-					print "finished appending seasons from idlist"
+					print("finished appending seasons from idlist")
 				currentlyLoaded += 1
 				if(not quiet):
 					displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
@@ -181,7 +181,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 				for row in earlyReader:
 					total += 1
 				if(not quiet):
-					print "total ", total
+					print("total ", total)
 			with open('./data/%s/%s/seasons.csv' % (leagueId, levelId), 'rb') as foo:
 				## open the manifest csv file for this particular league & level
 				## (waterloo intramurals and beginner...)
@@ -207,7 +207,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 					seasons.append(watMuSeason(leagueId, levelId, seasonId, teamIdList, True))
 					currentlyLoaded = len(seasons)
 					if(not quiet):
-						print "currentlyLoaded, ", currentlyLoaded
+						print("currentlyLoaded, ", currentlyLoaded)
 					## this should create a season from this data, and by extension
 					## constructs all of the teams that played in those seasons by
 					## extension
@@ -243,7 +243,7 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 						currentlyLoaded += 1
 					except IOError:
 						if(not quiet):
-							print "Unable to find level %s for %s, skipping" % (lev, seasonId)
+							print("Unable to find level %s for %s, skipping" % (lev, seasonId))
 					if(not quiet):
 						displayLoadingFrame("Loading season %i/%i %s" % (currentlyLoaded, total, envString) , currentlyLoaded, total, " ", "#")
 	
@@ -310,7 +310,7 @@ def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependents, ind
 			thisDeltasContainer = statContainer("%s_ModelDeltaFor_%s" % (indie.getShortStatName(), depie.getShortStatName()), "Model Deltas for the %s model for %s" % (indie.getLongStatName(), depie.getLongStatName()),  thisIndieDeltas, indie.getTeamIds(playoffTeamsOnly), indie.getTeamNames(playoffTeamsOnly), indie.getYears(playoffTeamsOnly), indie.getMadePlayoffsList(playoffTeamsOnly))
 			plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, depie.getShortStatName(), *[thisDeltasContainer]+[ind for ind in independents])
 			
-			print depie.getShortStatName(), " ", indie.getShortStatName(), " Model Deltas min ", min(thisIndieDeltas), " max ", max(thisIndieDeltas)
+			print(depie.getShortStatName(), " ", indie.getShortStatName(), " Model Deltas min ", min(thisIndieDeltas), " max ", max(thisIndieDeltas))
 			for indiana in independents:
 				plotScatterplot(indiana.getShortStatName(), "%s_ModelDeltas" % indie.getShortStatName(), 'Deltas from the %s Model for %s\nby %s\nfor %s %s' % (indie.getLongStatName(), depie.getLongStatName(), indiana.getLongStatName(), leagueId, levelId), indiana.getStat(playoffTeamsOnly), thisIndieDeltas, './results/%s/%s/%sBy' % (leagueId, levelId, depie.getShortStatName()), '%s/ModelDeltas/%s' % (indie.getShortStatName(), indiana.getShortStatName()), '%s_ModelDeltas_by_%s.png' % (indie.getShortStatName(), indiana.getShortStatName()))		
 
@@ -319,7 +319,7 @@ def graphTeamsAgainstDeltas(leagueId, levelId, playoffTeamsOnly, dependents, ind
 
 def graphTeamsHistogram(leagueId, levelId, playoffTeamsOnly, *variables):
 	
-	print type(variables)
+	print(type(variables))
 	
 	if(playoffTeamsOnly):
 		thing = 'PlayoffTeam'
@@ -327,7 +327,7 @@ def graphTeamsHistogram(leagueId, levelId, playoffTeamsOnly, *variables):
 		thing = 'Total'
 		
 	for var in variables[0]:
-		print type(var)
+		print(type(var))
 		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(playoffTeamsOnly),'./results/%s/%s/histograms' % (leagueId, levelId), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
 		## wow, that was quick
 
@@ -335,7 +335,7 @@ def graphTeamsHistogram(leagueId, levelId, playoffTeamsOnly, *variables):
 
 def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):				
 	
-	print variables
+	print(variables)
 	
 	data = []
 	headings = []
@@ -352,10 +352,10 @@ def plotVariablesHeatmap(leagueId, levelId, playoffTeamsOnly, *variables):
 	
 	dataPanda = pd.DataFrame(data, columns=headings)
 	
-	print "\n\nData means"
-	print dataPanda.apply(np.mean), '\n'
-	print "Data standard deviations"
-	print dataPanda.apply(np.std)
+	print("\n\nData means")
+	print(dataPanda.apply(np.mean), '\n')
+	print("Data standard deviations")
+	print(dataPanda.apply(np.std))
 	
 	##pd.printMeanAndSdByGroup(dataTruong, 'Franchise') 
 
@@ -383,10 +383,10 @@ def plotVariablesDeltasHeatmap(leagueId, levelId, playoffTeamsOnly, variableToPr
 	
 	dataPanda = pd.DataFrame(data, columns=headings)
 	
-	print "\n\nData means"
-	print dataPanda.apply(np.mean), '\n'
-	print "Data standard deviations"
-	print dataPanda.apply(np.std)
+	print("\n\nData means")
+	print(dataPanda.apply(np.mean), '\n')
+	print("Data standard deviations")
+	print(dataPanda.apply(np.std))
 	
 	seabornHeatmap(dataPanda, './results', '%s/%s/%sBy' % (leagueId, levelId, variableToPredict), 'AllPlayoffTeams_%s_ModelDelta_Heatmap_%s_%s.png' % (variables[0].getShortStatName(), leagueId, levelId))
 

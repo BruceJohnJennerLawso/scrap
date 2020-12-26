@@ -79,16 +79,16 @@ def getTargetStatContainer(targetStatName, seasons, leagueId, levelId):
 		statCall, shortStatName, longStatName = getTeamStatInformation(targetStatName)
 		return getStatContainer(statCall, shortStatName, longStatName, seasons, leagueId, levelId)
 	except TypeError:
-		print "Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0])
-		print "Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1])
+		print("Dependent: ", targetStatName.rsplit('*')[0], len(targetStatName.rsplit('*')[0]))
+		print("Independent: ", targetStatName.rsplit('*')[1], len(targetStatName.rsplit('*')[1]))
 		if(("*" in targetStatName) and (len(targetStatName.rsplit('*')) == 2) and (targetStatName.rsplit('*')[0] in statNames) and (targetStatName.rsplit('*')[1] in statNames)):
 			## wordy, but its a rather specific requirement
 			dependentStatCall, dependentShortStatName, dependentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[0])
 			independentStatCall, independentShortStatName, independentLongStatName = getTeamStatInformation(targetStatName.rsplit('*')[1])
 			return getModelDiffContainer(seasons, leagueId, levelId, independentStatCall, independentShortStatName, independentLongStatName, dependentStatCall, dependentShortStatName, dependentLongStatName)
 		else:
-			print "Stat name %s not found, available options are:\n\n" % targetStatName
-			print statNames
+			print("Stat name %s not found, available options are:\n\n" % targetStatName)
+			print(statNames)
 			return []
 
 						

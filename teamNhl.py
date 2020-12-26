@@ -37,7 +37,7 @@ class nhlTeam(Team):
 		
 		self.seasonName = rows[1][0]
 		if(debugInfo):
-			print "Load call nhlTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId)
+			print("Load call nhlTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonName, self.teamId))
 		##if((debugInfo)and(rawDataView)):
 		##	print "\n\nraw file\n\n"
 		
@@ -45,7 +45,7 @@ class nhlTeam(Team):
 		
 		self.totalSeasonGames = int(rows[3][0])
 		if(debugInfo):
-			print "Total season games %i" % self.totalSeasonGames
+			print("Total season games %i" % self.totalSeasonGames)
 		## set the length of the regular season from the csv data
 		self.totalPlayoffGames = 0
 		## by default we assume no playoff games
@@ -65,21 +65,21 @@ class nhlTeam(Team):
 		## next, we slice out the data for games played in the regular season
 		## and dump it into a temporary variable scheduleData
 		if(debugInfo):
-			print scheduleHeader, '\n\n'
+			print(scheduleHeader, '\n\n')
 			for i in scheduleData:
-				print i, '\n'
+				print(i, '\n')
 		
 		if(self.totalPlayoffGames > 0):
 			self.playoffDataHeader = rows[(self.totalSeasonGames+7)]
 			## if we have playoff data, locate the playoff header in the csv
 			## (offsetting for different season lengths)
 			if(debugInfo):
-				print 'playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader)
+				print('playoff data header\n', self.playoffDataHeader, ' ', len(self.playoffDataHeader))
 			
 			self.playoffData = rows[(self.totalSeasonGames+8):(self.totalSeasonGames+8+self.totalPlayoffGames)]
 			## and find the data of the playoff games themselves
 			if(debugInfo):
-				print 'playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0])
+				print('playoff data[0]\n', self.playoffData[0], ' ', len(self.playoffData[0]))
 		
 		else:
 			self.playoffDataHeader = []
@@ -142,7 +142,7 @@ class nhlTeam(Team):
 				continue
 			
 		if(debugInfo):
-			print "dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (dateIndex, locationIndex, resultIndex, goalsForIndex, goalsAgainstIndex, opponentNameIndex, gameEndedInIndex)
+			print("dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (dateIndex, locationIndex, resultIndex, goalsForIndex, goalsAgainstIndex, opponentNameIndex, gameEndedInIndex))
 		
 		
 		for game in scheduleData:
@@ -160,7 +160,7 @@ class nhlTeam(Team):
 		
 		if(self.totalPlayoffGames > 0):
 			if(debugInfo):
-				print "Total Playoff Games ", self.totalPlayoffGames
+				print("Total Playoff Games ", self.totalPlayoffGames)
 			
 			playoffDateIndex = -1
 			playoffLocationIndex = -1
@@ -171,7 +171,7 @@ class nhlTeam(Team):
 			playoffGameEndedInIndex = -1
 		
 			if(debugInfo):
-				print self.playoffDataHeader
+				print(self.playoffDataHeader)
 		
 			for i in range(0, len(self.playoffDataHeader)):
 				## roll through the header of the playoffs data
@@ -207,9 +207,9 @@ class nhlTeam(Team):
 					continue
 			
 			if(debugInfo):
-				print "dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (playoffDateIndex, playoffLocationIndex, playoffResultIndex, playoffGoalsForIndex, playoffGoalsAgainstIndex, playoffOpponentNameIndex, playoffGameEndedInIndex)
+				print("dateIndex %i\nlocationIndex %i\nresultIndex %i\ngoalsForIndex %i\n goalsAgainstIndex %i\nopponentNameIndex %i\ngameEndedInIndex %i\n" % (playoffDateIndex, playoffLocationIndex, playoffResultIndex, playoffGoalsForIndex, playoffGoalsAgainstIndex, playoffOpponentNameIndex, playoffGameEndedInIndex))
 				for p in self.playoffData:
-					print p
+					print(p)
 		
 			for game in self.playoffData:
 				## need to define who the home team was here based on whether there
@@ -243,15 +243,15 @@ class nhlTeam(Team):
 		## that
 		
 		if(debugInfo):	
-			print 'Roster:\n'
+			print('Roster:\n')
 			if(debugInfo):
 				for p in self.Roster:
-					print p, '\n'
+					print(p, '\n')
 		if(debugInfo):
-			print "Calculating Tier I stats"
+			print("Calculating Tier I stats")
 		self.calculateTierIStats()			
 		if(debugInfo):
-			print "Finished calculating Tier I stats"
+			print("Finished calculating Tier I stats")
 
 	## Tier IV load call ######################################################
 
@@ -409,11 +409,11 @@ if(__name__ == "__main__"):
 	
 	fuckTampa = nhlTeam('wha', '1978', 'SVT', True)
 	## quick test to make sure everything is loading correctly
-	print fuckTampa.getTotalPlayoffGames()
-	print fuckTampa.getTotalPlayoffWins()
+	print(fuckTampa.getTotalPlayoffGames())
+	print(fuckTampa.getTotalPlayoffWins())
 	
 	for game in fuckTampa.getPlayoffGames():
-		print game.getGameDescription()
+		print(game.getGameDescription())
 	
 	## San Jose 2015-16 used as an example here cause they made the playoffs
 	## and went to the finals, so there shouldnt be anything turned off

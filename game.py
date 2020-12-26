@@ -127,10 +127,10 @@ class Game(object):
 			## we wanna blow everything up here so that we can start
 			## debugging the problem 
 			if(debugInfo):
-				print "Unable to find opponent '%s' in opposition teams," % game.getOpponentName()
+				print("Unable to find opponent '%s' in opposition teams," % game.getOpponentName())
 				for team in teamsList:
-					print team.getTeamName(),
-				print '\n'
+					print(team.getTeamName(), end="")
+				print('\n')
 			raise NameError('Team %s Unable to find scheduled opponent %s as team object' % (self.getTeamName(), game.getOpponentName()))
 		
 		##self.seasonRank = thisTeamRank+1

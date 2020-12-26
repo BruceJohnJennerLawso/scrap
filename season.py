@@ -46,7 +46,7 @@ class Season(Team):
 		for team in self.Teams:
 			if((position -1) == self.Teams.index(team)):
 				return team
-		print "Unable to find team, position %i out of range" % position
+		print("Unable to find team, position %i out of range" % position)
 		
 	def getTeamByTeamName(self, teamName):
 		## get the team object by its name in text,
@@ -56,7 +56,7 @@ class Season(Team):
 		for team in self.Teams:
 			if(team.getTeamName() == teamName):
 				return team
-		print "Unable to find team, no team with name %s found" % teamName	
+		print("Unable to find team, no team with name %s found" % teamName)	
 
 	def getTeamStatAverage(self, statName):
 		output = 0.00

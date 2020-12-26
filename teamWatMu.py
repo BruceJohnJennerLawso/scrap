@@ -31,7 +31,7 @@ class watMuTeam(Team):
 			self.averageSOC += game.getSOC()
 			
 		if(debugInfo):	
-			print "Total season games %i" % self.totalSeasonGames
+			print("Total season games %i" % self.totalSeasonGames)
 		self.averageSOC /= float(self.totalSeasonGames)		
 		
 	
@@ -47,9 +47,9 @@ class watMuTeam(Team):
 			seasonGames.append(watMuGame(str(game[0]), str(game[1]), str(game[2]), int(game[3]), int(game[4]), str(game[5]), str(game[6]), seasonParts.getGameSelectConditions("regularSeason"), self.getSeasonIndex()))
 			## set up each game as an object in memory
 		if(debugInfo):
-			print "seasonData: "
+			print("seasonData: ")
 			for row in seasonData:
-				print row	
+				print(row)	
 	
 		return seasonGames
 	
@@ -66,8 +66,8 @@ class watMuTeam(Team):
 				## (saying 'avg.') we tally one more SOC game in the schedule
 				averageSOCGames += 1	
 				if(debugInfo):
-					print "Failed add due to ValueError"
-					print "Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5]
+					print("Failed add due to ValueError")
+					print("Adding in an average SOC game due to actual value '%s'" % game.Layers[0][5])
 		
 		SOC = float(self.averageSOC)/float(self.totalSeasonGamesPlayed-averageSOCGames) 
 		## start off by getting our average for the games that had an SOC number
@@ -79,16 +79,16 @@ class watMuTeam(Team):
 			for game in self.seasonGames:
 				
 				if(debugInfo):
-					print game.Layers[0]
+					print(game.Layers[0])
 				
 				try:
 					game.getSOC()
 				except ValueError:
 					if(debugInfo):
-						print "Failed int() cast due to ValueError"
+						print("Failed int() cast due to ValueError")
 					game.setSOC(SOC)
 					if(debugInfo):
-						print game.Layers[0]
+						print(game.Layers[0])
 	
 	def loadPlayoffGames(self, rows, debugInfo=False):
 		playoffGames = []
@@ -104,9 +104,9 @@ class watMuTeam(Team):
 			## set up each game as an object in memory
 
 		if(debugInfo):
-			print "\nplayoffData: "
+			print("\nplayoffData: ")
 			for row in playoffData:
-				print row
+				print(row)
 		return playoffGames
 		
 	def loadTierI(self, debugInfo=False):
@@ -117,7 +117,7 @@ class watMuTeam(Team):
 		self.seasonId = rows[0][1]
 		
 		if(debugInfo):
-			print "Load call watMuTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
+			print("Load call watMuTeam Tier I, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId))
 		
 		self.seasonLength = int(rows[1][0])
 		## everything in the schedule, including playoff games
@@ -133,11 +133,11 @@ class watMuTeam(Team):
 		## total playoff games actually played
 		
 		if(debugInfo):
-			print "total season length %i games" % self.seasonLength
-			print "total season games in schedule %i" % self.totalSeasonGames
-			print "total season games played so far %i games" % self.totalSeasonGamesPlayed
-			print "total playoff games scheduled %i games" % self.totalPlayoffGames
-			print "total playoff games played so far %i games" % self.totalPlayoffGamesPlayed
+			print("total season length %i games" % self.seasonLength)
+			print("total season games in schedule %i" % self.totalSeasonGames)
+			print("total season games played so far %i games" % self.totalSeasonGamesPlayed)
+			print("total playoff games scheduled %i games" % self.totalPlayoffGames)
+			print("total playoff games played so far %i games" % self.totalPlayoffGamesPlayed)
 		
 		self.seasonGames = self.loadSeasonGames(rows, debugInfo)
 		self.calculateSocValues(debugInfo)
@@ -147,9 +147,9 @@ class watMuTeam(Team):
 		self.Roster = rows[ (self.seasonLength + 3) ]
 		
 		if(debugInfo):
-			print "\nRoster:"
+			print("\nRoster:")
 			for r in self.Roster:
-				print r
+				print(r)
 		
 		self.calculateTierIStats(debugInfo)
 

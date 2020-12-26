@@ -38,7 +38,7 @@ def twoClosestIntegers(value):
 	elif(roundedValue > value):
 		return [roundedValue-1, roundedValue]
 	else:
-		print "twoClosestIntegers() called on integer %f, crashing everything..." % value
+		print("twoClosestIntegers() called on integer %f, crashing everything..." % value)
 		return []
 
 
@@ -66,12 +66,12 @@ def getValueForPercentile(percentile, dataSet):
 	
 	m = percentile*(n+1.0)	
 	
-	print sorted(dataSet)
-	print [(i, (i+1), sorted(dataSet)[i]) for i in range(0, len(dataSet))]
-	print "percentile %f, n %f" % (percentile, n)
-	print "m %f, adjusted %d" % (m, (int(m) -2))
+	print(sorted(dataSet))
+	print([(i, (i+1), sorted(dataSet)[i]) for i in range(0, len(dataSet))])
+	print("percentile %f, n %f" % (percentile, n))
+	print("m %f, adjusted %d" % (m, (int(m) -2)))
 	if(not isInteger(m)):
-		print twoClosestIntegers(m)
+		print(twoClosestIntegers(m))
 		
 	if(isInteger(m)):
 		return sorted(dataSet)[int(m)]
@@ -176,11 +176,11 @@ def testListFunctions():
 	for i in range(randomIntegerValue(5,25)):
 		randam = randomIntegerValue(0,10)
 		testArray.append(randam)
-	print "array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray)
+	print("array\n-> ", testArray, "\nsorted\n-> ", sorted(testArray))
 	
-	print "Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f\nArray Skewness %f\nArray Kurtosis %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray), getSkewness(testArray), getAdjustedKurtosis(testArray))
+	print("Array length = %d\nArray Mean = %f,\nArray Median = %f,\nArray Mode %d\nArray Geometric Mean %f\nArray Skewness %f\nArray Kurtosis %f" % (len(testArray), Mean(testArray), Median(testArray), Mode(testArray), geometricMean(testArray), getSkewness(testArray), getAdjustedKurtosis(testArray)))
 	##print "Array percentiles\np(0) %.3f, p(25) %.3f, p(50) %.3f, p(75) %.3f, p(100) %.3f" % (getValueForPercentile(0.0, testArray), getValueForPercentile(0.25, testArray), getValueForPercentile(0.5, testArray), getValueForPercentile(0.75, testArray), getValueForPercentile(1.00, testArray))
-	print "Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray))
+	print("Array Variance = %f\nArray Standard Deviation = %f" % (Variance(testArray), standardDeviation(testArray)))
 
 if(__name__ == "__main__"):
 	

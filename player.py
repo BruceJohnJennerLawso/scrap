@@ -106,6 +106,6 @@ class Player(object):
 		return "Player: %s, %i seasons played\nTeam Averages:\nAGCI %.3f, MaAWQI %.3f, MaAPQI %.3f\nADQI %.3f, AOQI %.3f, CPQI %.3f\nOffense %.3f, Defence %.3f, +/- %.3f" % (self.getName(), self.getNumberOfSeasonsPlayed(), self.getPlayerCareerMeanStatValue(team.Team.getAGCI), self.getPlayerCareerMeanStatValue(team.Team.getMaAWQI), self.getPlayerCareerMeanStatValue(team.Team.getMaAPQI), self.getPlayerCareerMeanStatValue(team.Team.getADQI), self.getPlayerCareerMeanStatValue(team.Team.getAOQI), self.getPlayerCareerMeanStatValue(team.Team.getCPQI), self.getPlayerCareerMeanStatValue(team.Team.getSeasonGoalsForAverage), self.getPlayerCareerMeanStatValue(team.Team.getSeasonGoalsAgainstAverage), self.getPlayerCareerMeanStatValue(team.Team.getSeasonPlusMinus))
 		
 		for teamPlayedFor in self.playedFor:
-			print teamPlayedFor.getDescriptionString(), '\n'
+			print(teamPlayedFor.getDescriptionString(), '\n')
 			
 

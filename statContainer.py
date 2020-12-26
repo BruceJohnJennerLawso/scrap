@@ -58,7 +58,7 @@ class statContainer:
 		## stat container, then output a new statContainer object with
 		## the values of the model diffs
 		
-		print "Consistency check between %s and %s containers is a %r" % (self.getShortStatName(), dependentContainer.getShortStatName(), consistencyCheck(self, dependentContainer))
+		print("Consistency check between %s and %s containers is a %r" % (self.getShortStatName(), dependentContainer.getShortStatName(), consistencyCheck(self, dependentContainer)))
 		
 		x_values = self.getStat(playoffTeamsOnly)
 		y_values = dependentContainer.getStat(playoffTeamsOnly)
@@ -90,36 +90,36 @@ class statContainer:
 		return [dataPt[1:] for dataPt in self.getDataPoints()]
 
 	def printContainer(self):
-		print "[",
+		print("[", end='')
 		for i in self.getDataPoints():
-			print i
-		print "]"
+			print(i)
+		print("]")
 
 	def printDataPoint(self, pt):
-		print "%.3f " % pt[0], pt[1:]
+		print("%.3f " % pt[0], pt[1:])
 
 	def printSortedContainer(self, onlyPlayoffTeams=False):
-		print "[",
+		print("[", end='')
 		for i in sorted(self.getDataPoints(), key=lambda list: list[0]):
 			if(onlyPlayoffTeams == True):
 				if(i[4] == True):
 					self.printDataPoint(i)
 			else:
 				self.printDataPoint(i)
-		print "]"	
+		print("]")	
 		
 	def printReverseSortedContainer(self, onlyPlayoffTeams=False):
-		print "[",
+		print("[", end='')
 		for i in reversed(sorted(self.dataPoints, key=lambda list: list[0])):
 			if(onlyPlayoffTeams == True):
 				if(i[4] == True):
 					self.printDataPoint(i)
 			else:
 				self.printDataPoint(i)
-		print "]"				
+		print("]")				
 	
 	def printStatBounds(self, onlyPlayoffTeams=False):
-		print "[%.3f, %.3f]" % (min(self.getStat(onlyPlayoffTeams)), max(self.getStat(onlyPlayoffTeams)))
+		print("[%.3f, %.3f]" % (min(self.getStat(onlyPlayoffTeams)), max(self.getStat(onlyPlayoffTeams))))
 		
 	def getStat(self, onlyPlayoffTeams=False):
 		output = []

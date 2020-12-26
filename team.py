@@ -18,7 +18,7 @@ def getSeasonIndexList(leagueId, debugInfo=False):
 	## and more than once a year
 	output = []
 	if(debugInfo):
-		print './data/%s/seasonIndex.csv' % (leagueId)
+		print('./data/%s/seasonIndex.csv' % (leagueId))
 	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
@@ -123,7 +123,7 @@ class Team(object):
 	## ABSOLUTELY MUST BE CALLED IN ORDER or bad things WILL happen ############
 		
 	def loadTierI(self):
-		print "Bad call to Team.loadTierI"
+		print("Bad call to Team.loadTierI")
 		
 	## Tier II load call #######################################################	
 		
@@ -144,8 +144,8 @@ class Team(object):
 		
 		
 		if(debugInfo):
-			print "debugInfo=%r" % debugInfo
-			print "Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId)
+			print("debugInfo=%r" % debugInfo)
+			print("Load call watMuTeam Tier II, team %s %s, Id %s" % (self.getTeamName(), self.seasonId, self.teamId))
 		
 			
 		## once we've calculated the total WQI & PQI, divy them over the total
@@ -159,19 +159,19 @@ class Team(object):
 	def loadTierIII(self, teamsList, madeRealPlayoffs, awqiMean, apqiMean, teamRank, debugInfo=False):	
 		
 		if(debugInfo):
-			print "Load call watMuTeam Tier III, team %s" % self.getTeamName()
+			print("Load call watMuTeam Tier III, team %s" % self.getTeamName())
 		
 		self.realPlayoffs = madeRealPlayoffs
 		if(debugInfo):
-			print "Calculating Ma values"
+			print("Calculating Ma values")
 		self.calculateMaValues(teamsList, awqiMean, apqiMean)
 		if(debugInfo):
-			print "Finished calculating Ma values"
+			print("Finished calculating Ma values")
 		## send the list of team objects for this season off so we can get our
 		## mean adjusted values	
 		
 	def loadTierIV(self, teamsList, seasonsList):
-		print "Bad call to Team.loadTierIV"		
+		print("Bad call to Team.loadTierIV")
 	
 	
 	## Tier I ##################################################################
