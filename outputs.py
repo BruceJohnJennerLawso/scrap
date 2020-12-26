@@ -154,8 +154,9 @@ def getAllSeasons(leagueId, levelId='null', quiet=False):
 				## open the list of team ids stored for that particular season in
 				## another csv file
 				teamIdList = []
-				with open(idPath, 'rb') as bar:
+				with open(idPath, 'rt') as bar:
 					reading = csv.reader(bar)
+					print("reading, ", reading)
 					for teamId in reading:
 						## open up the list of teamIds for the season in question
 						teamIdList.append(teamId[0])

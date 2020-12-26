@@ -19,7 +19,7 @@ def getSeasonIndexList(leagueId, debugInfo=False):
 	output = []
 	if(debugInfo):
 		print('./data/%s/seasonIndex.csv' % (leagueId))
-	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rb') as foo:
+	with open('./data/%s/seasonIndex.csv' % (leagueId), 'rt') as foo:
 		reader = csv.reader(foo)
 		for row in reader:
 			output.append(row[0])
@@ -177,7 +177,7 @@ class Team(object):
 	## Tier I ##################################################################
 	
 	def getCsvRowsList(self):
-		with open(self.loadPath, 'rb') as foo:
+		with open(self.loadPath, 'rt') as foo:
 			rows = []
 			reader = csv.reader(foo)
 			for row in reader:
