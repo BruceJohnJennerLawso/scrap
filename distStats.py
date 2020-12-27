@@ -89,10 +89,10 @@ def Median(dataSet):
 	arrayLen = len(sortedData)
 	if(isOdd(arrayLen)):
 		## we take the middle value
-		return sortedData[ (arrayLen+1)/2 -1 ]
+		return sortedData[ int( (arrayLen+1)/2 -1 ) ]
 		## not very confident with that, lets see if it works
 	else:
-		return float(sortedData[ (arrayLen/2) -1 ] + sortedData[ (arrayLen/2) ])/2
+		return float(sortedData[ int( (arrayLen/2) -1 ) ] + sortedData[ int( (arrayLen/2) )])/2
 		## average the two middle ones
 
 		

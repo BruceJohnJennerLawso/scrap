@@ -34,10 +34,10 @@ def task(seasons, parameters):
 		thing = 'Total'
 	
 	independent = statSelect.getTargetStatContainer(parameters.getIndependentStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
-	print "Independent"
+	print("Independent")
 	independent.printStatBounds()
 	dependent = statSelect.getTargetStatContainer(parameters.getTargetStatName(), seasons, parameters.getLeagueId(), parameters.getLevelId())
-	print "Dependent"
+	print("Dependent")
 	dependent.printStatBounds()
 	for var in [independent, dependent]:
 		plotHistogram(var.getShortStatName(), 'Count', 'Histogram of %s' % var.getLongStatName(), var.getStat(parameters.getPlayoffTeamsOnly()),'./results/%s/%s/histograms' % (parameters.getLeagueId(), parameters.getLevelId()), '%s' % var.getShortStatName(), '%s_%s_histogram.png' % (var.getShortStatName(), thing))			
@@ -63,11 +63,11 @@ if(__name__ == "__main__"):
 		elif(playoffTeamsOnly == "False"):
 			playoffTeamsOnly = False
 		else:
-			print "Unable to parse third option 'playoffTeamsOnly' provided as %s" % playoffTeamsOnly
+			print("Unable to parse third option 'playoffTeamsOnly' provided as %s" % playoffTeamsOnly)
 			raise IndexError
 	except IndexError:
-		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
-		print exampleCommand()
+		print("Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0]))		
+		print(exampleCommand())
 		exit()
 		
 	seasons = getAllSeasons(leagueId, levelId)

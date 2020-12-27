@@ -166,7 +166,8 @@ def generateHistogram(xlabel, ylabel, title, values, output_path, output_directo
 	plt.axvline(x=distMedian, ymin=0.0, ymax = plotMax, linewidth=1, color='r', alpha=0.8)
 	plt.axvline(x=distVar, ymin=0.0, ymax = plotMax, linewidth=1, color='g', alpha=0.8)		
 	
-	n, bins, patches = plt.hist(values, binCount, normed=1, facecolor='blue', alpha = 0.55)
+	## normed is now broke
+	n, bins, patches = plt.hist(values, binCount, facecolor='blue', alpha = 0.55)
 	## bins are the endpoints of bins
 	
 	## n are the respective counts for those bins

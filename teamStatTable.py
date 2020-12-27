@@ -25,7 +25,7 @@ def task(seasons, parameters):
 	for season in seasons:
 		for team in season.Teams:
 			if(team.getTeamName() in parameters.getTeamNames()):
-				print "%i,%s,%.3f" % (int(season.seasonId), team.getTeamId(),team.getCPQI())
+				print("%i,%s,%.3f" % (int(season.seasonId), team.getTeamId(),team.getCPQI()))
 
 if(__name__ == "__main__"):
 	try:
@@ -35,8 +35,8 @@ if(__name__ == "__main__"):
 		## ie 'beginner'
 		teamNames = argv[3:]
 	except IndexError:
-		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
-		print exampleCommand()
+		print("Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0]))	
+		print(exampleCommand())
 		exit()
 	seasons = getAllSeasons(leagueId, levelId)
 

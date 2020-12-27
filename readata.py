@@ -166,12 +166,12 @@ def runMultithreaded(seasons, leagueId, levelId):
 			if(p.exitcode == 0):
 				finishedProcesses += 1
 		if(finishedProcesses == len(procs)):
-			print "Finished all processes for readata.py, %s, %s" % (leagueId, levelId)
+			print("Finished all processes for readata.py, %s, %s" % (leagueId, levelId))
 			break
 		
-		print "%i running processes, %i finished %i cores available\n" % (runningProcesses, finishedProcesses, num_cores)
-		print "Total Process List\n", [[p.name, p.exitcode, p.is_alive(), p.pid] for p in procs], '\n'
-		print "Active Process List\n", [[p.name, p.exitcode, p.is_alive(), p.pid] for p in activeProcs], '\n\n'
+		print("%i running processes, %i finished %i cores available\n" % (runningProcesses, finishedProcesses, num_cores))
+		print("Total Process List\n", [[p.name, p.exitcode, p.is_alive(), p.pid] for p in procs], '\n')
+		print("Active Process List\n", [[p.name, p.exitcode, p.is_alive(), p.pid] for p in activeProcs], '\n\n')
 		sys.stdout.write("\x1b[2J\x1b[H");
 		if(runningProcesses < num_cores):
 			for p in procs:
@@ -197,7 +197,7 @@ def task(seasons, parameters):
 	elif(parameters.getRunMode() == "Linear"):
 		runLinear(seasons, parameters.getLeagueId(), parameters.getLevelId())
 	else:
-		print "Unable to parse runMode argument %s, exiting" % parameters.getRunMode()
+		print("Unable to parse runMode argument %s, exiting" % parameters.getRunMode())
 	
 
 if(__name__ == "__main__"):
@@ -210,8 +210,8 @@ if(__name__ == "__main__"):
 		## ie 'beginner'
 		runMode = argv[3]
 	except IndexError:
-		print "Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0])		
-		print exampleCommand()
+		print("Arguments %s failing due to index error, see example commands for %s:\n" % (tuple(argv[1:]), argv[0]))	
+		print(exampleCommand())
 		exit()
 
 	## ids needed to open the proper folders and csv files contained within
